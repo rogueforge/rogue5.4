@@ -1,20 +1,20 @@
 #
-# Makefile for network
+# Makefile for rogue
 # @(#)Makefile	4.21 (Berkeley) 02/04/99
 #
-HDRS=	netprot.h network.h netwait.h
-DOBJS=	terminal.o rmove.o network.o netprot.o rwrite.o rread.o \
-	sendit.o continue.o rinit.o control.o error.o rmap.o edit.o \
-	rexec.o master.o handle.o pipes.o packet.o socket.o ether.o \
-	netmap.o startup.o solve.o data.o signal.o rcopy.o \
-	system.o ctlmod.o
-OBJS=	$(DOBJS) find.o inter.o
-CFILES=	terminal.c rmove.c network.c netprot.c rwrite.c rread.c \
-	sendit.c continue.c rinit.c control.c error.c rmap.c edit.c \
-	rexec.c master.c handle.c pipes.c packet.c socket.c ether.c \
-	netmap.c inter.c startup.c solve.c data.c signal.c rcopy.c \
-	system.c ctlmod.c find.c
-MISC_C=	ropen.c netwait.c netmisc.c
+HDRS=	rogue.h extern.h score.h
+DOBJS=	vers.o extern.o armor.o chase.o command.o daemon.o \
+	daemons.o fight.o init.o io.o list.o main.o misc.o \
+	monsters.o move.o new_level.o options.o pack.o passages.o potions.o \
+	rings.o rooms.o save.o scrolls.o sticks.o things.o \
+	weapons.o wizard.o
+OBJS=	$(DOBJS) mach_dep.o rip.o
+CFILES=	vers.c extern.c armor.c chase.c command.c daemon.c \
+	daemons.c fight.c init.c io.c list.c main.c misc.c \
+	monsters.c move.c new_level.c options.c pack.c passages.c potions.c \
+	rings.c rip.c rooms.c save.c scrolls.c sticks.c things.c \
+	weapons.c wizard.c mach_dep.c
+MISC_C=	findpw.c score.c smisc.c
 MISC=	Makefile $(MISC_C)
 
 DEFS=		-DMASTER -DDUMP -DALLSCORES -DUSE_OLD_TTY
@@ -57,31 +57,31 @@ a.out: $(HDRS) $(OBJS)
 #	@echo -n 'You still have to remove '		# 11/70's
 #	@size a.out | sed 's/+.*/ 1024 63 * - p/' | dc	# 11/70's
 
-terminal.o:
-	$(CC) -c $(CFLAGS) terminal.c
+vers.o:
+	$(CC) -c $(CFLAGS) vers.c
 
-find.o: find.c
-	$(CC) -c $(CFLAGS) $(SF) $(NL) $(MACHDEP) find.c
+mach_dep.o: mach_dep.c
+	$(CC) -c $(CFLAGS) $(SF) $(NL) $(MACHDEP) mach_dep.c
 
-inter.o: inter.c
-	$(CC) -c $(CFLAGS) $(SF) $(NL) $(MACHDEP) inter.c
+rip.o: rip.c
+	$(CC) -c $(CFLAGS) $(SF) $(NL) $(MACHDEP) rip.c
 
-network: newvers a.out
-	cp a.out network
-	strip network
+rogue: newvers a.out
+	cp a.out rogue 
+	strip rogue
 
-ropen: ropen.c
-	$(CC) -s -o ropen ropen.c
+findpw: findpw.c
+	$(CC) -s -o findpw findpw.c
 
-netwait: netwait.o netmisc.o terminal.o
-	$(CC) -s -o netwait terminal.o netwait.o netmisc.o -lcurses
+score: score.o smisc.o vers.o
+	$(CC) -s -o score vers.o score.o smisc.o -lcurses
 
-netmisc.o netwait.o:
+smisc.o score.o:
 	$(CC) -O -c $(SF) $*.c
 
 newvers:
-	$(GET) -e terminal.c
-	sccs delta -y terminal.c
+	$(GET) -e vers.c
+	sccs delta -y vers.c
 
 flist: $(HDRS) $(CFILES) $(MISC_C)
 	-mv flist tags
@@ -94,11 +94,11 @@ lint:
 	/bin/csh -c "lint -hxbc $(DEFS) $(MACHDEP) $(SF) $(NL) $(CFILES) -lcurses > linterrs"
 
 clean:
-	rm -f $(OBJS) core a.out p.out network strings ? network.tar vgrind.* x.c x.o xs.c linterrs ropen
+	rm -f $(OBJS) core a.out p.out rogue strings ? rogue.tar vgrind.* x.c x.o xs.c linterrs findpw
 
 xtar: $(HDRS) $(CFILES) $(MISC)
-	rm -f network.tar
-	tar cf network.tar $? :rofix
+	rm -f rogue.tar
+	tar cf rogue.tar $? :rofix
 	touch xtar
 
 vgrind:
