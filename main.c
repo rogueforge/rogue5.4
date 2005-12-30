@@ -153,10 +153,10 @@ main(int argc, char **argv, char **envp)
     /*
      * Start up daemons and fuses
      */
-    daemon(runners, 0, AFTER);
-    daemon(doctor, 0, AFTER);
+    start_daemon(runners, 0, AFTER);
+    start_daemon(doctor, 0, AFTER);
     fuse(swander, 0, WANDERTIME, AFTER);
-    daemon(stomach, 0, AFTER);
+    start_daemon(stomach, 0, AFTER);
     playit();
 }
 

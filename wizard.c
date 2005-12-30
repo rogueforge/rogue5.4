@@ -48,7 +48,7 @@ whatis(bool insist, int type)
 
     switch (obj->o_type)
     {
-        when SCROLL:
+        case SCROLL:
 	    set_know(obj, Scr_info);
         when POTION:
 	    set_know(obj, Pot_info);
@@ -77,7 +77,7 @@ set_know(THING *obj, struct obj_info *info)
     guess = &info[obj->o_which].oi_guess;
     if (*guess)
     {
-	cfree(*guess);
+	free(*guess);
 	*guess = NULL;
     }
 }

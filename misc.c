@@ -32,7 +32,7 @@ look(bool wakeup)
     if (done)
 	return;
     done = TRUE;
-# endif DEBUG
+# endif /* DEBUG */
     passcount = 0;
     rp = Proom;
     if (!ce(Oldpos, Hero))
@@ -167,7 +167,7 @@ look(bool wakeup)
 	mvaddch(Hero.y, Hero.x, PLAYER);
 # ifdef DEBUG
     done = FALSE;
-# endif DEBUG
+# endif /* DEBUG */
 }
 
 /*
@@ -464,7 +464,7 @@ get_dir(void)
 	    gotit = TRUE;
 	    switch (Dir_ch = readchar())
 	    {
-		when 'h': case'H': Delta.y =  0; Delta.x = -1;
+		case 'h': case'H': Delta.y =  0; Delta.x = -1;
 		when 'j': case'J': Delta.y =  1; Delta.x =  0;
 		when 'k': case'K': Delta.y = -1; Delta.x =  0;
 		when 'l': case'L': Delta.y =  0; Delta.x =  1;
@@ -529,7 +529,7 @@ call_it(struct obj_info *info)
     {
 	if (info->oi_guess)
 	{
-	    cfree(info->oi_guess);
+	    free(info->oi_guess);
 	    info->oi_guess = NULL;
 	}
     }
@@ -539,7 +539,7 @@ call_it(struct obj_info *info)
 	if (get_str(Prbuf, stdscr) == NORM)
 	{
 	    if (info->oi_guess != NULL)
-		cfree(info->oi_guess);
+		free(info->oi_guess);
 	    info->oi_guess = malloc((unsigned int) strlen(Prbuf) + 1);
 	    strcpy(info->oi_guess, Prbuf);
 	}

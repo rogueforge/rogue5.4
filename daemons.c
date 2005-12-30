@@ -46,7 +46,7 @@ doctor(void)
 void
 swander(void)
 {
-    daemon(rollwand, 0, BEFORE);
+    start_daemon(rollwand, 0, BEFORE);
 }
 
 /*

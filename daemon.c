@@ -62,7 +62,7 @@ find_slot(void (*func)(int))
  *	Start a daemon, takes a function.
  */
 void
-daemon(void (*func)(int), int arg, int type)
+start_daemon(void (*func)(int), int arg, int type)
 {
     struct delayed_action *dev;
 

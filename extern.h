@@ -37,7 +37,7 @@ extern int	Fd;
 
 #ifdef TIOCGLTC
 extern struct ltchars	Ltc;
-#endif TIOCGLTC
+#endif /* TIOCGLTC */
 
 /*
  * Function types

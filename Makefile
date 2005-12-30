@@ -50,9 +50,9 @@ CC = cc
 a.out: $(HDRS) $(OBJS)
 	-rm -f a.out
 	@rm -f x.c
-	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB)
+#	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB)
 #	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB) -ltermlib
-#	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB) -lcrypt
+	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB) -lcrypt
 	size a.out
 #	@echo -n 'You still have to remove '		# 11/70's
 #	@size a.out | sed 's/+.*/ 1024 63 * - p/' | dc	# 11/70's

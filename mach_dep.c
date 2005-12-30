@@ -54,15 +54,15 @@ char *Numname = NUMNAME;
 
 # ifdef ALLSCORES
 bool Allscore = TRUE;
-# else  ALLSCORES
+# else  /* ALLSCORES */
 bool Allscore = FALSE;
-# endif ALLSCORES
+# endif /* ALLSCORES */
 
-#endif SCOREFILE
+#endif /* SCOREFILE */
 
 #ifdef CHECKTIME
 static int Num_checks;		/* times we've gone over in checkout() */
-#endif CHECKTIME
+#endif /* CHECKTIME */
 
 /*
  * init_check:

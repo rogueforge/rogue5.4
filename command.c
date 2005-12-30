@@ -140,7 +140,7 @@ command(void)
 over:
 	    switch (ch)
 	    {
-		when ',': {
+		case ',': {
 		    THING *obj = NULL;
 		    int found = 0;
 		    for (obj = Lvl_obj; obj != NULL; obj = next(obj))
@@ -718,7 +718,7 @@ call(void)
 	return;
     switch (obj->o_type)
     {
-	when RING:
+	case RING:
 	    op = &Ring_info[obj->o_which];
 	    elsewise = R_stones[obj->o_which];
 	    goto norm;

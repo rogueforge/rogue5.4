@@ -76,7 +76,7 @@ discard(THING *item)
 #ifdef MASTER
     Total--;
 #endif
-    cfree((char *) item);
+    free((char *) item);
 }
 
 /*

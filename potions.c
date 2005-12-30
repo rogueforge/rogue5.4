@@ -80,7 +80,7 @@ quaff(void)
     leave_pack(obj, FALSE, FALSE);
     switch (obj->o_which)
     {
-	when P_CONFUSE:
+	case P_CONFUSE:
 	    do_pot(P_CONFUSE, !trip);
 	when P_POISON:
 	    Pot_info[P_POISON].oi_know = TRUE;
@@ -152,7 +152,7 @@ quaff(void)
 	    {
 		if (on(Player, SEEMONST))
 		    turn_see(FALSE);
-		daemon(visuals, 0, BEFORE);
+		start_daemon(visuals, 0, BEFORE);
 		Seenstairs = seen_stairs();
 	    }
 	    do_pot(P_LSD, TRUE);

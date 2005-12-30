@@ -267,7 +267,7 @@ be_trapped(coord *tc)
     pp->p_flags |= F_SEEN;
     switch (tr)
     {
-	when T_DOOR:
+	case T_DOOR:
 	    Level++;
 	    new_level();
 	    msg("you fell into a trap!");

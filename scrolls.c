@@ -50,7 +50,7 @@ read_scroll(void)
 
     switch (obj->o_which)
     {
-	when S_CONFUSE:
+	case S_CONFUSE:
 	    /*
 	     * Scroll of monster confusion.  Give him that power.
 	     */

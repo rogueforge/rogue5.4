@@ -179,7 +179,7 @@ attack(THING *mp)
 	if (!on(*mp, ISCANC))
 	    switch (mp->t_type)
 	    {
-		when 'A':
+		case 'A':
 		    /*
 		     * If an aquator hits, you can lose armor class.
 		     */
@@ -617,7 +617,7 @@ killed(THING *tp, bool pr)
      */
     switch (tp->t_type)
     {
-	when 'F':
+	case 'F':
 	    Player.t_flags &= ~ISHELD;
 	    Vf_hit = 0;
 	    strcpy(Monsters['F'-'A'].m_stats.s_dmg, "000x0");

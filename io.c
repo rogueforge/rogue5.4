@@ -270,5 +270,5 @@ show_win(char *message)
     clearok(curscr, TRUE);
 #ifdef	attron
     touchwin(stdscr);
-#endif	attron
+#endif	/* attron */
 }
