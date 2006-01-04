@@ -353,13 +353,24 @@ encread(char *start, size_t size, int inf)
     return(read_size);
 }
 
+static char scoreline[100];
 /*
  * read_scrore
  *	Read in the score file
  */
 rd_score(SCORE *top_ten, int fd)
 {
-    encread((char *) top_ten, numscores * sizeof (SCORE), fd);
+    unsigned int i;
+
+    for(i = 0; i < numscores; i++)
+    {
+        encread(top_ten[i].sc_name, MAXSTR, fd);
+        encread(scoreline, 100, fd);
+        sscanf(scoreline, " %u %hu %u %hu %hu %lx \n",
+            &top_ten[i].sc_uid, &top_ten[i].sc_score,
+            &top_ten[i].sc_flags, &top_ten[i].sc_monster,
+            &top_ten[i].sc_level, &top_ten[i].sc_time);
+    }
 }
 
 /*
@@ -368,5 +379,16 @@ rd_score(SCORE *top_ten, int fd)
  */
 wr_score(SCORE *top_ten, FILE *outf)
 {
-    encwrite((char *) top_ten, numscores * sizeof (SCORE), outf);
+    unsigned int i;
+
+    for(i = 0; i < numscores; i++)
+    {
+          memset(scoreline,0,100);
+          encwrite(top_ten[i].sc_name, MAXSTR, outf);
+          sprintf(scoreline, " %u %hu %u %hu %hu %lx \n",
+              top_ten[i].sc_uid, top_ten[i].sc_score,
+              top_ten[i].sc_flags, top_ten[i].sc_monster,
+              top_ten[i].sc_level, top_ten[i].sc_time);
+          encwrite(scoreline,100,outf);
+    }
 }
