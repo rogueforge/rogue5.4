@@ -53,12 +53,12 @@ swander(void)
  * rollwand:
  *	Called to roll to see if a wandering monster starts up
  */
+int Between = 0;
 void
 rollwand(void)
 {
-    static int between = 0;
 
-    if (++between >= 4)
+    if (++Between >= 4)
     {
 	if (roll(1, 6) == 4)
 	{
@@ -66,7 +66,7 @@ rollwand(void)
 	    kill_daemon(rollwand);
 	    fuse(swander, 0, WANDERTIME, BEFORE);
 	}
-	between = 0;
+	Between = 0;
     }
 }
 
@@ -133,6 +133,7 @@ void
 stomach(void)
 {
     int oldfood;
+    int orig_hungry = Hungry_state;
 
     if (Food_left <= 0)
     {
@@ -144,9 +145,6 @@ stomach(void)
 	if (No_command || rnd(5) != 0)
 	    return;
 	No_command += rnd(8) + 4;
-	Player.t_flags &= ~ISRUN;
-	Running = FALSE;
-	Count = 0;
 	Hungry_state = 3;
 	if (!Terse)
 	    addmsg(choose_str("the munchies overpower your motor capabilities.  ",
@@ -174,6 +172,12 @@ stomach(void)
 			       "you are starting to get hungry"));
 	}
     }
+    if (Hungry_state != orig_hungry) { 
+        Player.t_flags &= ~ISRUN; 
+        Running = FALSE; 
+        To_death = FALSE; 
+        Count = 0; 
+    } 
 }
 
 /*

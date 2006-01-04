@@ -15,9 +15,7 @@ bool Amulet = FALSE;			/* He found the amulet */
 bool Door_stop = FALSE;			/* Stop running when we pass a door */
 bool Fight_flush = FALSE;		/* True if toilet input */
 bool Firstmove = FALSE;			/* First move after setting Door_stop */
-#ifdef TIOCGLTC
 bool Got_ltc = FALSE;			/* We have gotten the local tty chars */
-#endif TIOCGLTC
 bool Has_hit = FALSE;			/* Has a "hit" message pending in msg */
 bool In_shell = FALSE;			/* True if executing a shell */
 bool Inv_describe = TRUE;		/* Say which way items are being used */
@@ -81,6 +79,7 @@ char *Tr_name[] = {			/* Names of the traps */
 	"a teleport trap",
 	"a poison dart trap",
 	"a rust trap",
+        "a mysterious trap"
 };
 
 
@@ -357,6 +356,7 @@ struct h_list Helpstr[] = {
     '>',	"	go down a staircase",			TRUE,
     '<',	"	go up a staircase",			TRUE,
     '.',	"	rest for a turn",			TRUE,
+    ',',	"	pick something up",			TRUE,
     'i',	"	inventory",				TRUE,
     'I',	"	inventory single item",			TRUE,
     'q',	"	quaff potion",				TRUE,

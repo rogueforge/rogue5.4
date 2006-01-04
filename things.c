@@ -7,8 +7,7 @@
 
 #include <curses.h>
 #ifdef	attron
-#include <term.h>
-#endif	attron
+#endif	/* attron */
 #include <ctype.h>
 #include "rogue.h"
 
@@ -217,7 +216,8 @@ new_thing(void)
     cur = new_item();
     cur->o_hplus = 0;
     cur->o_dplus = 0;
-    cur->o_damage = cur->o_hurldmg = "0x0";
+    strncpy(cur->o_damage, "0x0", sizeof(cur->o_damage));
+    strncpy(cur->o_hurldmg, "0x0", sizeof(cur->o_hurldmg));
     cur->o_arm = 11;
     cur->o_count = 1;
     cur->o_group = 0;
@@ -394,8 +394,8 @@ discovered(void)
 void
 print_disc(char type)
 {
-    struct obj_info *info;
-    int i, maxnum, num_found;
+    struct obj_info *info = NULL;
+    int i, maxnum = 0, num_found;
     static THING obj;
     static short order[MAX4(MAXSCROLLS, MAXPOTIONS, MAXRINGS, MAXSTICKS)];
 
@@ -493,7 +493,12 @@ add_line(char *fmt, char *arg)
 		refresh();
 		tw = newwin(Line_cnt + 1, maxlen + 2, 0, COLS - maxlen - 3);
 		sw = subwin(tw, Line_cnt + 1, maxlen + 1, 0, COLS - maxlen - 2);
-		overwrite(Hw, sw);
+                for (y = 0; y <= Line_cnt; y++) 
+                { 
+                    wmove(sw, y, 0); 
+                    for (x = 0; x <= maxlen; x++) 
+                        waddch(sw, mvwinch(Hw, y, x)); 
+                } 
 		wmove(tw, Line_cnt, 1);
 		waddstr(tw, prompt);
 		/*
@@ -507,11 +512,7 @@ add_line(char *fmt, char *arg)
 		touchwin(tw);
 		wrefresh(tw);
 		wait_for(' ');
-#ifndef	attron
-		if (CE)
-#else	attron
-		if (clr_eol)
-#endif	attron
+                if (md_hasclreol())
 		{
 		    werase(tw);
 		    leaveok(tw, TRUE);
@@ -575,7 +576,7 @@ end_line(void)
 char *
 nothing(char type)
 {
-    char *sp, *tystr;
+    char *sp, *tystr = NULL;
 
     if (Terse)
 	sprintf(Prbuf, "Nothing");

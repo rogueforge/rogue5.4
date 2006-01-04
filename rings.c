@@ -111,7 +111,7 @@ ring_off(void)
 	return;
     }
     if (dropcheck(obj))
-	msg("was wearing %s (%c)", inv_name(obj, TRUE), obj->o_packch);
+	msg("was wearing %s(%c)", inv_name(obj, TRUE), obj->o_packch);
 }
 
 /*

@@ -109,8 +109,6 @@ exp_add(THING *tp)
 void
 wanderer(void)
 {
-    int i;
-    struct room *rp;
     THING *tp;
     static coord cp;
 
@@ -152,8 +150,6 @@ wake_monster(int y, int x)
 	msg("can't find monster in wake_monster");
 #else
     tp = moat(y, x);
-    if (tp == NULL)
-	endwin(), abort();
 #endif
     ch = tp->t_type;
     /*

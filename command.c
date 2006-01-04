@@ -464,11 +464,10 @@ search(void)
     int probinc;
     bool found;
 
-    if (on(Player, ISBLIND))
-	return;
     ey = Hero.y + 1;
     ex = Hero.x + 1;
     probinc = (on(Player, ISHALU) ? 3 : 0);
+    probinc += (on(Player, ISBLIND) ? 2 : 0);
     found = FALSE;
     for (y = Hero.y - 1; y <= ey; y++) 
 	for (x = Hero.x - 1; x <= ex; x++)
@@ -707,7 +706,7 @@ call(void)
 {
     THING *obj;
     struct obj_info *op;
-    char **guess, *elsewise;
+    char **guess, *elsewise = NULL;
     bool *know;
 
     obj = get_item("call", CALLABLE);
@@ -751,7 +750,7 @@ norm:
 	msg("that has already been identified");
 	return;
     }
-    if (elsewise && elsewise == op->oi_guess)
+    if (elsewise != NULL && elsewise == op->oi_guess)
     {
 	if (!Terse)
 	    addmsg("Was ");
@@ -761,11 +760,10 @@ norm:
 	msg("call it: ");
     else
 	msg("what do you want to call it? ");
-/*
+
     if (elsewise == NULL)
 	strcpy(Prbuf, "");
     else
-*/
 	strcpy(Prbuf, elsewise);
     if (get_str(Prbuf, stdscr) == NORM)
     {

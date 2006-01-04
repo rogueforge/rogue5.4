@@ -417,7 +417,7 @@ get_item(char *purpose, int type)
 		    break;
 	    if (obj == NULL)
 	    {
-		msg("that's not a valid item");
+		msg("'%s' is not a valid item",unctrl(ch));
 		continue;
 	    }
 	    else 

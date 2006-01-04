@@ -236,7 +236,6 @@ turnref(void)
 void
 door_open(struct room *rp)
 {
-    THING *mp;
     int y, x;
 
     if (!(rp->r_flags & ISGONE))
@@ -274,6 +273,21 @@ be_trapped(coord *tc)
 	when T_BEAR:
 	    No_move += BEARTIME;
 	    msg("you are caught in a bear trap");
+        when T_MYST:
+            switch(rnd(11))
+            {
+                case 0: msg("you are suddenly in a parallel dimension");
+                when 1: msg("the light in here suddenly seems %s", Rainbow[rnd(cNCOLORS)]);
+                when 2: msg("you feel a sting in the side of your neck");
+                when 3: msg("multi-colored lines swirl around you, then fade");
+                when 4: msg("a %s light flashes in your eyes");
+                when 5: msg("a spike shoots past your ear!", Rainbow[rnd(cNCOLORS)]);
+                when 6: msg("%s sparks dance across your armor", Rainbow[rnd(cNCOLORS)]);
+                when 7: msg("you suddenly feel very thirsty");
+                when 8: msg("you feel time speed up suddenly");
+                when 9: msg("time now seems to be going slower");
+                when 10: msg("you pack turns %s!", Rainbow[rnd(cNCOLORS)]);
+            }
 	when T_SLEEP:
 	    No_command += SLEEPTIME;
 	    Player.t_flags &= ~ISRUN;
@@ -339,7 +353,7 @@ rndmove(THING *who)
     THING *obj;
     int x, y;
     char ch;
-    coord ret;  /* what we will be returning */
+    static coord ret;  /* what we will be returning */
 
     y = ret.y = who->t_pos.y + rnd(3) - 1;
     x = ret.x = who->t_pos.x + rnd(3) - 1;

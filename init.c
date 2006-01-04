@@ -70,7 +70,7 @@ init_player(void)
  * potions and scrolls
  */
 
-static char *Rainbow[] = {
+char *Rainbow[] = {
     "amber",
     "aquamarine",
     "black",
@@ -101,6 +101,7 @@ static char *Rainbow[] = {
 };
 
 #define NCOLORS (sizeof Rainbow / sizeof (char *))
+int cNCOLORS = NCOLORS;
 
 static char *Sylls[] = {
     "a", "ab", "ag", "aks", "ala", "an", "app", "arg", "arze", "ash",
@@ -121,12 +122,7 @@ static char *Sylls[] = {
     "zok", "zon", "zum",
 };
 
-typedef struct {
-    char	*st_name;
-    int		st_value;
-} STONE;
-
-static STONE Stones[] = {
+STONE Stones[] = {
     { "agate",		 25},
     { "alexandrite",	 40},
     { "amethyst",	 50},
@@ -156,8 +152,9 @@ static STONE Stones[] = {
 };
 
 #define NSTONES (sizeof Stones / sizeof (STONE))
+int cNSTONES = NSTONES;
 
-static char *Wood[] = {
+char *Wood[] = {
     "avocado wood",
     "balsa",
     "bamboo",
@@ -194,8 +191,9 @@ static char *Wood[] = {
 };
 
 #define NWOOD (sizeof Wood / sizeof (char *))
+int cNWOOD = NWOOD;
 
-static char *Metal[] = {
+char *Metal[] = {
     "aluminum",
     "beryllium",
     "bone",
@@ -221,6 +219,7 @@ static char *Metal[] = {
 };
 
 #define NMETAL (sizeof Metal / sizeof (char *))
+int cNMETAL = NMETAL;
 
 #define MAX3(a,b,c)	(a > b ? (a > c ? a : c) : (b > c ? b : c))
 
@@ -378,7 +377,7 @@ sumprobs(struct obj_info *info, int bound
 #endif
 )
 {
-    struct obj_info *last, *endp, *start;
+    struct obj_info *endp, *start;
 
     start = info;
     endp = info + bound;

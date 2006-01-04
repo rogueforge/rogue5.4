@@ -10,7 +10,7 @@
 
 #define NO_WEAPON -1
 
-static int Group = 2;
+int Group = 2;
 
 static struct init_weaps {
     char *iw_dam;	/* Damage when wielded */
@@ -127,7 +127,6 @@ fall(THING *obj, bool pr)
 	attach(Lvl_obj, obj);
 	return;
     }
-    discard(obj);
     if (pr)
     {
 	if (Has_hit)
@@ -138,6 +137,7 @@ fall(THING *obj, bool pr)
 	msg("the %s vanishes as it hits the ground",
 	    Weap_info[obj->o_which].oi_name);
     }
+    discard(obj);
 }
 
 /*
@@ -152,8 +152,8 @@ init_weapon(THING *weap, char which)
     weap->o_type = WEAPON;
     weap->o_which = which;
     iwp = &Init_dam[which];
-    weap->o_damage = iwp->iw_dam;
-    weap->o_hurldmg = iwp->iw_hrl;
+    strncpy(weap->o_damage, iwp->iw_dam, sizeof(weap->o_damage));
+    strncpy(weap->o_hurldmg,iwp->iw_hrl, sizeof(weap->o_hurldmg));
     weap->o_launch = iwp->iw_launch;
     weap->o_flags = iwp->iw_flags;
     weap->o_hplus = 0;

@@ -232,7 +232,7 @@ void
 dig(int y, int x)
 {
     coord *cp;
-    int cnt, newy, newx, nexty, nextx;
+    int cnt, newy, newx, nexty = 0, nextx = 0;
     static coord pos;
     static coord del[4] = {
 	{2, 0}, {-2, 0}, {0, 2}, {0, -2}
@@ -322,7 +322,7 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
 {
     PLACE *pp;
     int cnt;
-    char compchar;
+    char compchar = 0;
     bool pickroom;
 
     if (!(pickroom = (rp == NULL)))
@@ -359,7 +359,7 @@ enter_room(coord *cp)
     struct room *rp;
     THING *tp;
     int y, x;
-    char ch;
+    chtype ch;
 
     rp = Proom = roomin(cp);
     door_open(rp);
@@ -445,6 +445,7 @@ leave_room(coord *cp)
 			    standend();
 			    break;
 			}
+			pp = INDEX(y,x);
 			addch(pp->p_ch == DOOR ? DOOR : floor);
 		    }
 	    }

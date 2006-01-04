@@ -8,10 +8,8 @@
 
 #include <curses.h>
 #ifdef	attron
-#include <term.h>
-#endif	attron
+#endif	/* attron */
 #include <signal.h>
-#include <pwd.h>
 #include "rogue.h"
 
 /*
@@ -22,19 +20,32 @@ int
 main(int argc, char **argv, char **envp)
 {
     char *env;
-    struct passwd *pw;
     int lowtime;
 
+    md_init();
+
 #ifndef DUMP
+#ifdef SIGQUIT
     signal(SIGQUIT, exit);
+#endif
     signal(SIGILL, exit);
+#ifdef SIGTRAP
     signal(SIGTRAP, exit);
+#endif
+#ifdef SIGIOT
     signal(SIGIOT, exit);
+#endif
+#ifdef SIGEMT
     signal(SIGEMT, exit);
+#endif
     signal(SIGFPE, exit);
+#ifdef SIGBUS
     signal(SIGBUS, exit);
+#endif
     signal(SIGSEGV, exit);
+#ifdef SIGSYS
     signal(SIGSYS, exit);
+#endif
 #endif
 
 #ifdef MASTER
@@ -42,7 +53,7 @@ main(int argc, char **argv, char **envp)
      * Check to see if he is a wizard
      */
     if (argc >= 2 && argv[1][0] == '\0')
-	if (strcmp(PASSWD, crypt(getpass("Wizard's password: "), "mT")) == 0)
+	if (strcmp(PASSWD, md_crypt(md_getpass("Wizard's password: "), "mT")) == 0)
 	{
 	    Wizard = TRUE;
 	    Player.t_flags |= SEEMONST;
@@ -54,11 +65,7 @@ main(int argc, char **argv, char **envp)
     /*
      * get Home and options from environment
      */
-    if ((env = getenv("HOME")) != NULL)
-	strcpy(Home, env);
-    else if ((pw = getpwuid(getuid())) != NULL)
-	strcpy(Home, pw->pw_dir);
-    strcat(Home, "/");
+    strncpy(Home, md_gethomedir(), MAXSTR);
 
     strcpy(File_name, Home);
     strcat(File_name, "rogue.save");
@@ -66,14 +73,8 @@ main(int argc, char **argv, char **envp)
     if ((env = getenv("ROGUEOPTS")) != NULL)
 	parse_opts(env);
     if (env == NULL || Whoami[0] == '\0')
-	if ((pw = getpwuid(getuid())) == NULL)
-	{
-	    printf("Say, who the hell are you?\n");
-	    exit(1);
-	}
-	else
-	    strucpy(Whoami, pw->pw_name, strlen(pw->pw_name));
-
+        strucpy(Whoami, md_getusername(), strlen(md_getusername()));
+    lowtime = (int) time(NULL);
 #ifdef MASTER
     if (Wizard && getenv("SEED") != NULL)
 	Dnum = atoi(getenv("SEED"));
@@ -110,7 +111,6 @@ main(int argc, char **argv, char **envp)
     if (argc == 2)
 	if (!restore(argv[1], envp))	/* Note: restore will never return */
 	    my_exit(1);
-    lowtime = (int) time(NULL);
 #ifdef MASTER
     if (Wizard)
 	printf("Hello %s, welcome to dungeon #%d", Whoami, Dnum);
@@ -224,8 +224,7 @@ tstp(int ignored)
     getyx(curscr, oy, ox);
     mvcur(0, COLS - 1, LINES - 1, 0);
     endwin();
-    Ltc.t_dsuspc = Orig_dsusp;
-    ioctl(1, TIOCSLTC, &Ltc);
+    resetltchars();
     fflush(stdout);
     kill(0, SIGTSTP);		/* send actual signal and suspend process */
 
@@ -235,8 +234,7 @@ tstp(int ignored)
     signal(SIGTSTP, tstp);
     crmode();
     noecho();
-    Ltc.t_dsuspc = Ltc.t_suspc;
-    ioctl(1, TIOCSLTC, &Ltc);
+    playltchars();
     clearok(curscr, TRUE);
     wrefresh(curscr);
     getyx(curscr, y, x);
@@ -271,11 +269,7 @@ playit(void)
 	Jump = TRUE;
 	See_floor = FALSE;
     }
-#ifndef	attron
-    if (!CE)
-#else	attron
-    if (clr_eol)
-#endif	attron
+    if (md_hasclreol())
 	Inv_type = INV_CLEAR;
 
     /*
@@ -361,9 +355,7 @@ leave(int sig)
 void
 shell(void)
 {
-    int pid;
     char *sh;
-    int ret_status;
 
     /*
      * Set the terminal back to original mode
@@ -371,10 +363,7 @@ shell(void)
     move(LINES-1, 0);
     refresh();
     endwin();
-#ifdef SIGTSTP
-    Ltc.t_dsuspc = Orig_dsusp;
-    ioctl(1, TIOCSLTC, &Ltc);
-#endif
+    resetltchars();
     putchar('\n');
     In_shell = TRUE;
     After = FALSE;
@@ -383,34 +372,16 @@ shell(void)
     /*
      * Fork and do a shell
      */
-    while ((pid = fork()) < 0)
-	sleep(1);
-    if (pid == 0)
-    {
-	execl(sh == NULL ? "/bin/sh" : sh, "shell", "-i", 0);
-	perror("No shelly");
-	exit(-1);
-    }
-    else
-    {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	while (wait(&ret_status) != pid)
-	    continue;
-	signal(SIGINT, quit);
-	signal(SIGQUIT, endit);
-	printf("\n[Press return to continue]");
-	fflush(stdout);
-	noecho();
-	crmode();
-#ifdef SIGTSTP
-	Ltc.t_dsuspc = Ltc.t_suspc;
-	ioctl(1, TIOCSLTC, &Ltc);
-#endif
-	In_shell = FALSE;
-	wait_for('\n');
-	clearok(stdscr, TRUE);
-    }
+    md_shellescape();
+
+    printf("\n[Press return to continue]");
+    fflush(stdout);
+    noecho();
+    crmode();
+    playltchars();
+    In_shell = FALSE;
+    wait_for('\n');
+    clearok(stdscr, TRUE);
 }
 
 /*
@@ -420,12 +391,6 @@ shell(void)
 void
 my_exit(int st)
 {
-#ifdef TIOCGLTC
-    if (Got_ltc)
-    {
-	Ltc.t_dsuspc = Orig_dsusp;
-	ioctl(1, TIOCSLTC, &Ltc);
-    }
-#endif
+    resetltchars();
     exit(st);
 }

@@ -9,10 +9,12 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
-#include <unistd.h>
 #include "rogue.h"
 #include "score.h"
+
+#ifndef NSIG
 #define NSIG 32
+#endif
 
 typedef struct stat STAT;
 
@@ -49,7 +51,7 @@ over:
 	for (;;)
 	{
 	    msg("save file (%s)? ", File_name);
-	    c = getchar();
+	    c = readchar();
 	    Mpos = 0;
 	    if (c == ESCAPE)
 	    {
@@ -102,7 +104,7 @@ gotfile:
 		    msg("Please answer Y or N");
 	    }
 	    msg("file name: %s", buf);
-	    unlink(File_name);
+	    md_unlink(File_name);
 	}
 	strcpy(File_name, buf);
 	if ((savef = fopen(File_name, "w")) == NULL)
@@ -127,7 +129,7 @@ auto_save(int sig)
     for (i = 0; i < NSIG; i++)
 	signal(i, SIG_IGN);
     if (File_name[0] != '\0' && ((savef = fopen(File_name, "w")) != NULL ||
-	(unlink(File_name) >= 0 && (savef = fopen(File_name, "w")) != NULL)))
+	(md_unlink_open_file(File_name, fileno(savef)) >= 0 && (savef = fopen(File_name, "w")) != NULL)))
 	    save_file(savef);
     exit(0);
 }
@@ -139,15 +141,11 @@ auto_save(int sig)
 void
 save_file(FILE *savef)
 {
-    int _putchar();
-
+    char buf[80];
     mvcur(0, COLS - 1, LINES - 1, 0); 
     putchar('\n');
     endwin();
-#ifdef TIOCGLTC
-    Ltc.t_dsuspc = Orig_dsusp;
-    ioctl(1, TIOCSLTC, &Ltc);
-#endif
+    resetltchars();
     chmod(File_name, 0400);
     /*
      * DO NOT DELETE.  This forces stdio to allocate the output buffer
@@ -158,19 +156,14 @@ save_file(FILE *savef)
 
 #ifndef	attron
     _endwin = TRUE;
-#endif	attron
+#endif	/* attron */
     fstat(fileno(savef), &Sbuf);
-    encwrite(version, ((char *) sbrk(0) - version), savef);
-    printf("pointer is: %ld\n",ftell(savef));
-/*
-    fseek(savef, (long) (char *) &Sbuf.st_ctime - ((char *) sbrk(0) - version), SEEK_SET);
-*/
-    fseek(savef, (long) ((char *) &Sbuf.st_ctime - ((char *) sbrk(0) - version))%100+1000000, SEEK_SET);
-    printf("pointer is: %ld\n",ftell(savef));
+    encwrite(version, strlen(version)+1, savef);
+    sprintf(buf,"%d x %d\n", LINES, COLS);
+    encwrite(buf,80,savef);
+    rs_save_file(savef);
     fflush(savef);
-    printf("pointer is: %ld\n",ftell(savef));
     fstat(fileno(savef), &Sbuf);
-    fwrite(&Sbuf.st_ctime, sizeof Sbuf.st_ctime, 1, savef);
     fclose(savef);
     exit(0);
 }
@@ -185,11 +178,11 @@ restore(char *file, char **envp)
 {
     int inf;
     bool syml;
-    char *sp;
     char fb;
     extern char **environ;
     auto char buf[MAXSTR];
     auto STAT sbuf2;
+    int lines, cols;
 
     if (strcmp(file, "-r") == 0)
 	file = File_name;
@@ -204,7 +197,6 @@ restore(char *file, char **envp)
     signal(SIGTSTP, SIG_IGN);
 # endif
 #endif
-
     if ((inf = open(file, 0)) < 0)
     {
 	perror(file);
@@ -212,15 +204,6 @@ restore(char *file, char **envp)
     }
     fstat(inf, &sbuf2);
     syml = is_symlink(file);
-    if (
-#ifdef MASTER
-	!Wizard &&
-#endif
-	unlink(file) < 0)
-    {
-	printf("Cannot unlink file\n");
-	return FALSE;
-    }
 
     fflush(stdout);
     read(inf, &Frob, sizeof Frob);
@@ -231,41 +214,50 @@ restore(char *file, char **envp)
 	printf("Sorry, saved game is out of date.\n");
 	return FALSE;
     }
+    encread(buf,80,inf);
+    sscanf(buf,"%d x %d\n", &lines, &cols);
 
-    sbuf2.st_size -= sizeof Frob;
-    brk(version + sbuf2.st_size);
-    lseek(inf, (long) sizeof Frob, 0);
-    Frob = fb;
-    encread(version, (unsigned int) sbuf2.st_size, inf);
-/*
-    lseek(inf, (long) (char *) &Sbuf.st_ctime - ((char *) sbrk(0) - version), 0);
-*/
-    lseek(inf, (long) ((char *) &Sbuf.st_ctime - ((char *) sbrk(0) - version))%100+1000000, 0);
-    read(inf, &Sbuf.st_ctime, sizeof Sbuf.st_ctime);
+    initscr();                          /* Start up cursor package */
+
+    if (lines > LINES)
+    {
+        endwin();
+        printf("Sorry, original game was played on a screen with %d lines.\n",lines);
+        printf("Current screen only has %d lines. Unable to restore game\n",LINES);
+        return(FALSE);
+    }
+    if (cols > COLS)
+    {
+        endwin();
+        printf("Sorry, original game was played on a screen with %d columns.\n",cols);
+        printf("Current screen only has %d columns. Unable to restore game\n",COLS);
+        return(FALSE);
+    }
+
+    Hw = newwin(LINES, COLS, 0, 0);
+    setup();
+
+    rs_restore_file(inf);
     /*
      * we do not close the file so that we will have a hold of the
      * inode for as long as possible
      */
 
+    if (
 #ifdef MASTER
-    if (!Wizard)
+	!Wizard &&
 #endif
-	if (sbuf2.st_ino != Sbuf.st_ino || sbuf2.st_dev != Sbuf.st_dev)
-	{
-	    printf("Sorry, saved game is not in the same file.\n");
-	    return FALSE;
-	}
-	else if (sbuf2.st_ctime - Sbuf.st_ctime > 15)
-	{
-	    printf("Sorry, file has been touched, so this score won't be recorded\n");
-	    Noscore = TRUE;
-	}
+	md_unlink_open_file(file, inf) < 0)
+    {
+	printf("Cannot unlink file\n");
+	return FALSE;
+    }
     Mpos = 0;
 /*    printw(0, 0, "%s: %s", file, ctime(&sbuf2.st_mtime)); */
 /*
     printw("%s: %s", file, ctime(&sbuf2.st_mtime));
 */
-
+    clearok(stdscr,TRUE);
     /*
      * defeat multiple restarting from the same place
      */
@@ -288,40 +280,35 @@ restore(char *file, char **envp)
 #endif
 
     environ = envp;
-    gettmode();
-    if ((sp = getenv("TERM")) == NULL) {
-	fprintf(stderr, "no TERM variable");
-	exit(1);
-    }
-    setterm(sp);
     strcpy(File_name, file);
-    initscr();                          /* Start up cursor package */
-    setup();
     clearok(curscr, TRUE);
     srand(getpid());
     msg("file name: %s", file);
     playit();
     /*NOTREACHED*/
+    return(0);
 }
 
 /*
  * encwrite:
  *	Perform an encrypted write
  */
-void
-encwrite(char *start, unsigned int size, FILE *outf)
+size_t
+encwrite(char *start, size_t size, FILE *outf)
 {
     char *e1, *e2, fb;
     int temp;
     extern char statlist[];
-
+    size_t o_size = size;
     e1 = encstr;
     e2 = statlist;
     fb = Frob;
 
     while (size--)
     {
-	putc(*start++ ^ *e1 ^ *e2 ^ fb, outf);
+	if (putc(*start++ ^ *e1 ^ *e2 ^ fb, outf) == EOF)
+            break;
+
 	temp = *e1++;
 	fb += temp * *e2++;
 	if (*e1 == '\0')
@@ -329,13 +316,16 @@ encwrite(char *start, unsigned int size, FILE *outf)
 	if (*e2 == '\0')
 	    e2 = statlist;
     }
+
+    return(o_size - size);
 }
 
 /*
  * encread:
  *	Perform an encrypted read
  */
-encread(char *start, unsigned int size, int inf)
+size_t
+encread(char *start, size_t size, int inf)
 {
     char *e1, *e2, fb;
     int temp, read_size;
@@ -344,7 +334,7 @@ encread(char *start, unsigned int size, int inf)
     fb = Frob;
 
     if ((read_size = read(inf, start, size)) == 0 || read_size == -1)
-	return;
+	return(read_size);
 
     e1 = encstr;
     e2 = statlist;
@@ -359,6 +349,8 @@ encread(char *start, unsigned int size, int inf)
 	if (*e2 == '\0')
 	    e2 = statlist;
     }
+
+    return(read_size);
 }
 
 /*

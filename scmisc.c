@@ -6,7 +6,7 @@
 
 # include	<stdio.h>
 # include	<sys/types.h>
-# include	<stat.h>
+# include	<sys/stat.h>
 # include	<ctype.h>
 
 # define	TRUE		1
@@ -55,7 +55,7 @@ over:
 	return TRUE;
     for (cnt = 0; cnt < 5; cnt++)
     {
-	sleep(1);
+	md_sleep(1);
 	if (creat(lockfile, 0000) >= 0)
 	    return TRUE;
     }
@@ -66,7 +66,7 @@ over:
     }
     if (time(NULL) - sbuf.st_mtime > 10)
     {
-	if (unlink(lockfile) < 0)
+	if (md_unlink(lockfile) < 0)
 	    return FALSE;
 	goto over;
     }
@@ -88,10 +88,10 @@ over:
 		}
 		if (time(NULL) - sbuf.st_mtime > 10)
 		{
-		    if (unlink(lockfile) < 0)
+		    if (md_unlink(lockfile) < 0)
 			return FALSE;
 		}
-		sleep(1);
+		md_sleep(1);
 	    }
 	else
 	    return FALSE;
@@ -105,7 +105,7 @@ over:
 void
 s_unlock_sc(void)
 {
-    unlink(lockfile);
+    md_unlink(lockfile);
 }
 
 /*
@@ -180,7 +180,7 @@ s_killname(char monst, bool doart)
     article = TRUE;
     switch (monst)
     {
-	when 'a':
+	case 'a':
 	    sp = "arrow";
 	when 'b':
 	    sp = "bolt";

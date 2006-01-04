@@ -117,11 +117,10 @@ doadd(char *fmt, va_list args)
      * Do the printf into buf
      */
     vsprintf(buf, fmt, args);
-    if (strlen(buf) + Newpos < MAXMSG)
-    {
-	strcat(Msgbuf, buf);
-	Newpos = strlen(Msgbuf);
-    }
+    if (strlen(buf) + Newpos >= MAXMSG)
+	endmsg();
+    strcat(Msgbuf, buf);
+    Newpos = strlen(Msgbuf);
 }
 
 /*

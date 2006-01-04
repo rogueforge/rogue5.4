@@ -8,7 +8,7 @@
 #include "rogue.h"
 
 #ifdef MASTER
-static int Total = 0;			/* Total dynamic memory bytes */
+int Total = 0;			/* total dynamic memory bytes */
 #endif
 
 /*

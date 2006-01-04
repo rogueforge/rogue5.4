@@ -37,6 +37,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 
 #include <fcntl.h>
 
@@ -155,6 +156,36 @@ getltchars(void)
     Orig_dsusp = Ltc.t_dsuspc;
     Ltc.t_dsuspc = Ltc.t_suspc;
     ioctl(1, TIOCSLTC, &Ltc);
+#endif
+}
+
+/*
+ * resetltchars:
+ *	Reset the local tty chars to original values.
+ */
+void
+resetltchars(void)
+{
+#ifdef TIOCGLTC
+    if (Got_ltc) {
+	Ltc.t_dsuspc = Orig_dsusp;
+	ioctl(1, TIOCSLTC, &Ltc);
+    }
+#endif
+}
+
+/*
+ * playltchars:
+ *	Set local tty chars to the values we use when playing.
+ */
+void
+playltchars(void)
+{
+#ifdef TIOCGLTC
+    if (Got_ltc) {
+	Ltc.t_dsuspc = Ltc.t_suspc;
+	ioctl(1, TIOCSLTC, &Ltc);
+    }
 #endif
 }
 

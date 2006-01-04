@@ -4,15 +4,18 @@
  * @(#)scedit.c	4.6 (Berkeley) 02/05/99
  */
 
+# include   <curses.h>
 # include	<stdio.h>
-# include	<pwd.h>
 # include	<signal.h>
 # include	<ctype.h>
-# include	<unctrl.h>
 
+#ifndef TRUE
 # define	TRUE	1
+#endif
 # define	FALSE	0
+#ifndef bool
 # define	bool	char
+#endif
 # define	RN	(((Seed = Seed*11109+13849) >> 16) & 0xffff)
 
 # define	MAXSTR	80
@@ -34,7 +37,9 @@ int	Seed,
 	Inf;
 
 struct passwd	*getpwnam();
-
+bool do_comm();
+int pr_score(SCORE *, bool);
+ 
 int
 main(ac, av)
 int	ac;
@@ -44,7 +49,7 @@ char	**av;
 	FILE	*outf;
 
 	if (ac == 1)
-		scorefile = SCOREFILE;
+		scorefile = "rogue54.scr";
 	else
 		scorefile = av[1];
 	Seed = getpid();
@@ -92,7 +97,7 @@ do_comm(void)
 		fseek(outf, 0L, 0);
 		if (s_lock_sc())
 		{
-			int	(*fp)();
+			void (*fp)(int);
 
 			fp = signal(SIGINT, SIG_IGN);
 			frob = 0;
@@ -152,7 +157,7 @@ void
 add_score(void)
 {
 	SCORE		*scp;
-	struct passwd	*pp;
+    int id = -1;
 	int		i;
 	static SCORE	new;
 
@@ -171,13 +176,12 @@ add_score(void)
 	} while (new.sc_flags < '0' || new.sc_flags > '2');
 	new.sc_flags -= '0';
 	do {
-		printf("User: ");
+		printf("User Id: ");
 		fgets(Buf, BUFSIZ, stdin);
 		Buf[strlen(Buf) - 1] = '\0';
-		if ((pp = getpwnam(Buf)) == NULL)
-			printf("who (%s)?\n", Buf);
-	} while (pp == NULL);
-	new.sc_uid = pp->pw_uid;
+        id = atoi(Buf);
+	} while (id == -1);
+	new.sc_uid = id;
 	do {
 		printf("Monster: ");
 		if (!isalpha(new.sc_monster = getchar())) {
@@ -206,11 +210,9 @@ add_score(void)
  * pr_score:
  *	Print out a score entry.  Return FALSE if last entry.
  */
-void
+int
 pr_score(SCORE *scp, bool num)
 {
-	struct passwd	*pp;
-
 	if (scp->sc_score) {
 		if (num)
 			printf("%d", scp - Top_ten + 1);
@@ -218,10 +220,8 @@ pr_score(SCORE *scp, bool num)
 		    Reason[scp->sc_flags], scp->sc_level);
 		if (scp->sc_flags == 0)
 		    printf(" by %s", s_killname((char) scp->sc_monster, TRUE));
-		if ((pp = getpwuid(scp->sc_uid)) == NULL)
-			printf(" (%d)", scp->sc_uid);
-		else
-			printf(" (%s)", pp->pw_name);
+		
+        printf(" (%s)", md_getrealname(scp->sc_uid));
 		putchar('\n');
 	}
 	return scp->sc_score;

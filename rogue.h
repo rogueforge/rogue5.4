@@ -184,7 +184,8 @@
 #define T_TELEP	04
 #define T_DART	05
 #define T_RUST	06
-#define NTRAPS	7
+#define T_MYST  07
+#define NTRAPS	8
 
 /*
  * Potion types
@@ -370,6 +371,7 @@ union thing {
 	struct stats _t_stats;		/* Physical description */
 	struct room *_t_room;		/* Current room for thing */
 	union thing *_t_pack;		/* What the thing is carrying */
+        int _t_reserved;
     } _t;
     struct {
 	union thing *_l_next, *_l_prev;	/* Next pointer in link */
@@ -405,6 +407,7 @@ typedef union thing THING;
 #define t_stats		_t._t_stats
 #define t_pack		_t._t_pack
 #define t_room		_t._t_room
+#define t_reserved      _t._t_reserved
 #define o_type		_o._o_type
 #define o_pos		_o._o_pos
 #define o_text		_o._o_text
@@ -499,7 +502,7 @@ void	current(THING *cur, char *how, char *where);
 void	d_level(void);
 void	dig(int y, int x);
 void	discard(THING *item);
-void	do_chase(THING *th);
+int	do_chase(THING *th);
 void	do_maze(struct room *rp);
 void	do_motion(THING *obj, int ydelta, int xdelta);
 void	do_pot(int type, bool knowit);
@@ -507,7 +510,8 @@ void	doadd(char *fmt, va_list args);
 void	door(struct room *rm, coord *cp);
 void	drain(void);
 void	draw_room(struct room *rp);
-void	encwrite(char *start, unsigned int size, FILE *outf);
+size_t  encread(char *start, size_t size, int inf);
+size_t	encwrite(char *start, size_t size, FILE *outf);
 void	erase_lamp(coord *pos, struct room *rp);
 void	fall(THING *obj, bool pr);
 void	fire_bolt(coord *start, coord *dir, char *name);
@@ -520,7 +524,7 @@ void	invis_on(void);
 void	killed(THING *tp, bool pr);
 void	miss(char *er, char *ee, bool noend);
 void	money(int value);
-void	move_monst(THING *tp);
+int	move_monst(THING *tp);
 void	move_msg(THING *obj);
 void	nameit(THING *obj, char *type, char *which, struct obj_info *op, char *(*prfunc)(THING *));
 void	numpass(int y, int x);
@@ -593,3 +597,31 @@ THING	*new_item(void);
 THING	*new_thing(void);
 
 struct room	*roomin(coord *cp);
+
+#define MAXDAEMONS 20
+
+extern struct delayed_action {
+    int d_type;
+    int (*d_func)();
+    int d_arg;
+    int d_time;
+} d_list[MAXDAEMONS];
+
+typedef struct {
+    char	*st_name;
+    int		st_value;
+} STONE;
+
+extern int      Total;
+extern int      Between;
+extern int      Group;
+extern coord    nh;
+extern char     *Rainbow[];
+extern int      cNCOLORS;
+extern STONE    Stones[];
+extern int      cNSTONES;
+extern char     *Wood[];
+extern int      cNWOOD;
+extern char     *Metal[];
+extern int      cNMETAL;
+

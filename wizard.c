@@ -105,6 +105,7 @@ type_name(int type)
 	if (type == hp->h_ch)
 	    return hp->h_desc;
     /* NOTREACHED */
+    return(0);
 }
 
 #ifdef MASTER
@@ -186,7 +187,6 @@ create_obj(void)
 void
 teleport(void)
 {
-    int rm;
     static coord c;
 
     mvaddch(Hero.y, Hero.x, floor_at());
@@ -228,17 +228,16 @@ passwd(void)
 {
     char *sp, c;
     static char buf[MAXSTR];
-    char *crypt();
 
     msg("wizard's Password:");
     Mpos = 0;
     sp = buf;
-    while ((c = getchar()) != '\n' && c != '\r' && c != ESCAPE)
+    while ((c = readchar()) != '\n' && c != '\r' && c != ESCAPE)
 	*sp++ = c;
     if (sp == buf)
 	return FALSE;
     *sp = '\0';
-    return (strcmp(PASSWD, crypt(buf, "mT")) == 0);
+    return (strcmp(PASSWD, md_crypt(buf, "mT")) == 0);
 }
 
 /*

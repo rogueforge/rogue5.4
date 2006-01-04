@@ -7,13 +7,13 @@ DOBJS=	vers.o extern.o armor.o chase.o command.o daemon.o \
 	daemons.o fight.o init.o io.o list.o main.o misc.o \
 	monsters.o move.o new_level.o options.o pack.o passages.o potions.o \
 	rings.o rooms.o save.o scrolls.o sticks.o things.o \
-	weapons.o wizard.o
+	weapons.o wizard.o mdport.o state.o
 OBJS=	$(DOBJS) mach_dep.o rip.o
 CFILES=	vers.c extern.c armor.c chase.c command.c daemon.c \
 	daemons.c fight.c init.c io.c list.c main.c misc.c \
 	monsters.c move.c new_level.c options.c pack.c passages.c potions.c \
 	rings.c rip.c rooms.c save.c scrolls.c sticks.c things.c \
-	weapons.c wizard.c mach_dep.c
+	weapons.c wizard.c mach_dep.c mdport.c state.c
 MISC_C=	findpw.c score.c smisc.c
 MISC=	Makefile $(MISC_C)
 
@@ -73,8 +73,8 @@ rogue: newvers a.out
 findpw: findpw.c
 	$(CC) -s -o findpw findpw.c
 
-score: score.o smisc.o vers.o
-	$(CC) -s -o score vers.o score.o smisc.o -lcurses
+score: scedit.o scmisc.o vers.o mdport.o
+	$(CC) -s -o score vers.o scedit.o scmisc.o mdport.o -lcurses -lcrypt
 
 smisc.o score.o:
 	$(CC) -O -c $(SF) $*.c
@@ -94,7 +94,7 @@ lint:
 	/bin/csh -c "lint -hxbc $(DEFS) $(MACHDEP) $(SF) $(NL) $(CFILES) -lcurses > linterrs"
 
 clean:
-	rm -f $(OBJS) core a.out p.out rogue strings ? rogue.tar vgrind.* x.c x.o xs.c linterrs findpw
+	rm -f $(OBJS) core a.out p.out rogue score strings ? rogue.tar vgrind.* scedit.o scmisc.o x.c x.o xs.c linterrs findpw
 
 xtar: $(HDRS) $(CFILES) $(MISC)
 	rm -f rogue.tar

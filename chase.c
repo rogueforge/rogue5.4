@@ -19,16 +19,20 @@ void
 runners(void)
 {
     THING *tp;
+    THING *next;
     bool wastarget;
     static coord orig_pos;
 
-    for (tp = Mlist; tp != NULL; tp = next(tp))
+    for (tp = Mlist; tp != NULL; tp = next)
     {
+        /* remember this in case the monster's "next" is changed */
+        next = next(tp);
 	if (!on(*tp, ISHELD) && on(*tp, ISRUN))
 	{
 	    orig_pos = tp->t_pos;
 	    wastarget = on(*tp, ISTARGET);
-	    move_monst(tp);
+	    if (move_monst(tp) == -1)
+                continue;
 	    if (on(*tp, ISFLY) && dist_cp(&Hero, &tp->t_pos) >= 3)
 		move_monst(tp);
 	    if (wastarget && !ce(orig_pos, tp->t_pos))
@@ -49,22 +53,60 @@ runners(void)
  * move_monst:
  *	Execute a single turn of running for a monster
  */
-void
-move_monst(THING *tp)
+move_monst(tp)
+register THING *tp;
 {
     if (!on(*tp, ISSLOW) || tp->t_turn)
-	do_chase(tp);
+	if (do_chase(tp) == -1)
+            return(-1);
     if (on(*tp, ISHASTE))
-	do_chase(tp);
+	if (do_chase(tp) == -1)
+            return(-1);
     tp->t_turn ^= TRUE;
+    return(0);
+}
+
+/*
+ * relocate:
+ *	Make the monster's new location be the specified one, updating
+ *	all the relevant state.
+ */
+void
+relocate(THING *th, coord *new_loc)
+{
+    struct room *oroom;
+
+    if (!ce(*new_loc, th->t_pos))
+    {
+	mvaddch(th->t_pos.y, th->t_pos.x, th->t_oldch);
+	th->t_room = roomin(new_loc);
+	set_oldch(th, new_loc);
+	oroom = th->t_room;
+	moat(th->t_pos.y, th->t_pos.x) = NULL;
+
+	if (oroom != th->t_room)
+	    th->t_dest = find_dest(th);
+	th->t_pos = *new_loc;
+	moat(new_loc->y, new_loc->x) = th;
+    }
+    move(new_loc->y, new_loc->x);
+    if (see_monst(th))
+	addch(th->t_disguise);
+    else if (on(Player, SEEMONST))
+    {
+	standout();
+	addch(th->t_type);
+	standend();
+    }
 }
 
 /*
  * do_chase:
  *	Make one thing chase another.
  */
-void
-do_chase(THING *th)
+int
+do_chase(th)
+register THING *th;
 {
     coord *cp;
     struct room *rer, *ree;	/* room of chaser, room of chasee */
@@ -72,7 +114,6 @@ do_chase(THING *th)
     bool stoprun = FALSE;	/* TRUE means we are there */
     bool door;
     THING *obj;
-    struct room *oroom;
     static coord this;			/* Temporary destination for chaser */
 
     rer = th->t_room;		/* Find room of chaser */
@@ -136,7 +177,7 @@ over:
 		To_death = FALSE;
 		Kamikaze = FALSE;
 	    }
-	    return;
+	    return(0);
 	}
     }
     /*
@@ -148,8 +189,7 @@ over:
     {
 	if (ce(this, Hero))
 	{
-	    attack(th);
-	    return;
+	    return( attack(th) );
 	}
 	else if (ce(this, *th->t_dest))
 	{
@@ -170,35 +210,15 @@ over:
     else
     {
 	if (th->t_type == 'F')
-	    return;
+	    return(0);
     }
-    if (!ce(Ch_ret, th->t_pos))
-    {
-	mvaddch(th->t_pos.y, th->t_pos.x, th->t_oldch);
-	set_oldch(th, &Ch_ret);
-	oroom = th->t_room;
-	th->t_room = roomin(&Ch_ret);
-	if (oroom != th->t_room)
-	    th->t_dest = find_dest(th);
-
-	moat(th->t_pos.y, th->t_pos.x) = NULL;
-	moat(Ch_ret.y, Ch_ret.x) = th;
-	th->t_pos = Ch_ret;
-    }
-    move(Ch_ret.y, Ch_ret.x);
-    if (see_monst(th))
-	addch(th->t_disguise);
-    else if (on(Player, SEEMONST))
-    {
-	standout();
-	addch(th->t_type);
-	standend();
-    }
+    relocate(th, &Ch_ret);
     /*
      * And stop running if need be
      */
     if (stoprun && ce(th->t_pos, *(th->t_dest)))
 	th->t_flags &= ~ISRUN;
+    return(0);
 }
 
 /*
@@ -208,17 +228,19 @@ over:
 void
 set_oldch(THING *tp, coord *cp)
 {
-    int sch;
+    char sch;
 
-    move(cp->y, cp->x);
+    if (ce(tp->t_pos, *cp))
+        return;
+
     sch = tp->t_oldch;
-    tp->t_oldch = inch();
+    tp->t_oldch = mvinch(cp->y,cp->x);
     if (!on(Player, ISBLIND))
 	    if ((sch == FLOOR || tp->t_oldch == FLOOR) &&
 		(tp->t_room->r_flags & ISDARK))
 		    tp->t_oldch = ' ';
 	    else if (dist_cp(cp, &Hero) <= LAMPDIST && See_floor)
-		tp->t_oldch = chat(Ch_ret.y, Ch_ret.x);
+		tp->t_oldch = chat(cp->y, cp->x);
 }
 
 /*

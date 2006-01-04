@@ -155,7 +155,8 @@ put_things(void)
 	attach(Lvl_obj, obj);
 	obj->o_hplus = 0;
 	obj->o_dplus = 0;
-	obj->o_damage = obj->o_hurldmg = "0x0";
+	strncpy(obj->o_damage,"0x0",sizeof(obj->o_damage));
+        strncpy(obj->o_hurldmg,"0x0",sizeof(obj->o_hurldmg));
 	obj->o_arm = 11;
 	obj->o_type = AMULET;
 	/*

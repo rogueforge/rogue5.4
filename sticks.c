@@ -17,10 +17,10 @@ void
 fix_stick(THING *cur)
 {
     if (strcmp(Ws_type[cur->o_which], "staff") == 0)
-	cur->o_damage = "2x3";
+	strncpy(cur->o_damage,"2x3",sizeof(cur->o_damage));
     else
-	cur->o_damage = "1x1";
-    cur->o_hurldmg = "1x1";
+	strncpy(cur->o_damage,"1x1",sizeof(cur->o_damage));
+    strncpy(cur->o_hurldmg,"1x1",sizeof(cur->o_hurldmg));
 
     switch (cur->o_which)
     {
@@ -42,7 +42,6 @@ do_zap(void)
     int y, x;
     char *name;
     char monster, oldch;
-    int rm;
     char omonst;
     static THING bolt;
 
@@ -144,48 +143,31 @@ do_zap(void)
 			break;
 		    case WS_TELAWAY:
 		    case WS_TELTO:
-		    {
-			if (see_monst(tp) || on(Player, SEEMONST))
-			    mvaddch(y, x, tp->t_oldch);
+                    {
+			coord new_pos;
+
 			if (obj->o_which == WS_TELAWAY)
 			{
 			    do
 			    {
-				find_floor((struct room *) NULL, &tp->t_pos, FALSE, TRUE);
-			    } while (ce(tp->t_pos, Hero));
-			    move(tp->t_pos.y, tp->t_pos.x);
-			    if (see_monst(tp))
-				addch(tp->t_disguise);
-			    else if (on(Player, SEEMONST))
-			    {
-				standout();
-				addch(tp->t_disguise);
-				standend();
-			    }
+				find_floor(NULL, &new_pos, FALSE, TRUE);
+			    } while (ce(new_pos, Hero));
 			}
 			else
 			{
-			    tp->t_pos.y = Hero.y + Delta.y;
-			    tp->t_pos.x = Hero.x + Delta.x;
+			    new_pos.y = Hero.y + Delta.y;
+			    new_pos.x = Hero.x + Delta.x;
 			}
-			moat(y, x) = NULL;
-			moat(tp->t_pos.y, tp->t_pos.x) = tp;
-			if (tp->t_type == 'F')
-			    Player.t_flags &= ~ISHELD;
-			if (tp->t_pos.y != y || tp->t_pos.x != x)
-			{
-			    move(tp->t_pos.y, tp->t_pos.x);
-			    tp->t_oldch = inch();
-			}
+			tp->t_dest = &Hero;
+			tp->t_flags |= ISRUN;
+			relocate(tp, &new_pos);
 		    }
 		}
-		tp->t_dest = &Hero;
-		tp->t_flags |= ISRUN;
 	    }
 	when WS_MISSILE:
 	    Ws_info[WS_MISSILE].oi_know = TRUE;
 	    bolt.o_type = '*';
-	    bolt.o_hurldmg = "1x4";
+	    strncpy(bolt.o_hurldmg,"1x4",sizeof(bolt.o_hurldmg));
 	    bolt.o_hplus = 100;
 	    bolt.o_dplus = 1;
 	    bolt.o_flags = ISMISL;
@@ -309,7 +291,7 @@ fire_bolt(coord *start, coord *dir, char *name)
 {
     coord *c1, *c2;
     THING *tp;
-    char dirch, ch;
+    char dirch = 0, ch;
     bool hit_hero, used, changed;
     static coord pos;
     static coord spotpos[BOLT_LENGTH];
@@ -317,7 +299,7 @@ fire_bolt(coord *start, coord *dir, char *name)
 
     bolt.o_type = WEAPON;
     bolt.o_which = FLAME;
-    bolt.o_hurldmg = "6x6";
+    strncpy(bolt.o_hurldmg,"6x6",sizeof(bolt.o_hurldmg));
     bolt.o_hplus = 100;
     bolt.o_dplus = 0;
     Weap_info[FLAME].oi_name = name;

@@ -7,13 +7,12 @@
 
 #include <curses.h>
 #ifdef	attron
-#include <term.h>
-#endif	attron
+#endif	/* attron */
 #include <time.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <pwd.h>
 #include <ctype.h>
+#include <stdio.h>
 #include "rogue.h"
 #include "score.h"
 
@@ -60,7 +59,7 @@ score(int amount, int flags, char monst)
     int prflags = 0;
 # endif
     void (*fp)(int);
-    int uid;
+    unsigned int uid;
     static char *reason[] = {
 	"killed",
 	"quit",
@@ -70,13 +69,18 @@ score(int amount, int flags, char monst)
 
     start_score();
 
-    if (flags >= 0)
-    {
-	endwin();
-#ifdef TIOCGLTC
-	Ltc.t_dsuspc = Orig_dsusp;
-	ioctl(1, TIOCSLTC, &Ltc);
+ if (flags >= 0
+#ifdef MASTER
+	    || Wizard
 #endif
+	)
+    {
+	mvaddstr(LINES - 1, 0 , "[Press return to continue]");
+        refresh();
+        wgetnstr(stdscr,Prbuf,80);
+ 	endwin();
+        printf("\n");
+	resetltchars();
 	/*
 	 * free up space to "guarantee" there is space for the top_ten
 	 */
@@ -87,7 +91,7 @@ score(int amount, int flags, char monst)
     }
 
     if (Fd >= 0)
-	outf = fdopen(Fd, "w");
+	outf = (FILE *)fdopen(Fd, "w");
     else
 	return;
 
@@ -105,16 +109,7 @@ score(int amount, int flags, char monst)
     }
 
     signal(SIGINT, SIG_DFL);
-    if (flags >= 0
-#ifdef MASTER
-	    || Wizard
-#endif
-	)
-    {
-	printf("[Press return to continue]");
-	fflush(stdout);
-	fgets(Prbuf,10,stdin);
-    }
+
 #ifdef MASTER
     if (Wizard)
 	if (strcmp(Prbuf, "names") == 0)
@@ -125,15 +120,15 @@ score(int amount, int flags, char monst)
     rd_score(top_ten, Fd);
     fclose(outf);
     close(Fd);
-    Fd = open(SCOREFILE, O_RDWR);
-    outf = fdopen(Fd, "w");
+    open_score(0);
+    outf = (FILE *) fdopen(Fd, "w");
     /*
      * Insert her in list if need be
      */
     sc2 = NULL;
     if (!Noscore)
     {
-	uid = getuid();
+	uid = md_getuid();
 	for (scp = top_ten; scp < endp; scp++)
 	    if (amount > scp->sc_score)
 		break;
@@ -177,13 +172,13 @@ score(int amount, int flags, char monst)
     if (flags != -1)
 	putchar('\n');
     printf("Top %s %s:\n", Numname, Allscore ? "Scores" : "Rogueists");
-    printf("Rank\tScore\tName\n");
+    printf("   Score Name\n");
     for (scp = top_ten; scp < endp; scp++)
     {
 	if (scp->sc_score) {
-	    if (sc2 == scp && SO)
-		_puts(SO);
-	    printf("%d\t%d\t%s: %s on level %d", scp - top_ten + 1,
+	    if (sc2 == scp)
+            md_raw_standout();
+	    printf("%2d %5d %s: %s on level %d", scp - top_ten + 1,
 		scp->sc_score, scp->sc_name, reason[scp->sc_flags],
 		scp->sc_level);
 	    if (scp->sc_flags == 0 || scp->sc_flags == 3)
@@ -191,13 +186,7 @@ score(int amount, int flags, char monst)
 # ifdef MASTER
 	    if (prflags == 1)
 	    {
-		struct passwd *pp, *getpwuid();
-
-		if ((pp = getpwuid(scp->sc_uid)) == NULL)
-		    printf(" (%d)", scp->sc_uid);
-		else
-		    printf(" (%s)", pp->pw_name);
-		putchar('\n');
+	    printf(" (%s)", md_getrealname(scp->sc_uid));
 	    }
 	    else if (prflags == 2)
 	    {
@@ -218,10 +207,11 @@ score(int amount, int flags, char monst)
 		}
 	    }
 	    else
-# endif MASTER
-		printf(".\n");
-	    if (sc2 == scp && SE)
-		_puts(SE);
+# endif /* MASTER */
+                printf(".");
+	    if (sc2 == scp)
+		    md_raw_standend();
+            putchar('\n');
 	}
 	else
 	    break;
@@ -285,12 +275,15 @@ death(char monst)
 	sprintf(Prbuf, "%d Au", Purse);
 	move(15, center(Prbuf));
 	addstr(Prbuf);
-	sprintf(Prbuf, "%2d", lt->tm_year);
-	mvaddstr(18, 28, Prbuf);
+	sprintf(Prbuf, "%4d", 1900+lt->tm_year);
+	mvaddstr(18, 26, Prbuf);
     }
     move(LINES - 1, 0);
     refresh();
     score(Purse, Amulet ? 3 : 0, monst);
+    printf("[Press return to continue]");
+    fflush(stdout);
+    fgets(Prbuf,10,stdin);
     my_exit(0);
 }
 
@@ -313,7 +306,7 @@ total_winner(void)
 {
     THING *obj;
     struct obj_info *op;
-    int worth;
+    int worth = 0;
     int oldpurse;
 
     clear();

@@ -14,7 +14,7 @@
 void
 do_passages(void)
 {
-    struct rdes *r1, *r2;
+    struct rdes *r1, *r2 = NULL;
     int i, j;
     int roomcount;
     static struct rdes
@@ -123,9 +123,9 @@ do_passages(void)
 void
 conn(int r1, int r2)
 {
-    struct room *rpf, *rpt;
+    struct room *rpf, *rpt = NULL;
     char rmt;
-    int distance, turn_spot, turn_distance;
+    int distance = 0, turn_spot, turn_distance = 0;
     int rm;
     char direc;
     static coord del, curr, turn_delta, spos, epos;

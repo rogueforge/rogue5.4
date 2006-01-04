@@ -9,9 +9,17 @@
  * places in the program.
  */
 
+#ifndef _WIN32
+#include <sys/ioctl.h>
+#endif
+
 #undef SIGTSTP
 
-#define MAXSTR		80	/* maximum length of strings */
+#if defined(_WIN32) && !defined(__MINGW32__)
+#define PATH_MAX _PATH_MAX
+#endif
+
+#define MAXSTR		1024	/* maximum length of strings */
 #define MAXLINES	32	/* maximum number of screen lines used */
 #define MAXCOLS		80	/* maximum number of screen columns used */
 
@@ -31,10 +39,6 @@ extern char	Fruit[], Orig_dsusp, Prbuf[], Whoami[];
 
 extern int	Fd;
 
-/*
-# include <sys/ttold.h>
-*/
-
 #ifdef TIOCGLTC
 extern struct ltchars	Ltc;
 #endif /* TIOCGLTC */
@@ -44,32 +48,33 @@ extern struct ltchars	Ltc;
  */
 
 #include <stdlib.h>
-#include <unistd.h>
 
-void	auto_save(int sig);
-void	come_down(void);
-void	doctor(void);
-void	end_line(void);
-void	endit(int sig);
-void	fatal(char *s);
-void	getltchars(void);
-void	land(void);
-void	leave(int sig);
-void	my_exit(int st);
-void	nohaste(void);
-void	playit(void);
-void	print_disc(char type);
-void	quit(int sig);
-void	rollwand(void);
-void	runners(void);
-void	set_order(short *order, int numthings);
-void	sight(void);
-void	stomach(void);
-void	swander(void);
-void	tstp(int ignored);
-void	unconfuse(void);
-void	unsee(void);
-void	visuals(void);
+void  auto_save(int sig);
+void  come_down(void);
+void  doctor(void);
+void  end_line(void);
+void  endit(int sig);
+void  fatal(char *s);
+void  getltchars(void);
+void  land(void);
+void  leave(int sig);
+void  my_exit(int st);
+void  nohaste(void);
+void  playit(void);
+void  playltchars(void);
+void  print_disc(char type);
+void  quit(int sig);
+void  resetltchars(void);
+void  rollwand(void);
+void  runners(void);
+void  set_order(short *order, int numthings);
+void  sight(void);
+void  stomach(void);
+void  swander(void);
+void  tstp(int ignored);
+void  unconfuse(void);
+void  unsee(void);
+void  visuals(void);
 
 char	add_line(char *fmt, char *arg);
 
@@ -80,3 +85,9 @@ char	*type_name(int type);
 #ifdef CHECKTIME
 void	checkout(int sig);
 #endif
+
+char *md_getusername();
+char *md_getroguedir();
+char *md_crypt();
+char *md_getpass();
+char *md_gethomedir();

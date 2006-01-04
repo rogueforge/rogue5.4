@@ -5,6 +5,7 @@
  */
 
 #include <curses.h>
+#include <string.h>
 #include <ctype.h>
 #include "rogue.h"
 
@@ -131,7 +132,7 @@ fight(coord *mp, THING *weap, bool thrown)
 void
 attack(THING *mp)
 {
-    char *mname, ch;
+    char *mname;
     int oldhp;
 
     /*
@@ -272,6 +273,7 @@ attack(THING *mp)
 		    if (Purse < 0)
 			Purse = 0;
 		    remove_mon(&mp->t_pos, mp, FALSE);
+                    mp=NULL;
 		    if (Purse != lastpurse)
 			msg("your purse feels lighter");
 		}
@@ -293,6 +295,7 @@ attack(THING *mp)
 		    if (steal != NULL)
 		    {
 			remove_mon(&mp->t_pos, moat(mp->t_pos.y, mp->t_pos.x), FALSE);
+                        mp=NULL;
 			leave_pack(steal, FALSE, FALSE);
 			msg("she stole %s!", inv_name(steal, TRUE));
 			discard(steal);
@@ -321,6 +324,10 @@ attack(THING *mp)
 	flush_type();
     Count = 0;
     status();
+    if (mp == NULL)
+        return(-1);
+    else
+        return(0);
 }
 
 /*
@@ -372,13 +379,13 @@ swing(int at_lvl, int op_arm, int wplus)
 bool
 roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 {
-    struct stats *att, *def;
-    char *cp;
-    int ndice, nsides, def_arm;
-    bool did_hit = FALSE;
-    int hplus;
-    int dplus;
-    int damage;
+    register struct stats *att, *def;
+    register char *cp;
+    register int ndice, nsides, def_arm;
+    register bool did_hit = FALSE;
+    register int hplus;
+    register int dplus;
+    register int damage;
     char *index();
 
     att = &thatt->t_stats;
@@ -432,10 +439,10 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	if (ISRING(RIGHT, R_PROTECT))
 	    def_arm -= Cur_ring[RIGHT]->o_arm;
     }
-    for (;;)
+    while(cp != NULL && *cp != '\0')
     {
 	ndice = atoi(cp);
-	if ((cp = index(cp, 'x')) == NULL)
+	if ((cp = strchr(cp, 'x')) == NULL)
 	    break;
 	nsides = atoi(++cp);
 	if (swing(att->s_lvl, def_arm, hplus + Str_plus[att->s_str]))
@@ -451,7 +458,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	    def->s_hpt -= max(0, damage);
 	    did_hit = TRUE;
 	}
-	if ((cp = index(cp, '/')) == NULL)
+	if ((cp = strchr(cp, '/')) == NULL)
 	    break;
 	cp++;
     }

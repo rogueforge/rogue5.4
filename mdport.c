@@ -33,12 +33,8 @@
 
 #include <curses.h>
 
-#if defined(__INTERIX) || defined(__MSYS__)
+#if defined(__INTERIX) || defined(__MSYS__) || defined(__linux)
 #include <term.h>
-#else
-#ifdef NCURSES_VERSION
-#include <ncurses/term.h>
-#endif
 #endif
 
 #include <stdio.h>

@@ -12,20 +12,17 @@
  * look:
  *	A quick glance all around the player
  */
-# undef	DEBUG
-
-void
 look(bool wakeup)
 {
     int x, y;
-    int ch;
+    chtype ch;
     THING *tp;
     PLACE *pp;
     struct room *rp;
     int ey, ex;
     int passcount;
     char pfl, *fp, pch;
-    int sy, sx, sumhero, diffhero;
+    int sy, sx, sumhero = 0, diffhero = 0;
 # ifdef DEBUG
     static bool done = FALSE;
 
@@ -256,6 +253,7 @@ find_obj(int y, int x)
     return NULL;
 #else
     /* NOTREACHED */
+    return NULL;
 #endif
 }
 
@@ -285,7 +283,6 @@ eat(void)
     Hungry_state = 0;
     if (obj == Cur_weapon)
 	Cur_weapon = NULL;
-    leave_pack(obj, FALSE, FALSE);
     if (obj->o_which == 1)
 	msg("my, that was a yummy %s", Fruit);
     else
@@ -297,6 +294,7 @@ eat(void)
 	}
 	else
 	    msg("%s, that tasted good", choose_str("oh, wow", "yum"));
+    leave_pack(obj, FALSE, FALSE);
 }
 
 /*
@@ -445,7 +443,7 @@ get_dir(void)
 {
     char *prompt;
     bool gotit;
-    static coord last_delt;
+    static coord last_delt= {0,0};
 
     if (Again && Last_dir != '\0')
     {
