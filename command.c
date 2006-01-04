@@ -160,8 +160,11 @@ over:
 		    }
 		    else {
 			if (!Terse)
-			    addmsg("you are ");
-			msg("not standing on any object");
+			    addmsg("there is ");
+			addmsg("nothing here");
+                        if (!Terse)
+                            addmsg(" to pick up");
+                        endmsg();
 		    }
 		}
 		when '!': shell();
@@ -290,6 +293,8 @@ over:
 			Delta.y += Hero.y;
 			Delta.x += Hero.x;
 			fp = &flat(Delta.y, Delta.x);
+                        if (!Terse)
+                            addmsg("You have found ");
 			if (chat(Delta.y, Delta.x) != TRAP)
 			    msg("no trap there");
 			else if (on(Player, ISHALU))
@@ -310,8 +315,7 @@ over:
 		    }
 		    else
 		    {
-/*			if (Wizard = passwd()) */
-			if (Wizard = 1)
+			if (Wizard = passwd()) 
 			{
 			    Noscore = TRUE;
 			    turn_see(FALSE);
@@ -443,7 +447,7 @@ over:
  *	What to do with an illegal command
  */
 void
-illcom(char ch)
+illcom(int ch)
 {
     Save_msg = FALSE;
     Count = 0;
@@ -483,6 +487,7 @@ search(void)
 			if (rnd(5 + probinc) != 0)
 			    break;
 			chat(y, x) = DOOR;
+                        msg("a secret door");
 foundone:
 			found = TRUE;
 			*fp |= F_REAL;
@@ -521,10 +526,9 @@ foundone:
 void
 help(void)
 {
-    struct h_list *strp;
-    char helpch;
-    unsigned int numprint, cnt;
-
+    register struct h_list *strp;
+    register char helpch;
+    register int numprint, cnt;
     msg("character you want help for (* for all): ");
     helpch = readchar();
     Mpos = 0;
@@ -704,10 +708,10 @@ levit_check(void)
 void
 call(void)
 {
-    THING *obj;
-    struct obj_info *op;
-    char **guess, *elsewise = NULL;
-    bool *know;
+    register THING *obj;
+    register struct obj_info *op = NULL;
+    register char **guess, *elsewise = NULL;
+    register bool *know;
 
     obj = get_item("call", CALLABLE);
     /*

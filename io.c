@@ -14,7 +14,7 @@
  */
 #define MAXMSG	(NUMCOLS - sizeof "--More--")
 
-static char Msgbuf[MAXMSG+1];
+static char Msgbuf[2*MAXMSG+1];
 static int Newpos = 0;
 
 /* VARARGS1 */
@@ -148,14 +148,7 @@ step_ok(char ch)
 int
 readchar(void)
 {
-    int cnt;
-    static char c;
-
-    cnt = 0;
-    while (read(0, &c, 1) <= 0)
-	if (cnt++ > 100)	/* if we are getting infinite EOFs */
-	    auto_save(0);	/* save the game */
-    return c;
+    return(getch());
 }
 
 /*
@@ -165,16 +158,14 @@ readchar(void)
 void
 status(void)
 {
-    int (*print_func)(char *fmt, ...);
-# define	PRINT_FUNC	(*print_func)
-    int oy, ox, temp;
+    register int oy, ox, temp;
     static int hpwidth = 0;
-    static int s_hungry;
-    static int s_lvl;
+    static int s_hungry = 0;
+    static int s_lvl = 0;
     static int s_pur = -1;
-    static int s_hp;
-    static int s_arm;
-    static str_t s_str;
+    static int s_hp = 0;
+    static int s_arm = 0;
+    static str_t s_str = 0;
     static long s_exp = 0;
     static char *state_name[] =
     {
@@ -216,18 +207,20 @@ status(void)
 
     if (Stat_msg)
     {
-	print_func = msg;
 	move(0, 0);
+        msg("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%ld  %s",
+	    Level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
+	    Max_stats.s_str, 10 - s_arm, Pstats.s_lvl, Pstats.s_exp,
+	    state_name[Hungry_state]);
     }
     else
     {
 	move(STATLINE, 0);
-	print_func = printw;
-    }
-    PRINT_FUNC("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%ld  %s",
+        printw("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%ld  %s",
 	    Level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
 	    Max_stats.s_str, 10 - s_arm, Pstats.s_lvl, Pstats.s_exp,
 	    state_name[Hungry_state]);
+    }
 
     clrtoeol();
     move(oy, ox);
@@ -238,7 +231,7 @@ status(void)
  *	Sit around until the guy types the right key
  */
 void
-wait_for(char ch)
+wait_for(int ch)
 {
     char c;
 

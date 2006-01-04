@@ -7,6 +7,8 @@
 #include "extern.h"
 #include <stdarg.h>
 
+#undef lines 
+
 /*
  * Maximum number of different things
  */
@@ -55,6 +57,7 @@
 #define attach(a,b)	_attach(&a,b)
 #define detach(a,b)	_detach(&a,b)
 #define free_list(a)	_free_list(&a)
+#undef max
 #define max(a,b)	((a) > (b) ? (a) : (b))
 #define on(thing,flag)	(((thing).t_flags & (flag)) != 0)
 #define GOLDCALC	(rnd(50 + 10 * Level) + 2)
@@ -114,7 +117,7 @@
 #define BOLT_LENGTH	6
 #define LAMPDIST	3
 #ifdef MASTER
-#define	PASSWD		"mTsdVv0Uvy4xY"
+#define	PASSWD		"mTBellIQOsLNA"
 #endif
 
 /*
@@ -380,9 +383,9 @@ union thing {
 	char *_o_text;			/* What it says if you read it */
 	char _o_launch;			/* What you need to launch it */
 	char _o_packch;			/* What character it is in the pack */
-	char *_o_damage;		/* Damage if used like sword */
-	char *_o_hurldmg;		/* Damage if thrown */
-	int _o_count;			/* Count for plural objects */
+	char _o_damage[8];		/* Damage if used like sword */
+	char _o_hurldmg[8];		/* Damage if thrown */
+	int _o_count;			/* count for plural objects */
 	int _o_which;			/* Which object of a type it is */
 	int _o_hplus;			/* Plusses to hit */
 	int _o_dplus;			/* Plusses to damage */
@@ -508,19 +511,19 @@ void	do_motion(THING *obj, int ydelta, int xdelta);
 void	do_pot(int type, bool knowit);
 void	doadd(char *fmt, va_list args);
 void	door(struct room *rm, coord *cp);
-void	drain(void);
+void	drain();
 void	draw_room(struct room *rp);
 size_t  encread(char *start, size_t size, int inf);
 size_t	encwrite(char *start, size_t size, FILE *outf);
 void	erase_lamp(coord *pos, struct room *rp);
 void	fall(THING *obj, bool pr);
 void	fire_bolt(coord *start, coord *dir, char *name);
-void	help(void);
+void	help();
 void	hit(char *er, char *ee, bool noend);
 void	horiz(struct room *rp, int starty);
-void	identify(void);
-void	illcom(char ch);
-void	invis_on(void);
+void	identify();
+void	illcom(int ch);
+void	invis_on();
 void	killed(THING *tp, bool pr);
 void	miss(char *er, char *ee, bool noend);
 void	money(int value);
@@ -528,30 +531,31 @@ int	move_monst(THING *tp);
 void	move_msg(THING *obj);
 void	nameit(THING *obj, char *type, char *which, struct obj_info *op, char *(*prfunc)(THING *));
 void	numpass(int y, int x);
-void	passnum(void);
+void 	passnum();
 void	pr_spec(struct obj_info *info, int nitems);
 void	put_bool(void *b);
 void	put_inv_t(void *ip);
 void	put_str(void *str);
-void	put_things(void);
+void	put_things();
 void	putpass(coord *cp);
-void	raise_level(void);
+void	raise_level();
+void    relocate(THING *th, coord *new_loc);
 void	remove_mon(coord *mp, THING *tp, bool waskill);
-void	reset_last(void);
+void	reset_last();
 void	rust_armor(THING *arm);
 void	save_file(FILE *savef);
-void	search(void);
+void	search();
 void	set_know(THING *obj, struct obj_info *info);
 void	set_oldch(THING *tp, coord *cp);
 void	strucpy(char *s1, char *s2, int len);
 void	thunk(THING *weap, char *mname, bool noend);
-void	treas_room(void);
-void	turnref(void);
-void	u_level(void);
+void	treas_room();
+void	turnref();
+void	u_level();
 void	uncurse(THING *obj);
 void	vert(struct room *rp, int startx);
-void	wait_for(char ch);
-void	waste_time(void);
+void	wait_for(int ch);
+void	waste_time();
 
 bool	chase(THING *tp, coord *ee);
 bool	diag_ok(coord *sp, coord *ep);
