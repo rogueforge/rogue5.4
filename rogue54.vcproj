@@ -22,7 +22,7 @@
 				InlineFunctionExpansion="0"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories="../pdcurses"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;SCOREFILE;NOMASTER;DUMP;ALLSCORES"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;SCOREFILE;ALLSCORES"
 				StringPooling="TRUE"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
