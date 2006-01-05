@@ -22,6 +22,7 @@
 #include <process.h>
 #include <shlobj.h>
 #include <Shlwapi.h>
+#include <sys/types.h>
 #undef MOUSE_MOVED
 #elif defined(__DJGPP__)
 #include <process.h>
@@ -157,6 +158,19 @@ md_unlink(char *file)
     return(unlink(file));
 #endif
 }
+
+int
+md_creat(char *file, int mode)
+{
+    int fd;
+#ifdef _WIN32
+    mode = _S_IREAD | _S_IWRITE;
+#endif
+    fd = open(file,O_CREAT | O_EXCL | O_WRONLY, mode);
+
+    return(fd);
+}
+
 
 int
 md_normaluser()
@@ -424,11 +438,7 @@ extern char *xcrypt(char *key, char *salt);
 char *
 md_crypt(char *key, char *salt)
 {
-#if defined(_WIN32) || defined(__CYGWIN__) || defined(__INTERIX) || defined(DJGPP) || defined(__MSYS__)
     return( xcrypt(key,salt) );
-#else
-    return( crypt(key,salt) );
-#endif
 }
 
 char *
