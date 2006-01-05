@@ -3,7 +3,7 @@
 # @(#)Makefile	4.21 (Berkeley) 02/04/99
 #
 
-DISTNAME=rogue5.4
+DISTNAME=rogue5.4.1
 PROGRAM=rogue54
 
 O=o
