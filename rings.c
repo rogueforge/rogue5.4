@@ -184,7 +184,7 @@ ring_num(THING *obj)
 	return "";
     switch (obj->o_which)
     {
-	when R_PROTECT:
+	case R_PROTECT:
 	case R_ADDSTR:
 	case R_ADDDAM:
 	case R_ADDHIT:

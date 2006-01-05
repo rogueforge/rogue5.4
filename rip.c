@@ -335,7 +335,7 @@ total_winner(void)
     {
 	switch (obj->o_type)
 	{
-	    when FOOD:
+	    case FOOD:
 		worth = 2 * obj->o_count;
 	    when WEAPON:
 		worth = Weap_info[obj->o_which].oi_worth;

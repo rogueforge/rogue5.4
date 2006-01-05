@@ -2,112 +2,137 @@
 # Makefile for rogue
 # @(#)Makefile	4.21 (Berkeley) 02/04/99
 #
+
+DISTNAME=rogue5.4
+PROGRAM=rogue54
+
+O=o
+
 HDRS=	rogue.h extern.h score.h
-DOBJS=	vers.o extern.o armor.o chase.o command.o daemon.o \
-	daemons.o fight.o init.o io.o list.o main.o misc.o \
-	monsters.o move.o new_level.o options.o pack.o passages.o potions.o \
-	rings.o rooms.o save.o scrolls.o sticks.o things.o \
-	weapons.o wizard.o mdport.o state.o
-OBJS=	$(DOBJS) mach_dep.o rip.o
+
+OBJS1 =	vers.$(O) extern.$(O) armor.$(O) chase.$(O) command.$(O) daemon.$(O) \
+	daemons.$(O) fight.$(O) init.$(O) io.$(O) list.$(O) mach_dep.$(O) \
+	main.$(O) mdport.$(O) misc.$(O) monsters.$(O) move.$(O) new_level.$(O)
+OBJS2 = options.$(O) pack.$(O) passages.$(O) potions.$(O) rings.$(O) rip.$(O) \
+        rooms.$(O) save.$(O) scrolls.$(O) state.$(O) sticks.$(O) things.$(O) \
+        weapons.$(O) wizard.$(O) xcrypt.$(O)
+OBJS  =	$(OBJS1) $(OBJS2)
+
 CFILES=	vers.c extern.c armor.c chase.c command.c daemon.c \
-	daemons.c fight.c init.c io.c list.c main.c misc.c \
-	monsters.c move.c new_level.c options.c pack.c passages.c potions.c \
-	rings.c rip.c rooms.c save.c scrolls.c sticks.c things.c \
-	weapons.c wizard.c mach_dep.c mdport.c state.c
-MISC_C=	findpw.c score.c smisc.c
-MISC=	Makefile $(MISC_C)
+	daemons.c fight.c init.c io.c list.c mach_dep.c \
+	main.c  mdport.c misc.c monsters.c move.c new_level.c \
+	options.c pack.c passages.c potions.c rings.c rip.c \
+	rooms.c save.c scrolls.c state.c sticks.c things.c \
+	weapons.c wizard.c xcrypt.c
+MISC_C=	findpw.c scedit.c scmisc.c
+DOCSRC= rogue.me rogue.6
+DOCS  = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat readme54.html
+MISC  =	Makefile $(MISC_C) LICENSE.TXT $(PROGRAM).sln $(PROGRAM).vcproj $(DOCS)\
+        $(DOCSRC)
 
-DEFS=		-DMASTER -DDUMP -DALLSCORES -DUSE_OLD_TTY
-CFLAGS=		-g $(DEFS)
-#CFLAGS=		-Bcpp/ -tp -O $(DEFS)
-PROFLAGS=	-pg -O
-#LDFLAGS=	-i	# For PDP-11's
-LDFLAGS=	-g	# For VAXen
-CRLIB=		-lncurses
-#CRLIB=		-lcurses
-#CRLIB=		libcurses.a
+CC    = gcc
+ROPTS = -DALLSCORES -DSCOREFILE
+COPTS = -O3
+CFLAGS= $(COPTS) $(ROPTS) 
+LIBS =	-lcurses
+RM    = rm -f
 
-#SCOREFILE=	/usr/public/n_rogue_roll
-SCOREFILE=	/usr/games/rogue.scores
-#SCOREFILE=	./net_hist
-SF=		-DSCOREFILE='"$(SCOREFILE)"'
-NAMELIST=	/vmunix
-NL=		-DNAMELIST='"$(NAMELIST)"'
-#MACHDEP=	-DMAXLOAD=40 -DLOADAV -DCHECKTIME=4
+.SUFFIXES: .obj
 
-LD=	ld
-VGRIND=	/usr/ucb/vgrind
-# for sites without sccs front end, GET= get
-GET=	sccs get
+.c.obj:
+	$(CC) $(CFLAGS) /c $*.c
+    
+$(PROGRAM): $(HDRS) $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+    
+clean:
+	$(RM) $(OBJS1)
+	$(RM) $(OBJS2)
+	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe $(PROGRAM).lck
+	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
+    
+dist.src:
+	make clean
+	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC)
+	gzip -f $(DISTNAME)-src.tar
 
-# Use ansi flag to gcc
-#CC = gcc -ansi
-CC = cc
+findpw: findpw.c xcrypt.o mdport.o xcrypt.o
+	$(CC) -s -o findpw findpw.c xcrypt.o mdport.o -lcurses
 
-.DEFAULT:
-	$(GET) $@
+scedit: scedit.o scmisc.o vers.o mdport.o xcrypt.o
+	$(CC) -s -o scedit vers.o scedit.o scmisc.o mdport.o xcrypt.o -lcurses
 
-a.out: $(HDRS) $(OBJS)
-	-rm -f a.out
-	@rm -f x.c
-#	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB)
-#	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB) -ltermlib
-	-$(CC) $(LDFLAGS) $(OBJS) $(CRLIB) -lcrypt
-	size a.out
-#	@echo -n 'You still have to remove '		# 11/70's
-#	@size a.out | sed 's/+.*/ 1024 63 * - p/' | dc	# 11/70's
-
-vers.o:
-	$(CC) -c $(CFLAGS) vers.c
-
-mach_dep.o: mach_dep.c
-	$(CC) -c $(CFLAGS) $(SF) $(NL) $(MACHDEP) mach_dep.c
-
-rip.o: rip.c
-	$(CC) -c $(CFLAGS) $(SF) $(NL) $(MACHDEP) rip.c
-
-rogue: newvers a.out
-	cp a.out rogue 
-	strip rogue
-
-findpw: findpw.c
-	$(CC) -s -o findpw findpw.c
-
-score: scedit.o scmisc.o vers.o mdport.o
-	$(CC) -s -o score vers.o scedit.o scmisc.o mdport.o -lcurses -lcrypt
-
-smisc.o score.o:
+scmisc.o scedit.o:
 	$(CC) -O -c $(SF) $*.c
 
-newvers:
-	$(GET) -e vers.c
-	sccs delta -y vers.c
+doc.nroff:
+	tbl rogue.me | nroff -me | colcrt - > rogue.doc
+	nroff -man rogue.6 | colcrt - > rogue.cat
 
-flist: $(HDRS) $(CFILES) $(MISC_C)
-	-mv flist tags
-	ctags -u $?
-	ed - tags < :rofix
-	sort tags -o flist
-	rm -f tags
+doc.groff:
+	groff -P-c -t -me -Tascii rogue.me | sed -e 's/.\x08//g' > rogue.doc
+	groff -man rogue.6 | sed -e 's/.\x08//g' > rogue.cat
 
-lint:
-	/bin/csh -c "lint -hxbc $(DEFS) $(MACHDEP) $(SF) $(NL) $(CFILES) -lcurses > linterrs"
+dist.irix:
+	make clean
+	make CC=cc COPTS="-woff 1116 -O3" $(PROGRAM)
+	tar cf $(DISTNAME)-irix.tar $(PROGRAM) LICENSE.TXT $(DOCS)
+	gzip -f $(DISTNAME)-irix.tar
 
-clean:
-	rm -f $(OBJS) core a.out p.out rogue score strings ? rogue.tar vgrind.* scedit.o scmisc.o x.c x.o xs.c linterrs findpw
+dist.aix:
+	make clean
+	make CC=xlc COPTS="-qmaxmem=16768 -O3 -qstrict" $(PROGRAM)
+	tar cf $(DISTNAME)-aix.tar $(PROGRAM) LICENSE.TXT $(DOCS)
+	gzip -f $(DISTNAME)-aix.tar
 
-xtar: $(HDRS) $(CFILES) $(MISC)
-	rm -f rogue.tar
-	tar cf rogue.tar $? :rofix
-	touch xtar
+dist.linux:
+	make clean
+	make $(PROGRAM)
+	tar cf $(DISTNAME)-linux.tar $(PROGRAM) LICENSE.TXT $(DOCS)
+	gzip -f $(DISTNAME)-linux.tar
+	
+dist.interix:
+	@$(MAKE) clean
+	@$(MAKE) COPTS="-ansi" $(PROGRAM)
+	tar cf $(DISTNAME)-interix.tar $(PROGRAM) LICENSE.TXT $(DOCS)
+	gzip -f $(DISTNAME)-interix.tar
+	
+dist.cygwin:
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory $(PROGRAM)
+	tar cf $(DISTNAME)-cygwin.tar $(PROGRAM).exe LICENSE.TXT $(DOCS)
+	gzip -f $(DISTNAME)-cygwin.tar
 
-vgrind:
-	@csh $(VGRIND) -t -h "Rogue Version 3.7" $(HDRS) *.c > vgrind.out
-	@ctags -v $(HDRS) *.c > index
-	@csh $(VGRIND) -t -x index > vgrind.out.tbl
+#
+# Use MINGW32-MAKE to build this target
+#
+dist.mingw32:
+	@$(MAKE) --no-print-directory RM="cmd /c del" clean
+	@$(MAKE) --no-print-directory LIBS="-lpdcurses" $(PROGRAM)
+	cmd /c del $(DISTNAME)-mingw32.zip
+	zip $(DISTNAME)-mingw32.zip $(PROGRAM).exe LICENSE.TXT $(DOCS)
+	
+dist.msys:
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory LIBS="-lcurses" $(PROGRAM)
+	tar cf $(DISTNAME)-msys.tar $(PROGRAM).exe LICENSE.TXT $(DOCS)
+	gzip -f $(DISTNAME)-msys.tar
+	
+dist.djgpp:
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory LDFLAGS="-L$(DJDIR)/LIB" \
+	LIBS="-lpdcurses" $(PROGRAM)
+	rm -f $(DISTNAME)-djgpp.zip
+	zip $(DISTNAME)-djgpp.zip $(PROGRAM) LICENSE.TXT $(DOCS)
 
-wc:
-	@echo "  bytes  words  lines  pages file"
-	@wc -cwlp $(HDRS) $(CFILES)
-
-cfiles: $(CFILES)
+#
+# Use NMAKE to build this targer
+#
+dist.win32:
+	@$(MAKE) /NOLOGO O="obj" RM="-del" clean
+	@$(MAKE) /NOLOGO O="obj" CC="CL" \
+	    LIBS="..\pdcurses\pdcurses.lib shell32.lib user32.lib Advapi32.lib" \
+	    COPTS="-nologo -I..\pdcurses \
+	    -Ox -wd4033 -wd4716" $(PROGRAM)
+	-del $(DISTNAME)-win32.zip
+	zip $(DISTNAME)-win32.zip $(PROGRAM).exe LICENSE.TXT $(DOCS)

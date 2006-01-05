@@ -24,7 +24,7 @@ fix_stick(THING *cur)
 
     switch (cur->o_which)
     {
-	when WS_LIGHT:
+	case WS_LIGHT:
 	    cur->o_charges = rnd(10) + 10;
 	otherwise:
 	    cur->o_charges = rnd(5) + 3;
@@ -60,7 +60,7 @@ do_zap(void)
     }
     switch (obj->o_which)
     {
-	when WS_LIGHT:
+	case WS_LIGHT:
 	    /*
 	     * Reddy Kilowat wand.  Light up the room
 	     */
@@ -305,7 +305,7 @@ fire_bolt(coord *start, coord *dir, char *name)
     Weap_info[FLAME].oi_name = name;
     switch (dir->y + dir->x)
     {
-	when 0: dirch = '/';
+	case 0: dirch = '/';
 	when 1: case -1: dirch = (dir->y == 0 ? '-' : '|');
 	when 2: case -2: dirch = '\\';
     }

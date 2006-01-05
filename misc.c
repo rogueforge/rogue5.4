@@ -112,7 +112,7 @@ look(bool wakeup)
 	    {
 		switch (Runch)
 		{
-		    when 'h':
+		    case 'h':
 			if (x == ex)
 			    continue;
 		    when 'j':

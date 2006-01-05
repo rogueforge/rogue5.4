@@ -269,6 +269,7 @@ playit(void)
 	Jump = TRUE;
 	See_floor = FALSE;
     }
+
     if (md_hasclreol())
 	Inv_type = INV_CLEAR;
 

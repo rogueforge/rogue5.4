@@ -52,7 +52,7 @@ find_slot(void (*func)(int))
 }
 
 /*
- * daemon:
+ * start_daemon:
  *	Start a daemon, takes a function.
  */
 void

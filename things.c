@@ -28,7 +28,7 @@ inv_name(THING *obj, bool drop)
     which = obj->o_which;
     switch (obj->o_type)
     {
-        when POTION:
+        case POTION:
 	    nameit(obj, "potion", P_colors[which], &Pot_info[which], nullstr);
 	when RING:
 	    nameit(obj, "ring", R_stones[which], &Ring_info[which], ring_num);
@@ -228,7 +228,7 @@ new_thing(void)
      */
     switch (No_food > 3 ? 2 : pick_one(Things, NUMTHINGS))
     {
-	when 0:
+	case 0:
 	    cur->o_type = POTION;
 	    cur->o_which = pick_one(Pot_info, MAXPOTIONS);
 	when 1:
@@ -266,7 +266,7 @@ new_thing(void)
 	    cur->o_which = pick_one(Ring_info, MAXRINGS);
 	    switch (cur->o_which)
 	    {
-		when R_ADDSTR:
+		case R_ADDSTR:
 		case R_PROTECT:
 		case R_ADDHIT:
 		case R_ADDDAM:
@@ -587,7 +587,7 @@ nothing(char type)
 	sp = &Prbuf[strlen(Prbuf)];
 	switch (type)
 	{
-	    when POTION: tystr = "potion";
+	    case POTION: tystr = "potion";
 	    when SCROLL: tystr = "scroll";
 	    when RING: tystr = "ring";
 	    when STICK: tystr = "stick";

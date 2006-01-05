@@ -386,7 +386,6 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
     register int hplus;
     register int dplus;
     register int damage;
-    char *index();
 
     att = &thatt->t_stats;
     def = &thdef->t_stats;

@@ -19,15 +19,15 @@
  *			when people are playing.  Since it is divided
  *			by 10, to specify a load limit of 4.0, MAXLOAD
  *			should be "40".	 If defined, then
- *		LOADAV		Should it use it's own routine to get
- *				the load average?
- *		NAMELIST	If so, where does the system namelist
- *				hide?
+ *	LOADAV		Should it use it's own routine to get
+ *			the load average?
+ *	NAMELIST	If so, where does the system namelist
+ *			hide?
  *	MAXUSERS	What (if any) the maximum user count should be
- *			when people are playing.  If defined, then
- *		UCOUNT		Should it use it's own routine to count
- *				users?
- *		UTMP		If so, where does the user list hide?
+ *	        	when people are playing.  If defined, then
+ *	UCOUNT		Should it use it's own routine to count
+ *			users?
+ *	UTMP		If so, where does the user list hide?
  *	CHECKTIME	How often/if it should check during the game
  *			for high load average.
  */
@@ -37,13 +37,12 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/ioctl.h>
+#include <limits.h>
 
 #include <fcntl.h>
 
-#ifdef SCOREFILE
-
-static char *Lockfile = "/tmp/.fredlock";
+static char Scorefile[PATH_MAX] = "rogue54.scr";
+static char Lockfile[PATH_MAX] = "rogue54.lck";
 
 # ifndef NUMSCORES
 #	define	NUMSCORES	10
@@ -58,8 +57,6 @@ bool Allscore = TRUE;
 # else  /* ALLSCORES */
 bool Allscore = FALSE;
 # endif /* ALLSCORES */
-
-#endif /* SCOREFILE */
 
 #ifdef CHECKTIME
 static int Num_checks;		/* times we've gone over in checkout() */
@@ -94,13 +91,25 @@ init_check(void)
 void
 open_score(void)
 {
+    char *homedir = md_getroguedir();
+
+    if (homedir == NULL)
+        homedir = "";
+
 #ifdef SCOREFILE
-    Fd = open(SCOREFILE, O_RDWR);
+    strcpy(Scorefile, homedir);
+    if (*Scorefile)
+        strcat(Scorefile,"/");
+    strcat(Scorefile, "rogue54.scr");
+    strcpy(Lockfile, homedir);
+    if (*Lockfile)
+        strcat(Lockfile, "/");
+    strcat(Lockfile, "rogue54.lck");
+    Fd = open(Scorefile, O_RDWR | O_CREAT, 0666);
 #else
     Fd = -1;
 #endif
-    setuid(getuid());
-    setgid(getgid());
+    md_normaluser();
 }
 
 /*
@@ -114,22 +123,36 @@ setup(void)
     int  checkout();
 #endif
 
+#ifdef SIGHUP
     signal(SIGHUP, auto_save);
+#endif
 #ifndef DUMP
     signal(SIGILL, auto_save);
+#ifdef SIGTRAP
     signal(SIGTRAP, auto_save);
+#endif
+#ifdef SIGIOT
     signal(SIGIOT, auto_save);
+#endif
+#ifdef SIGEMT
     signal(SIGEMT, auto_save);
+#endif
     signal(SIGFPE, auto_save);
+#ifdef SIGBUS
     signal(SIGBUS, auto_save);
+#endif
     signal(SIGSEGV, auto_save);
+#ifdef SIGSYS
     signal(SIGSYS, auto_save);
+#endif
     signal(SIGTERM, auto_save);
 #endif
 
     signal(SIGINT, quit);
 #ifndef DUMP
+#ifdef SIGQUIT
     signal(SIGQUIT, endit);
+#endif
 #endif
 #ifdef CHECKTIME
     signal(SIGALRM, checkout);
@@ -159,35 +182,35 @@ getltchars(void)
 #endif
 }
 
-/*
- * resetltchars:
- *	Reset the local tty chars to original values.
- */
-void
-resetltchars(void)
-{
-#ifdef TIOCGLTC
-    if (Got_ltc) {
-	Ltc.t_dsuspc = Orig_dsusp;
-	ioctl(1, TIOCSLTC, &Ltc);
-    }
-#endif
-}
-
-/*
- * playltchars:
- *	Set local tty chars to the values we use when playing.
- */
-void
-playltchars(void)
-{
-#ifdef TIOCGLTC
-    if (Got_ltc) {
-	Ltc.t_dsuspc = Ltc.t_suspc;
-	ioctl(1, TIOCSLTC, &Ltc);
-    }
-#endif
-}
+/* 
+ * resetltchars: 
+ *      Reset the local tty chars to original values. 
+ */ 
+void 
+resetltchars(void) 
+{ 
+#ifdef TIOCGLTC 
+    if (got_ltc) { 
+        ltc.t_dsuspc = orig_dsusp; 
+        ioctl(1, TIOCSLTC, &ltc); 
+    } 
+#endif 
+} 
+  
+/* 
+ * playltchars: 
+ *      Set local tty chars to the values we use when playing. 
+ */ 
+void 
+playltchars(void) 
+{ 
+#ifdef TIOCGLTC 
+    if (got_ltc) { 
+        ltc.t_dsuspc = ltc.t_suspc; 
+        ioctl(1, TIOCSLTC, &ltc); 
+    } 
+#endif 
+} 
 
 /*
  * start_score:
@@ -257,7 +280,7 @@ author(void)
     if (Wizard)
 	return TRUE;
 #endif
-    switch (getuid())
+    switch (md_getuid())
     {
 	case -1:
 	    return TRUE;
@@ -399,32 +422,31 @@ ucount(void)
  *	lock the score file.  If it takes too long, ask the user if
  *	they care to wait.  Return TRUE if the lock is successful.
  */
+static int lfd = -1;
 bool
 lock_sc(void)
 {
 #ifdef SCOREFILE
     int cnt;
     static struct stat sbuf;
-    time_t time();
 
 over:
-    close(8);	/* just in case there are no files left */
-    if (creat(Lockfile, 0000) >= 0)
+    if ((lfd=md_creat(Lockfile, 0000)) >= 0)
 	return TRUE;
     for (cnt = 0; cnt < 5; cnt++)
     {
-	sleep(1);
-	if (creat(Lockfile, 0000) >= 0)
+	md_sleep(1);
+	if ((lfd=md_creat(Lockfile, 0000)) >= 0)
 	    return TRUE;
     }
     if (stat(Lockfile, &sbuf) < 0)
     {
-	creat(Lockfile, 0000);
+	lfd=md_creat(Lockfile, 0000);
 	return TRUE;
     }
     if (time(NULL) - sbuf.st_mtime > 10)
     {
-	if (unlink(Lockfile) < 0)
+	if (md_unlink(Lockfile) < 0)
 	    return FALSE;
 	goto over;
     }
@@ -437,19 +459,19 @@ over:
 	if (Prbuf[0] == 'y')
 	    for (;;)
 	    {
-		if (creat(Lockfile, 0000) >= 0)
+		if ((lfd=md_creat(Lockfile, 0000)) >= 0)
 		    return TRUE;
 		if (stat(Lockfile, &sbuf) < 0)
 		{
-		    creat(Lockfile, 0000);
+		    lfd=md_creat(Lockfile, 0000);
 		    return TRUE;
 		}
 		if (time(NULL) - sbuf.st_mtime > 10)
 		{
-		    if (unlink(Lockfile) < 0)
+		    if (md_unlink(Lockfile) < 0)
 			return FALSE;
 		}
-		sleep(1);
+		md_sleep(1);
 	    }
 	else
 	    return FALSE;
@@ -465,7 +487,10 @@ void
 unlock_sc(void)
 {
 #ifdef SCOREFILE
-    unlink(Lockfile);
+    if (lfd != -1)
+        close(lfd);
+    lfd = -1;
+    md_unlink(Lockfile);
 #endif
 }
 
