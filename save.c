@@ -218,6 +218,7 @@ restore(char *file, char **envp)
     sscanf(buf,"%d x %d\n", &lines, &cols);
 
     initscr();                          /* Start up cursor package */
+    keypad(stdscr, 1);
 
     if (lines > LINES)
     {
