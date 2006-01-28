@@ -304,7 +304,7 @@ encwrite(char *start, size_t size, FILE *outf)
     e2 = statlist;
     fb = Frob;
 
-    while (size--)
+    while(size)
     {
 	if (putc(*start++ ^ *e1 ^ *e2 ^ fb, outf) == EOF)
             break;
@@ -315,6 +315,7 @@ encwrite(char *start, size_t size, FILE *outf)
 	    e1 = encstr;
 	if (*e2 == '\0')
 	    e2 = statlist;
+	size--;
     }
 
     return(o_size - size);
