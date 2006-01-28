@@ -267,13 +267,15 @@ restore(char *file, char **envp)
 #endif
 	if (sbuf2.st_nlink != 1 || syml)
 	{
-	    printf("Cannot restore from a linked file\n");
+	    endwin();
+	    printf("\nCannot restore from a linked file\n");
 	    return FALSE;
 	}
 
     if (Pstats.s_hpt <= 0)
     {
-	printf("\"He's dead, Jim\"\n");
+	endwin();
+	printf("\n\"He's dead, Jim\"\n");
 	return FALSE;
     }
 #ifdef SIGTSTP
