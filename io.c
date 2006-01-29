@@ -148,7 +148,17 @@ step_ok(char ch)
 int
 readchar(void)
 {
-    return(getch());
+    int ch;
+
+    ch = md_readchar();
+
+    if ((ch == 3) || (ch == 0))
+    {
+	quit(0);
+        return(27);
+    }
+
+    return(ch);
 }
 
 /*
