@@ -159,8 +159,9 @@ setup(void)
     alarm(CHECKTIME * 60);
     Num_checks = 0;
 #endif
-    crmode();				/* Cbreak mode */
+    raw();				/* Raw mode */
     noecho();				/* Echo off */
+    keypad(stdscr,1);
 #ifdef TIOCGLTC
     getltchars();			/* get the local tty chars */
 #endif
@@ -501,5 +502,5 @@ unlock_sc(void)
 void
 flush_type(void)
 {
-    crmode();
+    flushinp();
 }

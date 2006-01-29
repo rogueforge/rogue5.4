@@ -232,8 +232,9 @@ tstp(int ignored)
      * start back up again
      */
     signal(SIGTSTP, tstp);
-    crmode();
+    raw();
     noecho();
+    keypad(stdscr,1);
     playltchars();
     clearok(curscr, TRUE);
     wrefresh(curscr);
@@ -378,7 +379,8 @@ shell(void)
     printf("\n[Press return to continue]");
     fflush(stdout);
     noecho();
-    crmode();
+    raw();
+    keypad(stdscr,1);
     playltchars();
     In_shell = FALSE;
     wait_for('\n');
