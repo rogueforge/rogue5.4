@@ -97,6 +97,8 @@ command(void)
 		while (isdigit(ch))
 		{
 		    Count = Count * 10 + (ch - '0');
+		    if (Count > 255)
+			Count = 255;
 		    ch = readchar();
 		}
 		countch = ch;
