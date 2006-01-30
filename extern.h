@@ -12,13 +12,19 @@
 #ifndef _WIN32
 #include <sys/ioctl.h>
 #endif
+#include <stdlib.h>
 
 #undef SIGTSTP
 
 #if defined(_WIN32) && !defined(__MINGW32__)
+#ifdef _PATH_MAX
 #define PATH_MAX _PATH_MAX
 #endif
-
+#ifdef _MAX_PATH
+#define PATH_MAX _MAX_PATH
+#endif
+#endif
+#include <stdlib.h>
 #define MAXSTR		1024	/* maximum length of strings */
 #define MAXLINES	32	/* maximum number of screen lines used */
 #define MAXCOLS		80	/* maximum number of screen columns used */
