@@ -280,8 +280,8 @@ be_trapped(coord *tc)
                 when 1: msg("the light in here suddenly seems %s", Rainbow[rnd(cNCOLORS)]);
                 when 2: msg("you feel a sting in the side of your neck");
                 when 3: msg("multi-colored lines swirl around you, then fade");
-                when 4: msg("a %s light flashes in your eyes");
-                when 5: msg("a spike shoots past your ear!", Rainbow[rnd(cNCOLORS)]);
+                when 4: msg("a %s light flashes in your eyes", Rainbow[rnd(cNCOLORS)]);
+                when 5: msg("a spike shoots past your ear!");
                 when 6: msg("%s sparks dance across your armor", Rainbow[rnd(cNCOLORS)]);
                 when 7: msg("you suddenly feel very thirsty");
                 when 8: msg("you feel time speed up suddenly");
