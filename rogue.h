@@ -570,6 +570,7 @@ bool	see_monst(THING *mp);
 bool	seen_stairs(void);
 bool	turn_ok(int y, int x);
 bool	turn_see(bool turn_off);
+bool	is_current(THING *obj);
 
 char	be_trapped(coord *tc);
 char	floor_ch(void);
