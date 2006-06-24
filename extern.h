@@ -97,3 +97,8 @@ char *md_getroguedir();
 char *md_crypt();
 char *md_getpass();
 char *md_gethomedir();
+
+#ifdef _WIN32
+#define fdopen _fdopen
+#define fileno _fileno
+#endif
