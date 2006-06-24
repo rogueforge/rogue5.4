@@ -282,7 +282,7 @@ int
 md_sleep(int s)
 {
 #ifdef _WIN32
-    _sleep(s);
+    Sleep(s);
 #else
     sleep(s);
 #endif
