@@ -2103,11 +2103,7 @@ rs_save_file(FILE *savef)
     rs_write_char(savef, Take);
     rs_write_chars(savef, Whoami, MAXSTR);
     rs_write_sticks(savef);
-#ifdef TIOCSLTC
     rs_write_char(savef,Orig_dsusp);
-#else
-    rs_write_char(savef,0);
-#endif
     rs_write_chars(savef, Fruit, MAXSTR);
     rs_write_chars(savef, Home, MAXSTR);
     rs_write_strings(savef,Inv_t_name,3);
@@ -2168,7 +2164,6 @@ rs_save_file(FILE *savef)
     rs_write_obj_info(savef, Scr_info,  MAXSCROLLS);  
     rs_write_obj_info(savef, Weap_info,  MAXWEAPONS+1);  
     rs_write_obj_info(savef, Ws_info, MAXSTICKS);      
-    
     
     rs_write_daemons(savef, &d_list[0], 20);            /* 5.4-daemon.c */
 #ifdef MASTER
@@ -2244,11 +2239,7 @@ rs_restore_file(int inf)
     rs_read_char(inf, &Take);
     rs_read_chars(inf, Whoami, MAXSTR);
     rs_read_sticks(inf);
-#ifdef TIOCSLTC
     rs_read_char(inf,&Orig_dsusp);
-#else
-    rs_read_char(inf,&junk2);
-#endif
     rs_read_chars(inf, Fruit, MAXSTR);
     rs_read_chars(inf, Home, MAXSTR);
     rs_read_new_strings(inf,Inv_t_name,3);

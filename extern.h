@@ -45,10 +45,6 @@ extern char	Fruit[], Orig_dsusp, Prbuf[], Whoami[];
 
 extern int	Fd;
 
-#ifdef TIOCGLTC
-extern struct ltchars	Ltc;
-#endif /* TIOCGLTC */
-
 /*
  * Function types
  */

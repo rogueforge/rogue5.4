@@ -56,9 +56,7 @@ char Take;				/* Thing she is taking */
 char Whoami[MAXSTR];			/* Name of player */
 char *Ws_made[MAXSTICKS];		/* What sticks are made of */
 char *Ws_type[MAXSTICKS];		/* Is it a wand or a staff */
-#ifdef TIOCSLTC
 char Orig_dsusp;			/* Original dsusp char */
-#endif
 char Fruit[MAXSTR] =			/* Favorite fruit */
 		{ 's', 'l', 'i', 'm', 'e', '-', 'm', 'o', 'l', 'd', '\0' };
 char Home[MAXSTR] = { '\0' };		/* User's home directory */
@@ -387,6 +385,3 @@ struct h_list Helpstr[] = {
     0,		NULL
 };
 
-#ifdef TIOCGLTC
-struct ltchars Ltc;		/* needed to change ^Y to not be suspchar */
-#endif TIOCGLTC

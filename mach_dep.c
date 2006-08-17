@@ -162,9 +162,7 @@ setup(void)
     raw();				/* Raw mode */
     noecho();				/* Echo off */
     keypad(stdscr,1);
-#ifdef TIOCGLTC
     getltchars();			/* get the local tty chars */
-#endif
 }
 
 /*
@@ -174,13 +172,9 @@ setup(void)
 void
 getltchars(void)
 {
-#ifdef TIOCGLTC
-    ioctl(1, TIOCGLTC, &Ltc);
     Got_ltc = TRUE;
-    Orig_dsusp = Ltc.t_dsuspc;
-    Ltc.t_dsuspc = Ltc.t_suspc;
-    ioctl(1, TIOCSLTC, &Ltc);
-#endif
+    Orig_dsusp = md_dsuspchar();
+    md_setdsuspchar( md_suspchar() );
 }
 
 /* 
@@ -190,12 +184,9 @@ getltchars(void)
 void 
 resetltchars(void) 
 { 
-#ifdef TIOCGLTC 
-    if (got_ltc) { 
-        ltc.t_dsuspc = orig_dsusp; 
-        ioctl(1, TIOCSLTC, &ltc); 
+    if (Got_ltc) {
+        md_setdsuspchar(Orig_dsusp);
     } 
-#endif 
 } 
   
 /* 
@@ -205,12 +196,9 @@ resetltchars(void)
 void 
 playltchars(void) 
 { 
-#ifdef TIOCGLTC 
-    if (got_ltc) { 
-        ltc.t_dsuspc = ltc.t_suspc; 
-        ioctl(1, TIOCSLTC, &ltc); 
+    if (Got_ltc) { 
+        md_setdsuspchar( md_suspchar() );
     } 
-#endif 
 } 
 
 /*

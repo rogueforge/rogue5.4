@@ -30,6 +30,7 @@
 #include <pwd.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#include <termios.h>
 #endif
 
 #include <curses.h>
@@ -502,6 +503,100 @@ char *prompt;
 #endif
 }
 
+int
+md_erasechar()
+{
+#ifdef BSD
+    return(_tty.sg_erase); /* process erase character */
+#elif defined(USG5_0)
+    return(_tty.c_cc[VERASE]); /* process erase character */
+#else /* USG5_2 .... curses */
+    return( erasechar() ); /* process erase character */
+#endif
+}
+
+int
+md_killchar()
+{
+#ifdef BSD
+    return(_tty.sg_kill);
+#elif defined(USG5_0)
+    return(_tty.c_cc[VKILL]);
+#else /* USG5_2 ..... curses */
+    return( killchar() );
+#endif
+}
+
+int
+md_dsuspchar()
+{
+#if defined(VDSUSP)			/* POSIX has priority */
+    struct termios attr;
+    tcgetattr(STDIN_FILENO, &attr);
+    return( attr.c_cc[VDSUSP] );
+#elif defined(TIOCGLTC)
+    struct ltchars ltc;
+    ioctl(1, TIOCGLTC, &ltc);
+    return(ltc.t_dsuspc);
+#elif defined(_POSIX_VDISABLE)
+    return(_POSIX_VDISABLE);
+#else
+    return(0);
+#endif
+}
+
+int
+md_setdsuspchar(int c)
+{
+#if defined(VDSUSP)			/* POSIX has priority */
+    struct termios attr;
+    tcgetattr(STDIN_FILENO, &attr);
+    attr.c_cc[VDSUSP] = c;
+    tcgetattr(STDIN_FILENO, &attr);
+#elif defined(TIOCSLTC)
+    struct ltchars ltc;
+    ioctl(1, TIOCGLTC, &ltc);
+    ltc.t_dsuspc = c;
+    ioctl(1, TIOCSLTC, &ltc);
+#else
+    return(0);
+#endif
+}
+
+int
+md_suspchar()
+{
+#if defined(VSUSP)			/* POSIX has priority */
+    struct termios attr;
+    tcgetattr(STDIN_FILENO, &attr);
+    return( attr.c_cc[VSUSP] );
+#elif defined(TIOCGLTC)
+    struct ltchars ltc;
+    ioctl(1, TIOCGLTC, &ltc);
+    return(ltc.t_suspc);
+#elif defined(_POSIX_VDISABLE)
+    return(_POSIX_VDISABLE);
+#else
+    return(0);
+#endif
+}
+
+int
+md_setsuspchar(int c)
+{
+#if defined(VSUSP)			/* POSIX has priority */
+    struct termios attr;
+    tcgetattr(STDIN_FILENO, &attr);
+    attr.c_cc[VSUSP] = c;
+    tcgetattr(STDIN_FILENO, &attr);
+#elif defined(TIOCSLTC)
+    struct ltchars ltc;
+    ioctl(1, TIOCGLTC, &ltc);
+    ltc.t_suspc = c;
+    ioctl(1, TIOCSLTC, &ltc);
+#endif
+    return(0);
+}
 
 int md_endian = 0x01020304;
 
@@ -1059,3 +1154,5 @@ md_readchar()
 
     return(ch & 0x7F);
 }
+
+
