@@ -18,13 +18,6 @@
 
 #include <fcntl.h>
 
-#ifdef	attron
-int	_putchar(char c);
-# define	_puts(s)	tputs(s, 0, _putchar);
-# define	SO		enter_standout_mode
-# define	SE		exit_standout_mode
-#endif
-
 static char *Rip[] = {
 "                       __________\n",
 "                      /          \\\n",

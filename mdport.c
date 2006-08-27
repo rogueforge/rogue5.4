@@ -68,20 +68,16 @@ md_init()
 int
 md_hasclreol()
 {
-#ifndef	attron
-    return(!CE);
+#ifdef CE
+    return((CE != NULL) && (*CE != 0));
+#elif defined (clr_eol)
+    return((clr_eol != NULL) && (*clr_eol != 0));
 #elif !defined(__PDCURSES__)
     return(clr_eol != NULL);
 #else
     return(TRUE);
 #endif
 }
-
-#ifdef	attron
-# define	_puts(s)	tputs(s, 0, md_putchar);
-# define	SO		enter_standout_mode
-# define	SE		exit_standout_mode
-#endif
 
 int
 md_putchar(int c)
