@@ -99,7 +99,7 @@ dist.interix:
 	
 dist.cygwin:
 	@$(MAKE) --no-print-directory clean
-	@$(MAKE) --no-print-directory $(PROGRAM)
+	@$(MAKE) COPTS="-I/usr/include/ncurses" --no-print-directory $(PROGRAM)
 	tar cf $(DISTNAME)-cygwin.tar $(PROGRAM).exe LICENSE.TXT $(DOCS)
 	gzip -f $(DISTNAME)-cygwin.tar
 
@@ -108,20 +108,14 @@ dist.cygwin:
 #
 dist.mingw32:
 	@$(MAKE) --no-print-directory RM="cmd /c del" clean
-	@$(MAKE) --no-print-directory LIBS="-lpdcurses" $(PROGRAM)
+	@$(MAKE) --no-print-directory COPTS="-I../pdcurses" LIBS="../pdcurses/pdcurses.a" $(PROGRAM)
 	cmd /c del $(DISTNAME)-mingw32.zip
 	zip $(DISTNAME)-mingw32.zip $(PROGRAM).exe LICENSE.TXT $(DOCS)
-	
-dist.msys:
-	@$(MAKE) --no-print-directory clean
-	@$(MAKE) --no-print-directory LIBS="-lcurses" $(PROGRAM)
-	tar cf $(DISTNAME)-msys.tar $(PROGRAM).exe LICENSE.TXT $(DOCS)
-	gzip -f $(DISTNAME)-msys.tar
 	
 dist.djgpp:
 	@$(MAKE) --no-print-directory clean
 	@$(MAKE) --no-print-directory LDFLAGS="-L$(DJDIR)/LIB" \
-	LIBS="-lpdcurses" $(PROGRAM)
+	LIBS="-lpdcur" $(PROGRAM)
 	rm -f $(DISTNAME)-djgpp.zip
 	zip $(DISTNAME)-djgpp.zip $(PROGRAM) LICENSE.TXT $(DOCS)
 

@@ -34,8 +34,7 @@
 #endif
 
 #include <curses.h>
-
-#if defined(__INTERIX) || defined(__MSYS__) || defined(__linux)
+#if !defined(DJGPP)
 #include <term.h>
 #endif
 
@@ -45,6 +44,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include "extern.h"
+
 
 void
 md_init()
@@ -104,8 +104,8 @@ md_raw_standout()
         SetConsoleTextAttribute(hStdout,(fgattr << 4) | (bgattr >> 4));
         md_standout_mode = 1;
     }
-#elif !defined(__PDCURSES__)
-    _puts(SO);
+#elif defined(SO)
+    tputs(SO,0,md_putchar);
     fflush(stdout);
 #endif
 }
@@ -127,8 +127,8 @@ md_raw_standend()
         SetConsoleTextAttribute(hStdout,(fgattr << 4) | (bgattr >> 4));
         md_standout_mode = 0;
     }
-#elif !defined(__PDCURSES__)
-    _puts(SE);
+#elif defined(SE)
+    tputs(SE,0,md_putchar);
     fflush(stdout);
 #endif
 }
