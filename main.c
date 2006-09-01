@@ -7,8 +7,6 @@
  */
 
 #include <curses.h>
-#ifdef	attron
-#endif	/* attron */
 #include <signal.h>
 #include "rogue.h"
 
@@ -142,10 +140,9 @@ main(int argc, char **argv, char **envp)
      * Set up windows
      */
     Hw = newwin(LINES, COLS, 0, 0);
-#ifdef	attron
     idlok(stdscr, TRUE);
     idlok(Hw, TRUE);
-#endif	attron
+
 #ifdef MASTER
     Noscore = Wizard;
 #endif
@@ -260,11 +257,7 @@ playit(void)
      * set up defaults for slow terminals
      */
 
-#ifndef	attron
-    if (_tty.sg_ospeed <= B1200)
-#else	attron
     if (baudrate() <= 1200)
-#endif	attron
     {
 	Terse = TRUE;
 	Jump = TRUE;
@@ -337,15 +330,13 @@ leave(int sig)
     static char buf[BUFSIZ];
 
     setbuf(stdout, buf);	/* throw away pending output */
-#ifndef	attron
-    if (!_endwin)
+
+    if (!isendwin())
     {
 	mvcur(0, COLS - 1, LINES - 1, 0);
 	endwin();
     }
-#else	attron
-    endwin();
-#endif	attron
+
     putchar('\n');
     my_exit(0);
 }

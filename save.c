@@ -20,12 +20,6 @@ typedef struct stat STAT;
 
 extern char version[], encstr[];
 
-#ifdef	attron
-# define	CE	clr_eol
-#else	attron
-extern bool _endwin;
-#endif	attron
-
 static char Frob;
 
 static STAT Sbuf;
@@ -154,9 +148,6 @@ save_file(FILE *savef)
     Frob = 0;
     fwrite(&Frob, sizeof Frob, 1, savef);
 
-#ifndef	attron
-    _endwin = TRUE;
-#endif	/* attron */
     fstat(fileno(savef), &Sbuf);
     encwrite(version, strlen(version)+1, savef);
     sprintf(buf,"%d x %d\n", LINES, COLS);

@@ -14,11 +14,6 @@
 
 #define	NUM_OPTS	(sizeof optlist / sizeof (OPTION))
 
-#ifndef attron
-# define	erasechar()	_tty.sg_erase
-# define	killchar()	_tty.sg_kill
-#endif
-
 /*
  * description of an option and what to do with it
  */
@@ -108,9 +103,7 @@ option(void)
     wrefresh(Hw);
     wait_for(' ');
     clearok(curscr, TRUE);
-#ifdef attron
     touchwin(stdscr);
-#endif
     After = FALSE;
 }
 

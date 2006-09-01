@@ -2184,7 +2184,6 @@ int
 rs_restore_file(int inf)
 {
     bool junk;
-    char junk2;
     int junk3;
     
     if (read_error || format_error)

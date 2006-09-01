@@ -270,7 +270,5 @@ show_win(char *message)
     wrefresh(win);
     wait_for(' ');
     clearok(curscr, TRUE);
-#ifdef	attron
     touchwin(stdscr);
-#endif	/* attron */
 }

@@ -6,8 +6,6 @@
  */
 
 #include <curses.h>
-#ifdef	attron
-#endif	/* attron */
 #include <time.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -450,11 +448,3 @@ death_monst(void)
 
     return poss[rnd(sizeof poss / sizeof (char))];
 }
-
-#ifdef	attron
-int
-_putchar(char c)
-{
-	putchar(c);
-}
-#endif	attron

@@ -68,14 +68,18 @@ md_init()
 int
 md_hasclreol()
 {
-#ifdef CE
-    return((CE != NULL) && (*CE != 0));
-#elif defined (clr_eol)
+#if defined(clr_eol)
+#ifdef NCURSES_VERSION
+    if (cur_term == NULL)
+	return(0);
+    if (cur_term->type.Strings == NULL)
+	return(0);
+#endif
     return((clr_eol != NULL) && (*clr_eol != 0));
-#elif !defined(__PDCURSES__)
-    return(clr_eol != NULL);
-#else
+#elif defined(__PDCURSES__)
     return(TRUE);
+#else
+    return((CE != NULL) && (*CE != 0));
 #endif
 }
 

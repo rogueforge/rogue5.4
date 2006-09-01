@@ -6,8 +6,6 @@
  */
 
 #include <curses.h>
-#ifdef	attron
-#endif	/* attron */
 #include <ctype.h>
 #include "rogue.h"
 
@@ -529,9 +527,7 @@ add_line(char *fmt, char *arg)
 		wait_for(' ');
 		clearok(curscr, TRUE);
 		wclear(Hw);
-#ifdef	attron
 		touchwin(stdscr);
-#endif	attron
 	    }
 	    Newpage = TRUE;
 	    Line_cnt = 0;
