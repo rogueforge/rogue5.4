@@ -31,6 +31,7 @@
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <termios.h>
+#include <arpa/inet.h> // Solaris 2.8 required this for htonl() and ntohl()
 #endif
 
 #include <curses.h>
