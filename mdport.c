@@ -20,7 +20,9 @@
 #include <Windows.h>
 #include <Lmcons.h>
 #include <process.h>
+#pragma warning( disable: 4201 ) 
 #include <shlobj.h>
+#pragma warning( default: 4201 ) 
 #include <Shlwapi.h>
 #include <sys/types.h>
 #undef MOUSE_MOVED
