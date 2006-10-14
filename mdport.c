@@ -932,7 +932,7 @@ md_readchar()
     int mode = M_NORMAL;
     int mode2 = M_NORMAL;
 
-    while(1)
+    for(;;)
     {
 	ch = getch();
 

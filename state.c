@@ -472,11 +472,8 @@ rs_write_long(FILE *savef, long c)
     if (write_error)
         return(WRITESTAT);
 
-    if (sizeof(long) == 8)
-    {
-        c2 = c;
-        buf = (unsigned char *) &c2;
-    }
+    c2 = c;
+    buf = (unsigned char *) &c2;
 
     if (big_endian)
     {
@@ -564,11 +561,8 @@ rs_write_ulong(FILE *savef, unsigned long c)
     if (write_error)
         return(WRITESTAT);
 
-    if ( (sizeof(long) == 8) && (sizeof(int) == 4) )
-    {
-        c2 = c;
-        buf = (unsigned char *) &c2;
-    }
+    c2 = c;
+    buf = (unsigned char *) &c2;
 
     if (big_endian)
     {
