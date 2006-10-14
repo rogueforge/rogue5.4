@@ -41,6 +41,8 @@
 
 #include <fcntl.h>
 
+#define NOOP(x) (x += 0)
+
 static char Scorefile[PATH_MAX] = "rogue54.scr";
 static char Lockfile[PATH_MAX] = "rogue54.lck";
 
@@ -228,6 +230,7 @@ is_symlink(char *sp)
     else
 	return ((sbuf2.st_mode & S_IFMT) != S_IFREG);
 #else
+    NOOP(sp);
     return FALSE;
 #endif
 }

@@ -46,6 +46,7 @@
 #include <signal.h>
 #include "extern.h"
 
+#define NOOP(x) (x += 0)
 
 void
 md_init()
@@ -560,8 +561,9 @@ md_setdsuspchar(int c)
     ltc.t_dsuspc = c;
     ioctl(1, TIOCSLTC, &ltc);
 #else
-    return(0);
+    NOOP(c);
 #endif
+    return(0);
 }
 
 int
@@ -595,7 +597,10 @@ md_setsuspchar(int c)
     ioctl(1, TIOCGLTC, &ltc);
     ltc.t_suspc = c;
     ioctl(1, TIOCSLTC, &ltc);
+#else
+    NOOP(c);
 #endif
+
     return(0);
 }
 

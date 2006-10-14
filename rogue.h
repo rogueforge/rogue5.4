@@ -9,6 +9,8 @@
 
 #undef lines 
 
+#define NOOP(x) (x += 0)
+
 /*
  * Maximum number of different things
  */

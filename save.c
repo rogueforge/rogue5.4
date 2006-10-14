@@ -120,6 +120,8 @@ auto_save(int sig)
     FILE *savef;
     int i;
 
+    NOOP(sig);
+
     for (i = 0; i < NSIG; i++)
 	signal(i, SIG_IGN);
     if (File_name[0] != '\0' && ((savef = fopen(File_name, "w")) != NULL ||

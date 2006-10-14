@@ -164,6 +164,7 @@ main(int argc, char **argv, char **envp)
 void
 endit(int sig)
 {
+    NOOP(sig);
     fatal("Okay, bye bye!\n");
 }
 
@@ -290,6 +291,8 @@ quit(int sig)
 {
     int oy, ox;
 
+    NOOP(sig);
+
     /*
      * Reset the signal in case we got here via an interrupt
      */
@@ -328,6 +331,8 @@ void
 leave(int sig)
 {
     static char buf[BUFSIZ];
+
+    NOOP(sig);
 
     setbuf(stdout, buf);	/* throw away pending output */
 

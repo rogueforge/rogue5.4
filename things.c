@@ -628,6 +628,7 @@ nameit(THING *obj, char *type, char *which, struct obj_info *op,
 char *
 nullstr(THING *ignored)
 {
+    NOOP(ignored);
     return "";
 }
 
