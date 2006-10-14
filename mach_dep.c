@@ -68,8 +68,9 @@ static int Num_checks;		/* times we've gone over in checkout() */
  * init_check:
  *	Check out too see if it is proper to play the game now
  */
+
 void
-init_check(void)
+init_check()
 {
 #if defined(MAXLOAD) || defined(MAXUSERS)
     if (too_much())
@@ -90,8 +91,9 @@ init_check(void)
  *	Open up the score file for future use, and then
  *	setuid(getuid()) in case we are running setuid.
  */
+
 void
-open_score(void)
+open_score()
 {
     char *homedir = md_getroguedir();
 
@@ -118,8 +120,9 @@ open_score(void)
  * setup:
  *	Get starting setup for all games
  */
+
 void
-setup(void)
+setup()
 {
 #ifdef CHECKTIME
     int  checkout();
@@ -171,8 +174,9 @@ setup(void)
  * getltchars:
  *	Get the local tty chars for later use
  */
+
 void
-getltchars(void)
+getltchars()
 {
     Got_ltc = TRUE;
     Orig_dsusp = md_dsuspchar();
@@ -207,8 +211,9 @@ playltchars(void)
  * start_score:
  *	Start the scoring sequence
  */
+
 void
-start_score(void)
+start_score()
 {
 #ifdef CHECKTIME
     signal(SIGALRM, SIG_IGN);
@@ -475,8 +480,9 @@ over:
  * unlock_sc:
  *	Unlock the score file
  */
+
 void
-unlock_sc(void)
+unlock_sc()
 {
 #ifdef SCOREFILE
     if (lfd != -1)
@@ -490,8 +496,9 @@ unlock_sc(void)
  * flush_type:
  *	Flush typeahead for traps, etc.
  */
+
 void
-flush_type(void)
+flush_type()
 {
     flushinp();
 }

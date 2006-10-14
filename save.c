@@ -29,7 +29,7 @@ static STAT Sbuf;
  *	Implement the "save game" command
  */
 void
-save_game(void)
+save_game()
 {
     FILE *savef;
     int c;
@@ -355,6 +355,7 @@ static char scoreline[100];
  * read_scrore
  *	Read in the score file
  */
+void
 rd_score(SCORE *top_ten, int fd)
 {
     unsigned int i;
@@ -374,6 +375,7 @@ rd_score(SCORE *top_ten, int fd)
  * write_scrore
  *	Read in the score file
  */
+void
 wr_score(SCORE *top_ten, FILE *outf)
 {
     unsigned int i;

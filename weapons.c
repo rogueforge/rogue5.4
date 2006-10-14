@@ -179,6 +179,7 @@ init_weapon(THING *weap, char which)
  * hit_monster:
  *	Does the missile hit the monster?
  */
+int
 hit_monster(int y, int x, THING *obj)
 {
     static coord mp;
@@ -208,7 +209,7 @@ num(int n1, int n2, char type)
  *	Pull out a certain weapon
  */
 void
-wield(void)
+wield()
 {
     THING *obj, *oweapon;
     char *sp;

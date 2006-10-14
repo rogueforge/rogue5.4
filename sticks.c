@@ -36,7 +36,7 @@ fix_stick(THING *cur)
  *	Perform a zap with a wand
  */
 void
-do_zap(void)
+do_zap()
 {
     THING *obj, *tp;
     int y, x;
@@ -237,7 +237,7 @@ do_zap(void)
  *	Do drain hit points from player shtick
  */
 void
-drain(void)
+drain()
 {
     THING *mp;
     struct room *corp;

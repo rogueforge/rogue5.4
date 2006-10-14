@@ -22,14 +22,14 @@ struct optstruct {
     char	*o_prompt;	/* prompt for interactive entry */
     int		*o_opt;		/* pointer to thing to set */
 				/* function to print value */
-    int		(*o_putfunc)(void *opt);
+    void 	(*o_putfunc)(void *opt);
 				/* function to get value interactively */
     int		(*o_getfunc)(void *opt, WINDOW *win);
 };
 
 typedef struct optstruct	OPTION;
 
-int	pr_optname(OPTION *op);
+void	pr_optname(OPTION *op);
 
 OPTION	optlist[] = {
     {"terse",	 "Terse output",
@@ -58,8 +58,9 @@ OPTION	optlist[] = {
  * option:
  *	Print and then set options from the terminal
  */
+
 void
-option(void)
+option()
 {
     OPTION	*op;
     int		retval;
@@ -111,7 +112,8 @@ option(void)
  * pr_optname:
  *	Print out the option name prompt
  */
-int
+
+void
 pr_optname(OPTION *op)
 {
     wprintw(Hw, "%s (\"%s\"): ", op->o_prompt, op->o_name);

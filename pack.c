@@ -334,7 +334,7 @@ move_msg(THING *obj)
  *	Allow player to inventory a single item
  */
 void
-picky_inven(void)
+picky_inven()
 {
     THING *obj;
     char mch;
@@ -478,7 +478,7 @@ floor_at(void)
  *	Reset the last command when the current one is aborted
  */
 void
-reset_last(void)
+reset_last()
 {
     Last_comm = L_last_comm;
     Last_dir = L_last_dir;

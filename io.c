@@ -63,7 +63,7 @@ addmsg(char *fmt, ...)
  *	if it is up there with the --More--)
  */
 int
-endmsg(void)
+endmsg()
 {
     char ch;
 
@@ -127,8 +127,8 @@ doadd(char *fmt, va_list args)
  * step_ok:
  *	Returns true if it is ok to step on ch
  */
-bool
-step_ok(char ch)
+int
+step_ok(ch)
 {
     switch (ch)
     {
@@ -146,7 +146,7 @@ step_ok(char ch)
  *	Reads and returns a character, checking for gross input errors
  */
 int
-readchar(void)
+readchar()
 {
     int ch;
 
@@ -166,7 +166,7 @@ readchar(void)
  *	Display the important stats line.  Keep the cursor where it was.
  */
 void
-status(void)
+status()
 {
     register int oy, ox, temp;
     static int hpwidth = 0;
@@ -241,7 +241,8 @@ status(void)
  *	Sit around until the guy types the right key
  */
 void
-wait_for(int ch)
+wait_for(ch)
+register int ch;
 {
     char c;
 
@@ -258,7 +259,8 @@ wait_for(int ch)
  *	Function used to display a window and wait before returning
  */
 void
-show_win(char *message)
+show_win(message)
+char *message;
 {
     WINDOW *win;
 

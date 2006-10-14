@@ -293,7 +293,7 @@ center(char *str)
  *	Code for a winner
  */
 void
-total_winner(void)
+total_winner()
 {
     THING *obj;
     struct obj_info *op;

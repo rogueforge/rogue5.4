@@ -13,7 +13,7 @@
  *	Process the user commands
  */
 void
-command(void)
+command()
 {
     char ch;
     int ntimes = 1;			/* Number of player moves */
@@ -449,7 +449,8 @@ over:
  *	What to do with an illegal command
  */
 void
-illcom(int ch)
+illcom(ch)
+int ch;
 {
     Save_msg = FALSE;
     Count = 0;
@@ -462,7 +463,7 @@ illcom(int ch)
  *	Player gropes about him to find hidden things.
  */
 void
-search(void)
+search()
 {
     int y, x;
     char *fp;
@@ -526,7 +527,7 @@ foundone:
  *	Give single character help, or the whole mess if he wants it
  */
 void
-help(void)
+help()
 {
     register struct h_list *strp;
     register char helpch;
@@ -596,7 +597,7 @@ help(void)
  *	Tell the player what a certain thing is.
  */
 void
-identify(void)
+identify()
 {
     int ch;
     struct h_list *hp;
@@ -651,7 +652,7 @@ identify(void)
  *	He wants to go down a level
  */
 void
-d_level(void)
+d_level()
 {
     if (levit_check())
 	return;
@@ -670,7 +671,7 @@ d_level(void)
  *	He wants to go up a level
  */
 void
-u_level(void)
+u_level()
 {
     if (levit_check())
 	return;
@@ -708,7 +709,7 @@ levit_check(void)
  *	Allow a user to call a potion, scroll, or ring something
  */
 void
-call(void)
+call()
 {
     register THING *obj;
     register struct obj_info *op = NULL;
@@ -784,9 +785,11 @@ norm:
  * current:
  *	Print the current weapon/armor
  */
-/* VARARGS2 */
 void
-current(THING *cur, char *how, char *where)
+current(cur,how,where)
+register THING *cur;
+register char *how;
+register char *where;
 {
     After = FALSE;
     if (cur != NULL)

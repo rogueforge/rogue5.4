@@ -12,7 +12,7 @@
  *	Put a ring on a hand
  */
 void
-ring_on(void)
+ring_on()
 {
     THING *obj;
     int ring;
@@ -83,7 +83,7 @@ ring_on(void)
  *	Take off a ring
  */
 void
-ring_off(void)
+ring_off()
 {
     int ring;
     THING *obj;

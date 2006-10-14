@@ -53,8 +53,11 @@ static int Add_dam[] = {
  * fight:
  *	The player attacks the monster.
  */
-bool
-fight(coord *mp, THING *weap, bool thrown)
+int
+fight(mp, weap, thrown)
+register coord *mp;
+register THING *weap;
+bool thrown;
 {
     THING *tp;
     bool did_hit = TRUE;
@@ -129,8 +132,9 @@ fight(coord *mp, THING *weap, bool thrown)
  * attack:
  *	The monster attacks the player
  */
-void
-attack(THING *mp)
+int
+attack(mp)
+register THING *mp;
 {
     char *mname;
     int oldhp;
@@ -363,8 +367,9 @@ set_mname(THING *tp)
  * swing:
  *	Returns true if the swing hits
  */
-bool
-swing(int at_lvl, int op_arm, int wplus)
+int
+swing(at_lvl, op_arm, wplus)
+int at_lvl, op_arm, wplus;
 {
     int res = rnd(20);
     int need = (20 - at_lvl) - op_arm;
@@ -488,7 +493,10 @@ prname(char *mname, bool upper)
  *	A missile hits a monster
  */
 void
-thunk(THING *weap, char *mname, bool noend)
+thunk(weap, mname, noend)
+register THING *weap;
+register char *mname;
+register bool noend;
 {
     if (To_death)
 	return;
@@ -506,7 +514,9 @@ thunk(THING *weap, char *mname, bool noend)
  *	Print a message to indicate a succesful hit
  */
 void
-hit(char *er, char *ee, bool noend)
+hit(er, ee, noend)
+register char *er, *ee;
+bool noend;
 {
     int i;
     char *s;
@@ -536,7 +546,9 @@ hit(char *er, char *ee, bool noend)
  *	Print a message to indicate a poor swing
  */
 void
-miss(char *er, char *ee, bool noend)
+miss(er, ee, noend)
+register char *er, *ee;
+bool noend;
 {
     int i;
     extern char *M_names[];
@@ -562,7 +574,10 @@ miss(char *er, char *ee, bool noend)
  *	A missile misses a monster
  */
 void
-bounce(THING *weap, char *mname, bool noend)
+bounce(weap, mname, noend)
+register THING *weap;
+register char *mname;
+bool noend;
 {
     if (To_death)
 	return;
@@ -580,7 +595,10 @@ bounce(THING *weap, char *mname, bool noend)
  *	Remove a monster from the screen
  */
 void
-remove_mon(coord *mp, THING *tp, bool waskill)
+remove_mon(mp, tp, waskill)
+register coord *mp;
+register THING *tp;
+bool waskill;
 {
     THING *obj, *nexti;
 
@@ -612,7 +630,9 @@ remove_mon(coord *mp, THING *tp, bool waskill)
  *	Called to put a monster to death
  */
 void
-killed(THING *tp, bool pr)
+killed(tp, pr)
+register THING *tp;
+bool pr;
 {
     char *mname;
 

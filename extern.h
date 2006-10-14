@@ -51,32 +51,32 @@ extern int	Fd;
 
 #include <stdlib.h>
 
-void  auto_save(int sig);
-void  come_down(void);
-void  doctor(void);
-void  end_line(void);
-void  endit(int sig);
-void  fatal(char *s);
-void  getltchars(void);
-void  land(void);
-void  leave(int sig);
-void  my_exit(int st);
-void  nohaste(void);
-void  playit(void);
-void  playltchars(void);
-void  print_disc(char type);
-void  quit(int sig);
-void  resetltchars(void);
-void  rollwand(void);
-void  runners(void);
-void  set_order(short *order, int numthings);
-void  sight(void);
-void  stomach(void);
-void  swander(void);
-void  tstp(int ignored);
-void  unconfuse(void);
-void  unsee(void);
-void  visuals(void);
+void    auto_save(int);
+void	come_down();
+void	doctor();
+void	end_line();
+void    endit(int sig);
+void	fatal();
+void	getltchars();
+void	land();
+void    leave(int);
+void	my_exit();
+void	nohaste();
+void	playit();
+void    playltchars(void);
+void	print_disc(char);
+void    quit(int);
+void    resetltchars(void);
+void	rollwand();
+void	runners();
+void	set_order();
+void	sight();
+void	stomach();
+void	swander();
+int	tstp();
+void	unconfuse();
+void	unsee();
+void	visuals();
 
 char	add_line(char *fmt, char *arg);
 

@@ -249,8 +249,9 @@ tstp(int ignored)
  *	The main loop of the program.  Loop until the game is over,
  *	refreshing things and looking at the proper times.
  */
+
 void
-playit(void)
+playit()
 {
     char *opts;
 
@@ -350,8 +351,9 @@ leave(int sig)
  * shell:
  *	Let them escape for a while
  */
+
 void
-shell(void)
+shell()
 {
     char *sh;
 

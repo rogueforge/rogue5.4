@@ -12,7 +12,7 @@
  *	The player wants to wear something, so let him/her put it on.
  */
 void
-wear(void)
+wear()
 {
     THING *obj;
     char *sp;
@@ -47,7 +47,7 @@ wear(void)
  *	Get the armor off of the players back
  */
 void
-take_off(void)
+take_off()
 {
     THING *obj;
 
@@ -75,7 +75,7 @@ take_off(void)
  *	Do nothing but let other things happen
  */
 void
-waste_time(void)
+waste_time()
 {
     do_daemons(BEFORE);
     do_fuses(BEFORE);

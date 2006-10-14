@@ -21,7 +21,7 @@ typedef struct spot {		/* position matrix for maze positions */
  *	Create rooms and corridors with a connectivity graph
  */
 void
-do_rooms(void)
+do_rooms()
 {
     int i;
     struct room *rp;

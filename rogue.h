@@ -497,14 +497,15 @@ extern struct obj_info	Arm_info[], Pot_info[], Ring_info[],
 /*
  * Function types
  */
+void	add_str(str_t *sp, int amt);
 void	accnt_maze(int y, int x, int ny, int nx);
-void	badcheck(char *name, struct obj_info *info, int bound);
+int	badcheck(char *name, struct obj_info *info, int bound);
 void	bounce(THING *weap, char *mname, bool noend);
-void	call(void);
-void	check_level(void);
+void	call();
+void	check_level();
 void	conn(int r1, int r2);
 void	current(THING *cur, char *how, char *where);
-void	d_level(void);
+void	d_level();
 void	dig(int y, int x);
 void	discard(THING *item);
 int	do_chase(THING *th);
@@ -534,7 +535,7 @@ void	move_msg(THING *obj);
 void	nameit(THING *obj, char *type, char *which, struct obj_info *op, char *(*prfunc)(THING *));
 void	numpass(int y, int x);
 void 	passnum();
-void	pr_spec(struct obj_info *info, int nitems);
+int	pr_spec(struct obj_info *info, int nitems);
 void	put_bool(void *b);
 void	put_inv_t(void *ip);
 void	put_str(void *str);
@@ -609,7 +610,7 @@ struct room	*roomin(coord *cp);
 
 extern struct delayed_action {
     int d_type;
-    int (*d_func)();
+    void (*d_func)();
     int d_arg;
     int d_time;
 } d_list[MAXDAEMONS];

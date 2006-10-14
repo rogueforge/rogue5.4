@@ -12,6 +12,8 @@
  * look:
  *	A quick glance all around the player
  */
+
+void
 look(bool wakeup)
 {
     int x, y;
@@ -261,8 +263,9 @@ find_obj(int y, int x)
  * eat:
  *	She wants to eat something, so let her try
  */
+
 void
-eat(void)
+eat()
 {
     THING *obj;
 
@@ -301,8 +304,9 @@ eat(void)
  * check_level:
  *	Check to see if the guy has gone up a level.
  */
+
 void
-check_level(void)
+check_level()
 {
     int i, add, olevel;
 
@@ -347,6 +351,7 @@ chg_str(int amt)
  * add_str:
  *	Perform the actual add, checking upper and lower bound limits
  */
+void
 add_str(str_t *sp, int amt)
 {
     if ((*sp += amt) < 3)
@@ -383,8 +388,9 @@ add_haste(bool potion)
  * aggravate:
  *	Aggravate all the monsters on this level
  */
+
 void
-aggravate(void)
+aggravate()
 {
     THING *mp;
 

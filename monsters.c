@@ -107,7 +107,7 @@ exp_add(THING *tp)
  *	Create a new wandering monster and aim it at the player
  */
 void
-wanderer(void)
+wanderer()
 {
     THING *tp;
     static coord cp;

@@ -16,7 +16,7 @@ static coord Ch_ret;				/* Where chasing takes you */
  *	Make all the running monsters move.
  */
 void
-runners(void)
+runners()
 {
     THING *tp;
     THING *next;
@@ -53,6 +53,7 @@ runners(void)
  * move_monst:
  *	Execute a single turn of running for a monster
  */
+int
 move_monst(tp)
 register THING *tp;
 {
@@ -226,7 +227,9 @@ over:
  *	Set the oldch character for the monster
  */
 void
-set_oldch(THING *tp, coord *cp)
+set_oldch(tp, cp)
+register THING *tp;
+register coord *cp;
 {
     char sch;
 
@@ -275,7 +278,8 @@ see_monst(THING *mp)
  *	Set a monster running after the hero.
  */
 void
-runto(coord *runner)
+runto(runner)
+register coord *runner;
 {
     THING *tp;
 

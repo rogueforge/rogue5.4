@@ -12,7 +12,7 @@
  *	Draw all the passages on a level.
  */
 void
-do_passages(void)
+do_passages()
 {
     struct rdes *r1, *r2 = NULL;
     int i, j;
@@ -348,7 +348,7 @@ static int Pnum;
 static bool Newpnum;
 
 void
-passnum(void)
+passnum()
 {
     struct room *rp;
     int i;

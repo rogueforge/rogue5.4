@@ -41,7 +41,8 @@ d_slot(void)
  *	Find a particular slot in the table
  */
 struct delayed_action *
-find_slot(void (*func)(int))
+find_slot(func)
+register void (*func)();
 {
     struct delayed_action *dev;
 
@@ -56,7 +57,8 @@ find_slot(void (*func)(int))
  *	Start a daemon, takes a function.
  */
 void
-start_daemon(void (*func)(int), int arg, int type)
+start_daemon(func, arg, type)
+int (*func)(), arg, type;
 {
     struct delayed_action *dev;
 
@@ -72,7 +74,8 @@ start_daemon(void (*func)(int), int arg, int type)
  *	Remove a daemon from the list
  */
 void
-kill_daemon(void (*func)(int))
+kill_daemon(func)
+int (*func)();
 {
     struct delayed_action *dev;
 
@@ -111,7 +114,8 @@ int flag;
  *	Start a fuse to go off in a certain number of turns
  */
 void
-fuse(void (*func)(int), int arg, int tm, int type)
+fuse(func, arg, time, type)
+int (*func)(), arg, time, type;
 {
     struct delayed_action *wire;
 
@@ -119,7 +123,7 @@ fuse(void (*func)(int), int arg, int tm, int type)
     wire->d_type = type;
     wire->d_func = func;
     wire->d_arg = arg;
-    wire->d_time = tm;
+    wire->d_time = time;
 }
 
 /*
@@ -127,7 +131,9 @@ fuse(void (*func)(int), int arg, int tm, int type)
  *	Increase the time until a fuse goes off
  */
 void
-lengthen(void (*func)(int), int xtime)
+lengthen(func, xtime)
+int (*func)();
+int xtime;
 {
     struct delayed_action *wire;
 
@@ -141,7 +147,8 @@ lengthen(void (*func)(int), int xtime)
  *	Put out a fuse
  */
 void
-extinguish(void (*func)(int))
+extinguish(func)
+int (*func)();
 {
     struct delayed_action *wire;
 
@@ -155,7 +162,8 @@ extinguish(void (*func)(int))
  *	Decrement counters and start needed fuses
  */
 void
-do_fuses(int flag)
+do_fuses(flag)
+register int flag;
 {
     struct delayed_action *wire;
 

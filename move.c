@@ -210,8 +210,9 @@ turn_ok(int y, int x)
  * turnref:
  *	Decide whether to refresh at a passage turning or not
  */
+
 void
-turnref(void)
+turnref()
 {
     PLACE *pp;
 

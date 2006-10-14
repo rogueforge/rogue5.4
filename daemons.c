@@ -12,7 +12,7 @@
  *	A healing daemon that restors hit points after rest
  */
 void
-doctor(void)
+doctor()
 {
     int lv, ohp;
 
@@ -44,7 +44,7 @@ doctor(void)
  *	Called when it is time to start rolling for wandering monsters
  */
 void
-swander(void)
+swander()
 {
     start_daemon(rollwand, 0, BEFORE);
 }
@@ -55,7 +55,7 @@ swander(void)
  */
 int Between = 0;
 void
-rollwand(void)
+rollwand()
 {
 
     if (++Between >= 4)
@@ -75,7 +75,7 @@ rollwand(void)
  *	Release the poor player from his confusion
  */
 void
-unconfuse(void)
+unconfuse()
 {
     Player.t_flags &= ~ISHUH;
     msg("you feel less %s now", choose_str("trippy", "confused"));
@@ -86,7 +86,7 @@ unconfuse(void)
  *	Turn off the ability to see invisible
  */
 void
-unsee(void)
+unsee()
 {
     THING *th;
 
@@ -101,7 +101,7 @@ unsee(void)
  *	He gets his sight back
  */
 void
-sight(void)
+sight()
 {
     if (on(Player, ISBLIND))
     {
@@ -119,7 +119,7 @@ sight(void)
  *	End the hasting
  */
 void
-nohaste(void)
+nohaste()
 {
     Player.t_flags &= ~ISHASTE;
     msg("you feel yourself slowing down");
@@ -130,7 +130,7 @@ nohaste(void)
  *	Digest the hero's food
  */
 void
-stomach(void)
+stomach()
 {
     int oldfood;
     int orig_hungry = Hungry_state;
@@ -185,7 +185,7 @@ stomach(void)
  *	Take the hero down off her acid trip.
  */
 void
-come_down(void)
+come_down()
 {
     THING *tp;
     bool seemonst;
@@ -233,7 +233,7 @@ come_down(void)
  *	change the characters for the player
  */
 void
-visuals(void)
+visuals()
 {
     THING *tp;
     bool seemonst;
@@ -281,7 +281,7 @@ visuals(void)
  *	Land from a levitation potion
  */
 void
-land(void)
+land()
 {
     Player.t_flags &= ~ISLEVIT;
     msg(choose_str("bummer!  You've hit the ground",

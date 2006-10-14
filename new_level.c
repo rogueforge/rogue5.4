@@ -12,7 +12,7 @@
  * @(#)new_level.c	4.38 (Berkeley) 02/05/99
  */
 void
-new_level(void)
+new_level()
 {
     THING *tp;
     PLACE *pp;
@@ -111,8 +111,9 @@ rnd_room(void)
  * put_things:
  *	Put potions and scrolls on this level
  */
+
 void
-put_things(void)
+put_things()
 {
     int i;
     THING *obj;
@@ -174,7 +175,7 @@ put_things(void)
 #define MAXTRIES 10	/* max number of tries to put down a monster */
 
 void
-treas_room(void)
+treas_room()
 {
     int nm;
     THING *tp;

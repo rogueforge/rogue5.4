@@ -131,7 +131,7 @@ inv_name(THING *obj, bool drop)
  *	Put something down
  */
 void
-drop(void)
+drop()
 {
     char ch;
     THING *obj;
@@ -331,7 +331,7 @@ static bool Newpage = FALSE;
 static char *Lastfmt, *Lastarg;
 
 void
-discovered(void)
+discovered()
 {
     char ch;
     bool disc_list;
@@ -551,7 +551,7 @@ add_line(char *fmt, char *arg)
  *	End the list of lines
  */
 void
-end_line(void)
+end_line()
 {
     if (Inv_type != INV_SLOW)
 	if (Line_cnt == 1 && !Newpage)

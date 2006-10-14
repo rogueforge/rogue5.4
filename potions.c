@@ -11,7 +11,7 @@
 typedef struct
 {
     int pa_flags;
-    void (*pa_daemon)(void);
+    void (*pa_daemon)();
     int pa_time;
     char *pa_high, *pa_straight;
 } PACT;
@@ -49,7 +49,7 @@ static PACT P_actions[] =
  *	Quaff a potion from the pack
  */
 void
-quaff(void)
+quaff()
 {
     THING *obj, *tp, *mp;
     bool discardit = FALSE;
@@ -245,7 +245,7 @@ is_magic(THING *obj)
  *	Turn on the ability to see invisible
  */
 void
-invis_on(void)
+invis_on()
 {
     THING *mp;
 
@@ -332,7 +332,7 @@ seen_stairs(void)
  *	The guy just magically went up a level.
  */
 void
-raise_level(void)
+raise_level()
 {
     Pstats.s_exp = E_levels[Pstats.s_lvl-1] + 1L;
     check_level();

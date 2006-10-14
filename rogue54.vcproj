@@ -59,6 +59,7 @@
 				DebugInformationFormat="4"
 				CompileAs="1"
 				DisableSpecificWarnings="4033;4716;4013;4131;4244;4201;4431;4706"
+				DisableSpecificWarnings="4033;4716;4013;4131;4244;4201"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

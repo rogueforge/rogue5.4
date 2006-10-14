@@ -185,7 +185,7 @@ create_obj(void)
  *	Bamf the hero someplace else
  */
 void
-teleport(void)
+teleport()
 {
     static coord c;
 
