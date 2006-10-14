@@ -129,7 +129,7 @@ out:
      * get mad and run at the hero.
      */
     for (op = Mlist; op != NULL; op = next(op))
-	if (op->t_dest = &obj->o_pos)
+	if (op->t_dest == &obj->o_pos)
 	    op->t_dest = &Hero;
 
     if (obj->o_type == AMULET)
