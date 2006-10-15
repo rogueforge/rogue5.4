@@ -128,7 +128,7 @@ doadd(char *fmt, va_list args)
  *	Returns true if it is ok to step on ch
  */
 int
-step_ok(ch)
+step_ok(int ch)
 {
     switch (ch)
     {
@@ -241,8 +241,7 @@ status()
  *	Sit around until the guy types the right key
  */
 void
-wait_for(ch)
-register int ch;
+wait_for(int ch)
 {
     char c;
 
@@ -259,8 +258,7 @@ register int ch;
  *	Function used to display a window and wait before returning
  */
 void
-show_win(message)
-char *message;
+show_win(char *message)
 {
     WINDOW *win;
 

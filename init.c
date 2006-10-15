@@ -371,16 +371,11 @@ init_materials()
  *	Sum up the probabilities for items appearing
  */
 void
-sumprobs(info, bound
+sumprobs(struct obj_info *info, int bound
 #ifdef MASTER
-	, name
+	, char *name
 #endif
 )
-struct obj_info *info;
-int bound;
-#ifdef MASTER
-char *name;
-#endif
 {
     struct obj_info *endp, *start;
 

@@ -447,8 +447,7 @@ md_crypt(char *key, char *salt)
 }
 
 char *
-md_getpass(prompt)
-char *prompt;
+md_getpass(char *prompt)
 {
 #ifdef _WIN32
     static char password_buffer[9];

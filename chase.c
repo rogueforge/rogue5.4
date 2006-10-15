@@ -54,8 +54,7 @@ runners()
  *	Execute a single turn of running for a monster
  */
 int
-move_monst(tp)
-register THING *tp;
+move_monst(THING *tp)
 {
     if (!on(*tp, ISSLOW) || tp->t_turn)
 	if (do_chase(tp) == -1)
@@ -106,8 +105,7 @@ relocate(THING *th, coord *new_loc)
  *	Make one thing chase another.
  */
 int
-do_chase(th)
-register THING *th;
+do_chase(THING *th)
 {
     coord *cp;
     struct room *rer, *ree;	/* room of chaser, room of chasee */
@@ -227,9 +225,7 @@ over:
  *	Set the oldch character for the monster
  */
 void
-set_oldch(tp, cp)
-register THING *tp;
-register coord *cp;
+set_oldch(THING *tp, coord *cp)
 {
     char sch;
 
@@ -278,8 +274,7 @@ see_monst(THING *mp)
  *	Set a monster running after the hero.
  */
 void
-runto(runner)
-register coord *runner;
+runto(coord *runner)
 {
     THING *tp;
 

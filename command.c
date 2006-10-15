@@ -449,8 +449,7 @@ over:
  *	What to do with an illegal command
  */
 void
-illcom(ch)
-int ch;
+illcom(int ch)
 {
     Save_msg = FALSE;
     Count = 0;
@@ -786,10 +785,7 @@ norm:
  *	Print the current weapon/armor
  */
 void
-current(cur,how,where)
-register THING *cur;
-register char *how;
-register char *where;
+current(THING *cur, char *how, char *where)
 {
     After = FALSE;
     if (cur != NULL)

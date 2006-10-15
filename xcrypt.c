@@ -181,8 +181,7 @@ static unsigned char	ascii64[] =
 /*	  0123456789012345678901234567890123456789012345678901234567890123 */
 
 static __inline int
-ascii_to_bin(ch)
-	char ch;
+ascii_to_bin(char ch)
 {
 	if (ch > 'z')
 		return(0);
@@ -330,8 +329,7 @@ des_init()
 }
 
 static void
-setup_salt(salt)
-	int salt;
+setup_salt(int salt)
 {
 	unsigned int	obit, saltbit;
 	int	i;
@@ -352,8 +350,7 @@ setup_salt(salt)
 }
 
 static int
-des_setkey(key)
-	const char *key;
+des_setkey(const char *key)
 {
 	unsigned int k0, k1, rawkey0, rawkey1;
 	int	shifts, round;
@@ -433,9 +430,8 @@ des_setkey(key)
 }
 
 static int
-do_des(l_in, r_in, l_out, r_out, count)
-	unsigned int l_in, r_in, *l_out, *r_out;
-	int count;
+do_des(unsigned int l_in, unsigned int r_in, unsigned int *l_out, 
+       unsigned int *r_out, int count)
 {
 	/*
 	 *	l_in, r_in, l_out, and r_out are in pseudo-"big-endian" format.
@@ -551,11 +547,7 @@ do_des(l_in, r_in, l_out, r_out, count)
 }
 
 static int
-des_cipher(in, out, salt, count)
-	const char *in;
-	char *out;
-	int salt;
-	int count;
+des_cipher(const char *in, char *out, int salt, int count)
 {
 	unsigned int l_out, r_out, rawl, rawr;
 	unsigned int x[2];
@@ -578,9 +570,7 @@ des_cipher(in, out, salt, count)
 }
 
 char *
-xcrypt(key, setting)
-	const char *key;
-	const char *setting;
+xcrypt(const char *key, const char *setting)
 {
 	int		i;
 	unsigned int	count, salt, l, r0, r1, keybuf[2];
@@ -599,7 +589,7 @@ xcrypt(key, setting)
 		if ((*q++ = *key << 1))
 			key++;
 	}
-	if (des_setkey((unsigned char *) keybuf))
+	if (des_setkey((const char *) keybuf))
 		return(NULL);
 
 	if (*setting == _PASSWORD_EFMT1) {
@@ -618,7 +608,7 @@ xcrypt(key, setting)
 			/*
 			 * Encrypt the key with itself.
 			 */
-			if (des_cipher((unsigned char*)keybuf, (unsigned char*)keybuf, 0, 1))
+			if (des_cipher((const char*)keybuf, (char*)keybuf, 0, 1))
 				return(NULL);
 			/*
 			 * And XOR with the next 8 characters of the key.
@@ -628,7 +618,7 @@ xcrypt(key, setting)
 					*key)
 				*q++ ^= *key++ << 1;
 
-			if (des_setkey((unsigned char *) keybuf))
+			if (des_setkey((const char *) keybuf))
 				return(NULL);
 		}
 		strncpy((char *)output, setting, 9);

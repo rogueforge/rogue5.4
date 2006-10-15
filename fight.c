@@ -54,10 +54,7 @@ static int Add_dam[] = {
  *	The player attacks the monster.
  */
 int
-fight(mp, weap, thrown)
-register coord *mp;
-register THING *weap;
-bool thrown;
+fight(coord *mp, THING *weap, bool thrown)
 {
     THING *tp;
     bool did_hit = TRUE;
@@ -133,8 +130,7 @@ bool thrown;
  *	The monster attacks the player
  */
 int
-attack(mp)
-register THING *mp;
+attack(THING *mp)
 {
     char *mname;
     int oldhp;
@@ -368,8 +364,7 @@ set_mname(THING *tp)
  *	Returns true if the swing hits
  */
 int
-swing(at_lvl, op_arm, wplus)
-int at_lvl, op_arm, wplus;
+swing(int at_lvl, int op_arm, int wplus)
 {
     int res = rnd(20);
     int need = (20 - at_lvl) - op_arm;
@@ -493,10 +488,7 @@ prname(char *mname, bool upper)
  *	A missile hits a monster
  */
 void
-thunk(weap, mname, noend)
-register THING *weap;
-register char *mname;
-register bool noend;
+thunk(THING *weap, char *mname, bool noend)
 {
     if (To_death)
 	return;
@@ -514,9 +506,7 @@ register bool noend;
  *	Print a message to indicate a succesful hit
  */
 void
-hit(er, ee, noend)
-register char *er, *ee;
-bool noend;
+hit(char *er, char *ee, bool noend)
 {
     int i;
     char *s;
@@ -546,9 +536,7 @@ bool noend;
  *	Print a message to indicate a poor swing
  */
 void
-miss(er, ee, noend)
-register char *er, *ee;
-bool noend;
+miss(char *er, char *ee, bool noend)
 {
     int i;
     extern char *M_names[];
@@ -574,10 +562,7 @@ bool noend;
  *	A missile misses a monster
  */
 void
-bounce(weap, mname, noend)
-register THING *weap;
-register char *mname;
-bool noend;
+bounce(THING *weap, char *mname, bool noend)
 {
     if (To_death)
 	return;
@@ -595,10 +580,7 @@ bool noend;
  *	Remove a monster from the screen
  */
 void
-remove_mon(mp, tp, waskill)
-register coord *mp;
-register THING *tp;
-bool waskill;
+remove_mon(coord *mp, THING *tp, bool waskill)
 {
     THING *obj, *nexti;
 
@@ -630,9 +612,7 @@ bool waskill;
  *	Called to put a monster to death
  */
 void
-killed(tp, pr)
-register THING *tp;
-bool pr;
+killed(THING *tp, bool pr)
 {
     char *mname;
 
