@@ -224,7 +224,7 @@ pack_char(void)
     for (bp = Pack_used; *bp; bp++)
 	continue;
     *bp = TRUE;
-    return (bp - Pack_used) + 'a';
+    return (char)((int)(bp - Pack_used) + 'a');
 }
 
 /*

@@ -117,11 +117,11 @@ fall(THING *obj, bool pr)
     if (fallpos(&obj->o_pos, &fpos))
     {
 	pp = INDEX(fpos.y, fpos.x);
-	pp->p_ch = obj->o_type;
+	pp->p_ch = (char) obj->o_type;
 	obj->o_pos = fpos;
 	if (cansee(fpos.y, fpos.x))
 	    if (pp->p_monst != NULL)
-		pp->p_monst->t_oldch = obj->o_type;
+		pp->p_monst->t_oldch = (char) obj->o_type;
 	    else
 		mvaddch(fpos.y, fpos.x, obj->o_type);
 	attach(Lvl_obj, obj);
@@ -270,5 +270,5 @@ fallpos(coord *pos, coord *newpos)
 		newpos->x = x;
 	    }
 	}
-    return (cnt != 0);
+    return (bool)(cnt != 0);
 }

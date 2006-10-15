@@ -10,7 +10,7 @@
 #undef lines 
 
 #define NOOP(x) (x += 0)
-
+#define CCHAR(x) ( (char) (x & A_CHARTEXT) )
 /*
  * Maximum number of different things
  */
@@ -61,7 +61,7 @@
 #define free_list(a)	_free_list(&a)
 #undef max
 #define max(a,b)	((a) > (b) ? (a) : (b))
-#define on(thing,flag)	(((thing).t_flags & (flag)) != 0)
+#define on(thing,flag)	((bool)(((thing).t_flags & (flag)) != 0))
 #define GOLDCALC	(rnd(50 + 10 * Level) + 2)
 #define ISRING(h,r)	(Cur_ring[h] != NULL && Cur_ring[h]->o_which == r)
 #define ISWEARING(r)	(ISRING(LEFT, r) || ISRING(RIGHT, r))
@@ -329,7 +329,7 @@ typedef unsigned int str_t;
 struct obj_info {
     char *oi_name;
     int oi_prob;
-    short oi_worth;
+    int oi_worth;
     char *oi_guess;
     bool oi_know;
 };
@@ -355,9 +355,9 @@ struct stats {
     long s_exp;				/* Experience */
     int s_lvl;				/* Level of mastery */
     int s_arm;				/* Armor class */
-    short s_hpt;			/* Hit points */
+    int s_hpt;			/* Hit points */
     char s_dmg[13];			/* String describing damage done */
-    short s_maxhp;			/* Max hit points */
+    int  s_maxhp;			/* Max hit points */
 };
 
 /*
@@ -383,7 +383,7 @@ union thing {
 	int _o_type;			/* What kind of object it is */
 	coord _o_pos;			/* Where it lives on the screen */
 	char *_o_text;			/* What it says if you read it */
-	char _o_launch;			/* What you need to launch it */
+	int  _o_launch;			/* What you need to launch it */
 	char _o_packch;			/* What character it is in the pack */
 	char _o_damage[8];		/* Damage if used like sword */
 	char _o_hurldmg[8];		/* Damage if thrown */
@@ -391,8 +391,8 @@ union thing {
 	int _o_which;			/* Which object of a type it is */
 	int _o_hplus;			/* Plusses to hit */
 	int _o_dplus;			/* Plusses to damage */
-	short _o_arm;			/* Armor protection */
-	short _o_flags;			/* Information about objects */
+	int _o_arm;			/* Armor protection */
+	int _o_flags;			/* Information about objects */
 	int _o_group;			/* Group number for this object */
 	char *_o_label;			/* Label for object */
     } _o;
@@ -566,7 +566,8 @@ bool	dropcheck(THING *obj);
 bool	fallpos(coord *pos, coord *newpos);
 bool	find_floor(struct room *rp, coord *cp, int limit, bool monst);
 bool	is_magic(THING *obj);
-bool	levit_check(void);
+bool	is_symlink(char *sp);
+bool	levit_check();
 bool	pack_room(bool from_floor, THING *obj);
 bool	roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl);
 bool	see_monst(THING *mp);
@@ -576,8 +577,10 @@ bool	turn_see(bool turn_off);
 bool	is_current(THING *obj);
 
 char	be_trapped(coord *tc);
-char	floor_ch(void);
-char	pack_char(void);
+char	floor_ch();
+char	pack_char();
+char	readchar();
+char	rnd_thing();
 
 char	*charge_str(THING *obj);
 char	*choose_str(char *ts, char *ns);
@@ -593,7 +596,7 @@ int	get_inv_t(void *vp, WINDOW *win);
 int	get_num(void *vp, WINDOW *win);
 int	get_sf(void *vp, WINDOW *win);
 int	get_str(void *vopt, WINDOW *win);
-int	trip_ch(int y, int x, char ch);
+int	trip_ch(int y, int x, int ch);
 
 coord	*find_dest(THING *tp);
 coord	*rndmove(THING *who);
@@ -603,6 +606,8 @@ THING	*get_item(char *purpose, int type);
 THING	*leave_pack(THING *obj, bool newobj, bool all);
 THING	*new_item(void);
 THING	*new_thing(void);
+
+int md_dsuspchar();
 
 struct room	*roomin(coord *cp);
 

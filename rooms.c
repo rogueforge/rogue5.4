@@ -325,7 +325,9 @@ find_floor(struct room *rp, coord *cp, int limit, bool monst)
     char compchar = 0;
     bool pickroom;
 
-    if (!(pickroom = (rp == NULL)))
+    pickroom = (bool)(rp == NULL);
+
+    if (!pickroom)
 	compchar = ((rp->r_flags & ISMAZE) ? PASSAGE : FLOOR);
     cnt = limit;
     for (;;)
@@ -359,7 +361,7 @@ enter_room(coord *cp)
     struct room *rp;
     THING *tp;
     int y, x;
-    chtype ch;
+    char ch;
 
     rp = Proom = roomin(cp);
     door_open(rp);
@@ -372,7 +374,7 @@ enter_room(coord *cp)
 		tp = moat(y, x);
 		ch = chat(y, x);
 		if (tp == NULL)
-		    if (inch() != ch)
+		    if (CCHAR(inch()) != ch)
 			addch(ch);
 		    else
 			move(y, x + 1);
@@ -425,7 +427,7 @@ leave_room(coord *cp)
 	for (x = rp->r_pos.x; x < rp->r_max.x + rp->r_pos.x; x++)
 	{
 	    move(y, x);
-	    switch (ch = inch())
+	    switch ( ch = CCHAR(inch()) )
 	    {
 		case FLOOR:
 		    if (floor == ' ' && ch != ' ')

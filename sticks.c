@@ -126,7 +126,7 @@ do_zap()
 			oldch = tp->t_oldch;
 			Delta.y = y;
 			Delta.x = x;
-			new_monster(tp, monster = rnd(26) + 'A', &Delta);
+			new_monster(tp, monster = (char)(rnd(26) + 'A'), &Delta);
 			if (see_monst(tp))
 			    mvaddch(y, x, monster);
 			tp->t_oldch = oldch;
@@ -254,14 +254,14 @@ drain()
 	corp = &Passages[flat(Hero.y, Hero.x) & F_PNUM];
     else
 	corp = NULL;
-    inpass = (Proom->r_flags & ISGONE);
+    inpass = (bool)(Proom->r_flags & ISGONE);
     dp = drainee;
     for (mp = Mlist; mp != NULL; mp = next(mp))
 	if (mp->t_room == Proom || mp->t_room == corp ||
 	    (inpass && chat(mp->t_pos.y, mp->t_pos.x) == DOOR &&
 	    &Passages[flat(mp->t_pos.y, mp->t_pos.x) & F_PNUM] == Proom))
 		*dp++ = mp;
-    if ((cnt = dp - drainee) == 0)
+    if ((cnt = (int)(dp - drainee)) == 0)
     {
 	msg("you have a tingling feeling");
 	return;
@@ -310,7 +310,7 @@ fire_bolt(coord *start, coord *dir, char *name)
 	when 2: case -2: dirch = '\\';
     }
     pos = *start;
-    hit_hero = (start != &Hero);
+    hit_hero = (bool)(start != &Hero);
     used = FALSE;
     changed = FALSE;
     for (c1 = spotpos; c1 < &spotpos[BOLT_LENGTH] && !used; c1++)

@@ -108,8 +108,8 @@ hit_bound:
 		{
 		    case 'h':
 		    case 'l':
-			b1 = (Hero.y != 1 && turn_ok(Hero.y - 1, Hero.x));
-			b2 = (Hero.y != NUMLINES - 2 && turn_ok(Hero.y + 1, Hero.x));
+			b1 = (bool)(Hero.y != 1 && turn_ok(Hero.y - 1, Hero.x));
+			b2 = (bool)(Hero.y != NUMLINES - 2 && turn_ok(Hero.y + 1, Hero.x));
 			if (!(b1 ^ b2))
 			    break;
 			if (b1)
@@ -127,8 +127,8 @@ hit_bound:
 			goto over;
 		    case 'j':
 		    case 'k':
-			b1 = (Hero.x != 0 && turn_ok(Hero.y, Hero.x - 1));
-			b2 = (Hero.x != NUMCOLS - 1 && turn_ok(Hero.y, Hero.x + 1));
+			b1 = (bool)(Hero.x != 0 && turn_ok(Hero.y, Hero.x - 1));
+			b2 = (bool)(Hero.x != NUMCOLS - 1 && turn_ok(Hero.y, Hero.x + 1));
 			if (!(b1 ^ b2))
 			    break;
 			if (b1)

@@ -202,8 +202,9 @@ ascii_to_bin(ch)
 static void
 des_init()
 {
-	int	i, j, b, k, inbit, obit;
+	int	j, b, k, inbit, obit;
 	unsigned int	*p, *il, *ir, *fl, *fr;
+	unsigned char i;
 
 	old_rawkey0 = old_rawkey1 = 0;
 	saltbits = 0;

@@ -87,7 +87,7 @@ bool thrown;
     {
 	tp->t_disguise = 'X';
 	if (on(Player, ISHALU)) {
-	    ch = rnd(26) + 'A';
+	    ch = (char)(rnd(26) + 'A');
 	    mvaddch(tp->t_pos.y, tp->t_pos.x, ch);
 	}
 	msg(choose_str("heavy!  That's a nasty critter!",
@@ -484,7 +484,7 @@ prname(char *mname, bool upper)
     else
 	strcpy(tbuf, mname);
     if (upper)
-	*tbuf = toupper(*tbuf);
+	*tbuf = (char) toupper(*tbuf);
     return tbuf;
 }
 

@@ -119,9 +119,9 @@ inv_name(THING *obj, bool drop)
 	    strcat(pb, " (on right hand)");
     }
     if (drop && isupper(Prbuf[0]))
-	Prbuf[0] = tolower(Prbuf[0]);
+	Prbuf[0] = (char) tolower(Prbuf[0]);
     else if (!drop && islower(*Prbuf))
-	*Prbuf = toupper(*Prbuf);
+	*Prbuf = (char) toupper(*Prbuf);
     Prbuf[MAXSTR-1] = '\0';
     return Prbuf;
 }
@@ -147,12 +147,12 @@ drop()
 	return;
     if (!dropcheck(obj))
 	return;
-    obj = leave_pack(obj, TRUE, !ISMULT(obj->o_type));
+    obj = leave_pack(obj, TRUE, (bool)!ISMULT(obj->o_type));
     /*
      * Link it into the level object list
      */
     attach(Lvl_obj, obj);
-    chat(Hero.y, Hero.x) = obj->o_type;
+    chat(Hero.y, Hero.x) = (char) obj->o_type;
     flat(Hero.y, Hero.x) |= F_DROPPED;
     obj->o_pos = Hero;
     if (obj->o_type == AMULET)
@@ -317,7 +317,7 @@ pick_one(struct obj_info *info, int nitems)
 #endif
 	info = start;
     }
-    return info - start;
+    return (int)(info - start);
 }
 
 /*
@@ -395,7 +395,7 @@ print_disc(char type)
     struct obj_info *info = NULL;
     int i, maxnum = 0, num_found;
     static THING obj;
-    static short order[MAX4(MAXSCROLLS, MAXPOTIONS, MAXRINGS, MAXSTICKS)];
+    static int order[MAX4(MAXSCROLLS, MAXPOTIONS, MAXRINGS, MAXSTICKS)];
 
     switch (type)
     {
@@ -437,7 +437,7 @@ print_disc(char type)
  *	Set up order for list
  */
 void
-set_order(short *order, int numthings)
+set_order(int *order, int numthings)
 {
     int i, r, t;
 

@@ -17,7 +17,7 @@ void
 look(bool wakeup)
 {
     int x, y;
-    chtype ch;
+    int ch;
     THING *tp;
     PLACE *pp;
     struct room *rp;
@@ -107,7 +107,7 @@ look(bool wakeup)
 	    if ((Proom->r_flags & ISDARK) && !See_floor && ch == FLOOR)
 		ch = ' ';
 
-	    if (tp != NULL || ch != inch())
+	    if (tp != NULL || ch != CCHAR( inch() ))
 		addch(ch);
 
 	    if (Door_stop && !Firstmove && Running)
@@ -175,7 +175,7 @@ look(bool wakeup)
  *	account whether or not the player is tripping.
  */
 int
-trip_ch(int y, int x, char ch)
+trip_ch(int y, int x, int ch)
 {
     if (on(Player, ISHALU) && After)
 	switch (ch)
@@ -484,7 +484,7 @@ get_dir(void)
 	    }
 	} until (gotit);
 	if (isupper(Dir_ch))
-	    Dir_ch = tolower(Dir_ch);
+	    Dir_ch = (char) tolower(Dir_ch);
 	Last_dir = Dir_ch;
 	last_delt.y = Delta.y;
 	last_delt.x = Delta.x;
@@ -554,8 +554,8 @@ call_it(struct obj_info *info)
  * rnd_thing:
  *	Pick a random thing appropriate for this level
  */
-int
-rnd_thing(void)
+char
+rnd_thing()
 {
     int i;
     static char thing_list[] = {

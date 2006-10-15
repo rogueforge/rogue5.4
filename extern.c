@@ -56,7 +56,7 @@ char Take;				/* Thing she is taking */
 char Whoami[MAXSTR];			/* Name of player */
 char *Ws_made[MAXSTICKS];		/* What sticks are made of */
 char *Ws_type[MAXSTICKS];		/* Is it a wand or a staff */
-char Orig_dsusp;			/* Original dsusp char */
+int  Orig_dsusp;			/* Original dsusp char */
 char Fruit[MAXSTR] =			/* Favorite fruit */
 		{ 's', 'l', 'i', 'm', 'e', '-', 'm', 'o', 'l', 'd', '\0' };
 char Home[MAXSTR] = { '\0' };		/* User's home directory */

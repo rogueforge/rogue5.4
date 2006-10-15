@@ -44,7 +44,7 @@ read_scroll()
     /*
      * Get rid of the thing
      */
-    discardit = (obj->o_count == 1);
+    discardit = (bool)(obj->o_count == 1);
     leave_pack(obj, FALSE, FALSE);
     orig_obj = obj;
 

@@ -77,7 +77,7 @@ md_hasclreol()
     if (cur_term == NULL)
 	return(0);
     if (cur_term->type.Strings == NULL)
-    	return(0);
+     	return(0);
 #endif
     return((clr_eol != NULL) && (*clr_eol != 0));
 #elif defined(__PDCURSES__)
@@ -101,7 +101,7 @@ md_raw_standout()
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbiInfo; 
     HANDLE hStdout;
-    int fgattr,bgattr;
+    WORD fgattr,bgattr;
 
     if (md_standout_mode == 0)
     {
@@ -124,7 +124,7 @@ md_raw_standend()
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbiInfo; 
     HANDLE hStdout;
-    int fgattr,bgattr;
+    WORD fgattr,bgattr;
 
     if (md_standout_mode == 1)
     {
@@ -334,7 +334,7 @@ md_shellescape()
     sh = md_getshell();
 
 #if defined(_WIN32)
-    return(_spawnl(_P_WAIT,sh,"shell",NULL,0));
+    return((int)_spawnl(_P_WAIT,sh,"shell",NULL,0));
 #elif defined(__DJGPP__)
     return ( spawnl(P_WAIT,sh,"shell",NULL,0) );
 #else
@@ -493,7 +493,7 @@ char *prompt;
 
         /* Add to password if it isn't full */
         if (p < password_buffer + max_length - 1)
-            *p++ = c;
+            *p++ = (char) c;
         else
             count++;
     }

@@ -86,7 +86,7 @@ option()
 	    if (retval == QUIT)
 		break;
 	    else if (op > optlist) {	/* MINUS */
-		wmove(Hw, (op - optlist) - 1, 0);
+		wmove(Hw, (int)(op - optlist) - 1, 0);
 		op -= 2;
 	    }
 	    else	/* trying to back up beyond the top */
@@ -237,8 +237,9 @@ get_str(void *vopt, WINDOW *win)
 {
     char *opt = (char *) vopt;
     char *sp;
-    int c, oy, ox;
+    int oy, ox;
     int i;
+    unsigned char c;
     static char buf[MAXSTR];
 
     getyx(win, oy, ox);
@@ -293,7 +294,7 @@ get_str(void *vopt, WINDOW *win)
     mvwprintw(win, oy, ox, "%s\n", opt);
     wrefresh(win);
     if (win == stdscr)
-	Mpos += sp - buf;
+	Mpos += (int)(sp - buf);
     if (c == '-')
 	return MINUS;
     else if (c == ESCAPE)
@@ -397,7 +398,7 @@ parse_opts(char *str)
 	 */
 	for (sp = str; isalpha(*sp); sp++)
 	    continue;
-	len = sp - str;
+	len = (int)(sp - str);
 	/*
 	 * Look it up and deal with it
 	 */
@@ -433,16 +434,16 @@ parse_opts(char *str)
 		    if (op->o_putfunc == put_inv_t)
 		    {
 			if (islower(*str))
-			    *str = toupper(*str);
+			    *str = (char) toupper(*str);
 			for (i = Inv_t_name; i <= &Inv_t_name[INV_CLEAR]; i++)
 			    if (strncmp(str, *i, sp - str) == 0)
 			    {
-				Inv_type = i - Inv_t_name;
+				Inv_type = (int)(i - Inv_t_name);
 				break;
 			    }
 		    }
 		    else
-			strucpy(start, str, sp - str);
+			strucpy(start, str, (int)(sp - str));
 		}
 		break;
 	    }

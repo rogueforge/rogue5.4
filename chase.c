@@ -237,7 +237,7 @@ register coord *cp;
         return;
 
     sch = tp->t_oldch;
-    tp->t_oldch = mvinch(cp->y,cp->x);
+    tp->t_oldch = CCHAR( mvinch(cp->y,cp->x) );
     if (!on(Player, ISBLIND))
 	    if ((sch == FLOOR || tp->t_oldch == FLOOR) &&
 		(tp->t_room->r_flags & ISDARK))
@@ -270,7 +270,7 @@ see_monst(THING *mp)
     }
     if (mp->t_room != Proom)
 	return FALSE;
-    return (!(mp->t_room->r_flags & ISDARK));
+    return ((bool)!(mp->t_room->r_flags & ISDARK));
 }
 
 /*
@@ -409,7 +409,7 @@ chase(THING *tp, coord *ee)
 	    }
 	}
     }
-    return (curdist != 0 && !ce(Ch_ret, Hero));
+    return (bool)(curdist != 0 && !ce(Ch_ret, Hero));
 }
 
 /*
@@ -453,7 +453,7 @@ diag_ok(coord *sp, coord *ep)
 	return FALSE;
     if (ep->x == sp->x || ep->y == sp->y)
 	return TRUE;
-    return (step_ok(chat(ep->y, sp->x)) && step_ok(chat(sp->y, ep->x)));
+    return (bool)(step_ok(chat(ep->y, sp->x)) && step_ok(chat(sp->y, ep->x)));
 }
 
 /*
@@ -482,7 +482,7 @@ cansee(int y, int x)
      */
     tp.y = y;
     tp.x = x;
-    return ((rer = roomin(&tp)) == Proom && !(rer->r_flags & ISDARK));
+    return (bool)((rer = roomin(&tp)) == Proom && !(rer->r_flags & ISDARK));
 }
 
 /*

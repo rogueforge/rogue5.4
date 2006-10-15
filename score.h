@@ -6,11 +6,11 @@
 
 struct sc_ent {
     unsigned int sc_uid;
-    unsigned short sc_score;
+    int sc_score;
     unsigned int sc_flags;
     unsigned short sc_monster;
     char sc_name[MAXSTR];
-    unsigned short sc_level;
+    int sc_level;
     long sc_time;
 };
 

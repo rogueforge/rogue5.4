@@ -41,8 +41,8 @@
 
 extern bool	Got_ltc, In_shell, Wizard;
 
-extern char	Fruit[], Orig_dsusp, Prbuf[], Whoami[];
-
+extern char	Fruit[], Prbuf[], Whoami[];
+extern int 	Orig_dsusp;
 extern int	Fd;
 
 /*

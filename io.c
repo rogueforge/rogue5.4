@@ -94,7 +94,7 @@ endmsg()
      * start with a pack addressing character
      */
     if (islower(Msgbuf[0]) && !Lower_msg && Msgbuf[1] != ')')
-	Msgbuf[0] = toupper(Msgbuf[0]);
+	Msgbuf[0] = (char) toupper(Msgbuf[0]);
     mvaddstr(0, 0, Msgbuf);
     clrtoeol();
     Mpos = Newpos;
@@ -145,12 +145,12 @@ step_ok(ch)
  * readchar:
  *	Reads and returns a character, checking for gross input errors
  */
-int
+char
 readchar()
 {
-    int ch;
+    char ch;
 
-    ch = md_readchar();
+    ch = (char) md_readchar();
 
     if ((ch == 3) || (ch == 0))
     {

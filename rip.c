@@ -92,10 +92,10 @@ score(int amount, int flags, char monst)
     {
 	scp->sc_score = 0;
 	for (i = 0; i < MAXSTR; i++)
-	    scp->sc_name[i] = rnd(255);
+	    scp->sc_name[i] = (unsigned char) rnd(255);
 	scp->sc_flags = RN;
 	scp->sc_level = RN;
-	scp->sc_monster = RN;
+	scp->sc_monster = (unsigned short) RN;
 	scp->sc_uid = RN;
     }
 

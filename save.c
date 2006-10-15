@@ -306,7 +306,7 @@ encwrite(char *start, size_t size, FILE *outf)
             break;
 
 	temp = *e1++;
-	fb += temp * *e2++;
+	fb = fb + ((char) (temp * *e2++));
 	if (*e1 == '\0')
 	    e1 = encstr;
 	if (*e2 == '\0')
@@ -340,7 +340,7 @@ encread(char *start, size_t size, int inf)
     {
 	*start++ ^= *e1 ^ *e2 ^ fb;
 	temp = *e1++;
-	fb += temp * *e2++;
+	fb = fb + (char)(temp * *e2++);
 	if (*e1 == '\0')
 	    e1 = encstr;
 	if (*e2 == '\0')

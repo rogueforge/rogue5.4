@@ -983,9 +983,9 @@ rs_write_stats(FILE *savef, struct stats *s)
     rs_write_long(savef, s->s_exp);
     rs_write_int(savef, s->s_lvl);
     rs_write_int(savef, s->s_arm);
-    rs_write_short(savef, s->s_hpt);
+    rs_write_int(savef, s->s_hpt);
     rs_write_chars(savef, s->s_dmg, sizeof(s->s_dmg));
-    rs_write_short(savef,s->s_maxhp);
+    rs_write_int(savef,s->s_maxhp);
 
     return(WRITESTAT);
 }
@@ -1001,9 +1001,9 @@ rs_read_stats(int inf, struct stats *s)
     rs_read_long(inf,&s->s_exp);
     rs_read_int(inf,&s->s_lvl);
     rs_read_int(inf,&s->s_arm);
-    rs_read_short(inf,&s->s_hpt);
+    rs_read_int(inf,&s->s_hpt);
     rs_read_chars(inf,s->s_dmg,sizeof(s->s_dmg));
-    rs_read_short(inf,&s->s_maxhp);
+    rs_read_int(inf,&s->s_maxhp);
 
     return(READSTAT);
 }
@@ -1304,7 +1304,7 @@ rs_write_obj_info(FILE *savef, struct obj_info *i, int count)
     {
         /* mi_name is constant, defined at compile time in all cases */
         rs_write_int(savef,i[n].oi_prob);
-        rs_write_short(savef,i[n].oi_worth);
+        rs_write_int(savef,i[n].oi_worth);
         rs_write_string(savef,i[n].oi_guess);
         rs_write_boolean(savef,i[n].oi_know);
     }
@@ -1332,7 +1332,7 @@ rs_read_obj_info(int inf, struct obj_info *mi, int count)
     {
         /* mi_name is const, defined at compile time in all cases */
         rs_read_int(inf,&mi[n].oi_prob);
-        rs_read_short(inf,&mi[n].oi_worth);
+        rs_read_int(inf,&mi[n].oi_worth);
         rs_read_new_string(inf,&mi[n].oi_guess);
         rs_read_boolean(inf,&mi[n].oi_know);
     }
@@ -1510,7 +1510,7 @@ rs_write_object(FILE *savef, THING *o)
     rs_write_marker(savef, RSID_OBJECT);
     rs_write_int(savef, o->_o._o_type); 
     rs_write_coord(savef, o->_o._o_pos); 
-    rs_write_char(savef, o->_o._o_launch);
+    rs_write_int(savef, o->_o._o_launch);
     rs_write_char(savef, o->_o._o_packch);
     rs_write_chars(savef, o->_o._o_damage, sizeof(o->_o._o_damage));
     rs_write_chars(savef, o->_o._o_hurldmg, sizeof(o->_o._o_hurldmg));
@@ -1518,8 +1518,8 @@ rs_write_object(FILE *savef, THING *o)
     rs_write_int(savef, o->_o._o_which);
     rs_write_int(savef, o->_o._o_hplus);
     rs_write_int(savef, o->_o._o_dplus);
-    rs_write_short(savef, o->_o._o_arm);
-    rs_write_short(savef, o->_o._o_flags);
+    rs_write_int(savef, o->_o._o_arm);
+    rs_write_int(savef, o->_o._o_flags);
     rs_write_int(savef, o->_o._o_group);
     rs_write_string(savef, o->_o._o_label);
     return(WRITESTAT);
@@ -1534,7 +1534,7 @@ rs_read_object(int inf, THING *o)
     rs_read_marker(inf, RSID_OBJECT);
     rs_read_int(inf, &o->_o._o_type);
     rs_read_coord(inf, &o->_o._o_pos);
-    rs_read_char(inf, &o->_o._o_launch);
+    rs_read_int(inf, &o->_o._o_launch);
     rs_read_char(inf, &o->_o._o_packch);
     rs_read_chars(inf, o->_o._o_damage, sizeof(o->_o._o_damage));
     rs_read_chars(inf, o->_o._o_hurldmg, sizeof(o->_o._o_hurldmg));
@@ -1542,8 +1542,8 @@ rs_read_object(int inf, THING *o)
     rs_read_int(inf, &o->_o._o_which);
     rs_read_int(inf, &o->_o._o_hplus);
     rs_read_int(inf, &o->_o._o_dplus);
-    rs_read_short(inf, &o->_o._o_arm);
-    rs_read_short(inf, &o->_o._o_flags);
+    rs_read_int(inf, &o->_o._o_arm);
+    rs_read_int(inf, &o->_o._o_flags);
     rs_read_int(inf, &o->_o._o_group);
     rs_read_new_string(inf, &o->_o._o_label);
     
@@ -2097,7 +2097,7 @@ rs_save_file(FILE *savef)
     rs_write_char(savef, Take);
     rs_write_chars(savef, Whoami, MAXSTR);
     rs_write_sticks(savef);
-    rs_write_char(savef,Orig_dsusp);
+    rs_write_int(savef,Orig_dsusp);
     rs_write_chars(savef, Fruit, MAXSTR);
     rs_write_chars(savef, Home, MAXSTR);
     rs_write_strings(savef,Inv_t_name,3);
@@ -2232,7 +2232,7 @@ rs_restore_file(int inf)
     rs_read_char(inf, &Take);
     rs_read_chars(inf, Whoami, MAXSTR);
     rs_read_sticks(inf);
-    rs_read_char(inf,&Orig_dsusp);
+    rs_read_int(inf,&Orig_dsusp);
     rs_read_chars(inf, Fruit, MAXSTR);
     rs_read_chars(inf, Home, MAXSTR);
     rs_read_new_strings(inf,Inv_t_name,3);

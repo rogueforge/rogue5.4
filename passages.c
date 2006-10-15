@@ -77,8 +77,8 @@ do_passages()
 	else
 	{
 	    r2->ingraph = TRUE;
-	    i = r1 - rdes;
-	    j = r2 - rdes;
+	    i = (int)(r1 - rdes);
+	    j = (int)(r2 - rdes);
 	    conn(i, j);
 	    r1->isconn[j] = TRUE;
 	    r2->isconn[i] = TRUE;
@@ -106,8 +106,8 @@ do_passages()
 	 */
 	if (j != 0)
 	{
-	    i = r1 - rdes;
-	    j = r2 - rdes;
+	    i = (int)(r1 - rdes);
+	    j = (int)(r2 - rdes);
 	    conn(i, j);
 	    r1->isconn[j] = TRUE;
 	    r2->isconn[i] = TRUE;
@@ -124,7 +124,7 @@ void
 conn(int r1, int r2)
 {
     struct room *rpf, *rpt = NULL;
-    char rmt;
+    int rmt;
     int distance = 0, turn_spot, turn_distance = 0;
     int rm;
     char direc;
