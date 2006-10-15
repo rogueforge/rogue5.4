@@ -1850,7 +1850,7 @@ rs_read_thing(int inf, THING *t)
     return(READSTAT);
 }
 
-int
+void
 rs_fix_thing(THING *t)
 {
     THING *item;
@@ -1931,7 +1931,7 @@ rs_read_thing_list(int inf, THING **list)
     return(READSTAT);
 }
 
-int
+void
 rs_fix_thing_list(THING *list)
 {
     THING *item;

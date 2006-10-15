@@ -77,7 +77,7 @@ md_hasclreol()
     if (cur_term == NULL)
 	return(0);
     if (cur_term->type.Strings == NULL)
-     	return(0);
+	return(0);
 #endif
     return((clr_eol != NULL) && (*clr_eol != 0));
 #elif defined(__PDCURSES__)
@@ -87,7 +87,7 @@ md_hasclreol()
 #endif
 }
 
-int
+void
 md_putchar(int c)
 {
     putchar(c);
@@ -95,7 +95,7 @@ md_putchar(int c)
 
 static int md_standout_mode = 0;
 
-int
+void
 md_raw_standout()
 {
 #ifdef _WIN32
@@ -118,7 +118,7 @@ md_raw_standout()
 #endif
 }
 
-int
+void
 md_raw_standend()
 {
 #ifdef _WIN32
@@ -177,7 +177,7 @@ md_creat(char *file, int mode)
 }
 
 
-int
+void
 md_normaluser()
 {
 #ifndef _WIN32
@@ -283,7 +283,7 @@ md_gethomedir()
     return(homedir);
 }
 
-int
+void
 md_sleep(int s)
 {
 #ifdef _WIN32
