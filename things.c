@@ -6,6 +6,7 @@
  */
 
 #include <curses.h>
+#include <string.h>
 #include <ctype.h>
 #include "rogue.h"
 
@@ -482,7 +483,7 @@ add_line(char *fmt, char *arg)
     else
     {
 	if (maxlen < 0)
-	    maxlen = strlen(prompt);
+	    maxlen = (int) strlen(prompt);
 	if (Line_cnt >= LINES - 1 || fmt == NULL)
 	{
 	    if (Inv_type == INV_OVER && fmt == NULL && !Newpage)
@@ -531,7 +532,7 @@ add_line(char *fmt, char *arg)
 	    }
 	    Newpage = TRUE;
 	    Line_cnt = 0;
-	    maxlen = strlen(prompt);
+	    maxlen = (int) strlen(prompt);
 	}
 	if (fmt != NULL && !(Line_cnt == 0 && *fmt == '\0'))
 	{

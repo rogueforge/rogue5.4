@@ -88,11 +88,32 @@ char	*type_name(int type);
 void	checkout(int sig);
 #endif
 
-char *md_getusername();
-char *md_getroguedir();
-char *md_crypt();
-char *md_getpass();
-char *md_gethomedir();
+int	md_chmod(char *filename, int mode);
+int	md_creat(char *file, int mode);
+int	md_open(char *filename, int flag, int mode);
+int	md_read(int fd, char *buf, int count);
+int	md_close(int fd);
+int	md_dsuspchar();
+char	*md_gethomedir();
+char	*md_getroguedir();
+char	*md_getusername();
+int	md_getuid();
+int	md_getpid();
+void	md_init();
+void	md_normaluser();
+void	md_raw_standout();
+void	md_raw_standend();
+int	md_readchar();
+int	md_setdsuspchar(int c);
+int	md_shellescape();
+void	md_sleep(int s);
+int	md_suspchar();
+unsigned long int md_ntohl(unsigned long int x);
+unsigned long int md_htonl(unsigned long int x);
+int	md_hasclreol();
+int	md_unlink(char *file);
+int	md_unlink_open_file(char *file, int inf);
+
 
 #ifdef _WIN32
 #define fdopen _fdopen

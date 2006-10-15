@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
+#include <string.h>
 #include "rogue.h"
 #include "score.h"
 
@@ -142,7 +143,7 @@ save_file(FILE *savef)
     putchar('\n');
     endwin();
     resetltchars();
-    chmod(File_name, 0400);
+    md_chmod(File_name, 0400);
     /*
      * DO NOT DELETE.  This forces stdio to allocate the output buffer
      * so that malloc doesn't get confused on restart
@@ -190,7 +191,7 @@ restore(char *file, char **envp)
     signal(SIGTSTP, SIG_IGN);
 # endif
 #endif
-    if ((inf = open(file, 0)) < 0)
+    if ((inf = md_open(file, 0, 0)) < 0)
     {
 	perror(file);
 	return FALSE;
@@ -199,7 +200,7 @@ restore(char *file, char **envp)
     syml = is_symlink(file);
 
     fflush(stdout);
-    read(inf, &Frob, sizeof Frob);
+    md_read(inf, &Frob, sizeof Frob);
     fb = Frob;
     encread(buf, (unsigned) strlen(version) + 1, inf);
     if (strcmp(buf, version) != 0)
@@ -278,7 +279,7 @@ restore(char *file, char **envp)
     environ = envp;
     strcpy(File_name, file);
     clearok(curscr, TRUE);
-    srand(getpid());
+    srand(md_getpid());
     msg("file name: %s", file);
     playit();
     /*NOTREACHED*/
@@ -330,7 +331,7 @@ encread(char *start, size_t size, int inf)
 
     fb = Frob;
 
-    if ((read_size = read(inf, start, size)) == 0 || read_size == -1)
+    if ((read_size = md_read(inf, start, (int)size)) == 0 || read_size == -1)
 	return(read_size);
 
     e1 = encstr;

@@ -8,6 +8,7 @@
 
 #include <curses.h>
 #include <ctype.h>
+#include <string.h>
 #include "rogue.h"
 
 #define	EQSTR(a, b, c)	(strncmp(a, b, c) == 0)
@@ -257,7 +258,7 @@ get_str(void *vopt, WINDOW *win)
 	    if (sp > buf)
 	    {
 		sp--;
-		for (i = strlen(unctrl(*sp)); i; i--)
+		for (i = (int) strlen(unctrl(*sp)); i; i--)
 		    waddch(win, '\b');
 	    }
 	    continue;
@@ -290,7 +291,7 @@ get_str(void *vopt, WINDOW *win)
     }
     *sp = '\0';
     if (sp > buf)	/* only change option if something has been typed */
-	strucpy(opt, buf, strlen(buf));
+	strucpy(opt, buf, (int) strlen(buf));
     mvwprintw(win, oy, ox, "%s\n", opt);
     wrefresh(win);
     if (win == stdscr)

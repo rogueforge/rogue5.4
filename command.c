@@ -5,6 +5,7 @@
  */
 
 #include <curses.h>
+#include <string.h>
 #include <ctype.h>
 #include "rogue.h"
 
@@ -158,7 +159,7 @@ over:
 			if (levit_check())
 			    ;
 			else
-			    pick_up(obj->o_type);
+			    pick_up((char)obj->o_type);
 		    }
 		    else {
 			if (!Terse)

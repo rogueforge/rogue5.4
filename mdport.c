@@ -20,6 +20,8 @@
 #include <Windows.h>
 #include <Lmcons.h>
 #include <process.h>
+#include <io.h>
+#include <conio.h>
 #pragma warning( disable: 4201 ) 
 #include <shlobj.h>
 #pragma warning( default: 4201 ) 
@@ -145,8 +147,8 @@ int
 md_unlink_open_file(char *file, int inf)
 {
 #ifdef _WIN32
-    close(inf);
-    chmod(file, 0600);
+    _close(inf);
+    _chmod(file, 0600);
     return( _unlink(file) );
 #else
     return(unlink(file));
@@ -157,7 +159,7 @@ int
 md_unlink(char *file)
 {
 #ifdef _WIN32
-    chmod(file, 0600);
+    _chmod(file, 0600);
     return( _unlink(file) );
 #else
     return(unlink(file));
@@ -170,12 +172,53 @@ md_creat(char *file, int mode)
     int fd;
 #ifdef _WIN32
     mode = _S_IREAD | _S_IWRITE;
-#endif
+    fd = _open(file,O_CREAT | O_EXCL | O_WRONLY, mode);
+#else
     fd = open(file,O_CREAT | O_EXCL | O_WRONLY, mode);
+#endif
 
     return(fd);
 }
 
+int
+md_open(char *filename, int flag, int mode)
+{
+#ifdef _WIN32
+    return( _open(filename,flag,mode) );
+#else
+    return( open(filename,flag,mode) );
+#endif
+}
+
+int
+md_read(int fd, char *buf, int count)
+{
+#ifdef _WIN32
+    return( _read(fd,buf,count) );
+#else
+    return( read(fd,buf,count) );
+#endif
+}
+
+int
+md_close(int fd)
+{
+#ifdef _WIN32
+    return( _close(fd) );
+#else
+    return( close(fd) );
+#endif
+}
+
+int
+md_chmod(char *filename, int mode)
+{
+#ifdef _WIN32
+    return( _chmod(filename, mode) );
+#else
+    return( chmod(filename, mode) );
+#endif
+}
 
 void
 md_normaluser()
@@ -195,6 +238,17 @@ md_getuid()
     return(42);
 #endif
 }
+
+int
+md_getpid()
+{
+#ifdef _WIN32
+    return( _getpid() );
+#else
+    return( getpid() );
+#endif
+}
+
 
 char *
 md_getusername()

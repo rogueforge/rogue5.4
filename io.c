@@ -6,6 +6,7 @@
 
 #include <curses.h>
 #include <ctype.h>
+#include <string.h>
 #include "rogue.h"
 
 /*
@@ -118,9 +119,9 @@ doadd(char *fmt, va_list args)
      */
     vsprintf(buf, fmt, args);
     if (strlen(buf) + Newpos >= MAXMSG)
-	endmsg();
+        endmsg(); 
     strcat(Msgbuf, buf);
-    Newpos = strlen(Msgbuf);
+    Newpos = (int) strlen(Msgbuf);
 }
 
 /*

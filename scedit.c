@@ -52,9 +52,9 @@ char	**av;
 		scorefile = "rogue54.scr";
 	else
 		scorefile = av[1];
-	Seed = getpid();
+	Seed = md_getpid();
 
-	if ((Inf = open(scorefile, 2)) < 0) {
+	if ((Inf = md_open(scorefile, 2, 0)) < 0) {
 		perror(scorefile);
 		exit(1);
 	}

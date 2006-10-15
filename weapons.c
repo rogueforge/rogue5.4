@@ -5,6 +5,7 @@
  */
 
 #include <curses.h>
+#include <string.h>
 #include <ctype.h>
 #include "rogue.h"
 
@@ -145,7 +146,7 @@ fall(THING *obj, bool pr)
  *	Set up the initial goodies for a weapon
  */
 void
-init_weapon(THING *weap, char which)
+init_weapon(THING *weap, int which)
 {
     struct init_weaps *iwp;
 

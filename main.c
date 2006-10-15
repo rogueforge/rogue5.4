@@ -7,7 +7,9 @@
  */
 
 #include <curses.h>
+#include <string.h>
 #include <signal.h>
+#include <time.h>
 #include "rogue.h"
 
 /*
@@ -71,14 +73,14 @@ main(int argc, char **argv, char **envp)
     if ((env = getenv("ROGUEOPTS")) != NULL)
 	parse_opts(env);
     if (env == NULL || Whoami[0] == '\0')
-        strucpy(Whoami, md_getusername(), strlen(md_getusername()));
+        strucpy(Whoami, md_getusername(), (int) strlen(md_getusername()));
     lowtime = (int) time(NULL);
 #ifdef MASTER
     if (Wizard && getenv("SEED") != NULL)
 	Dnum = atoi(getenv("SEED"));
     else
 #endif
-	Dnum = lowtime + getpid();
+	Dnum = lowtime + md_getpid();
     Seed = Dnum;
 
     /*
@@ -89,7 +91,7 @@ main(int argc, char **argv, char **envp)
 	if (strcmp(argv[1], "-s") == 0)
 	{
 	    Noscore = TRUE;
-	    score(0, -1);
+	    score(0, -1, 0);
 	    exit(0);
 	}
 	else if (strcmp(argv[1], "-d") == 0)
@@ -308,7 +310,7 @@ quit(int sig)
 	mvprintw(LINES - 2, 0, "You quit with %d gold pieces", Purse);
 	move(LINES - 1, 0);
 	refresh();
-	score(Purse, 1);
+	score(Purse, 1, 0);
 	my_exit(0);
     }
     else

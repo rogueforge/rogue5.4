@@ -32,14 +32,18 @@
  *			for high load average.
  */
 
+#ifdef _WIN32
+#include <io.h>
+#endif
 #include <curses.h>
 #include "extern.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>
-
+#include <string.h>
 #include <fcntl.h>
+#include <time.h>
 
 #define NOOP(x) (x += 0)
 
@@ -109,7 +113,7 @@ open_score()
     if (*Lockfile)
         strcat(Lockfile, "/");
     strcat(Lockfile, "rogue54.lck");
-    Fd = open(Scorefile, O_RDWR | O_CREAT, 0666);
+    Fd = md_open(Scorefile, O_RDWR | O_CREAT, 0666);
 #else
     Fd = -1;
 #endif
@@ -486,7 +490,11 @@ unlock_sc()
 {
 #ifdef SCOREFILE
     if (lfd != -1)
-        close(lfd);
+#ifdef _WIN32
+        _close(lfd);
+#else
+	close(lfd);
+#endif
     lfd = -1;
     md_unlink(Lockfile);
 #endif

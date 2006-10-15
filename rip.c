@@ -6,6 +6,7 @@
  */
 
 #include <curses.h>
+#include <string.h>
 #include <time.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -110,7 +111,7 @@ score(int amount, int flags, char monst)
 #endif
     rd_score(top_ten, Fd);
     fclose(outf);
-    close(Fd);
+    md_close(Fd);
     open_score(0);
     outf = (FILE *) fdopen(Fd, "w");
     /*
@@ -285,7 +286,7 @@ death(char monst)
 int
 center(char *str)
 {
-    return 28 - ((strlen(str) + 1) / 2);
+    return 28 - (((int)strlen(str) + 1) / 2);
 }
 
 /*

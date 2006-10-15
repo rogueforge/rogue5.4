@@ -48,6 +48,7 @@
 #include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "rogue.h"
 
 #define READSTAT (format_error || read_error )
@@ -80,6 +81,55 @@ rs_read(int inf, void *ptr, size_t size)
     if (encread(ptr, size, inf) != size)
         read_error = 1;
        
+    return(READSTAT);
+}
+
+int
+rs_write_int(FILE *savef, int c)
+{
+    unsigned char bytes[4];
+    unsigned char *buf = (unsigned char *) &c;
+
+    if (write_error)
+        return(WRITESTAT);
+
+    if (big_endian)
+    {
+        bytes[3] = buf[0];
+        bytes[2] = buf[1];
+        bytes[1] = buf[2];
+        bytes[0] = buf[3];
+        buf = bytes;
+    }
+    
+    rs_write(savef, buf, 4);
+
+    return(WRITESTAT);
+}
+
+int
+rs_read_int(int inf, int *i)
+{
+    unsigned char bytes[4];
+    int input = 0;
+    unsigned char *buf = (unsigned char *)&input;
+    
+    if (read_error || format_error)
+        return(READSTAT);
+
+    rs_read(inf, &input, 4);
+
+    if (big_endian)
+    {
+        bytes[3] = buf[0];
+        bytes[2] = buf[1];
+        bytes[1] = buf[2];
+        bytes[0] = buf[3];
+        buf = bytes;
+    }
+    
+    *i = *((int *) buf);
+
     return(READSTAT);
 }
 
@@ -132,55 +182,6 @@ rs_read_chars(int inf, char *i, int count)
 
     rs_read(inf, i, count);
     
-    return(READSTAT);
-}
-
-int
-rs_write_int(FILE *savef, int c)
-{
-    unsigned char bytes[4];
-    unsigned char *buf = (unsigned char *) &c;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    if (big_endian)
-    {
-        bytes[3] = buf[0];
-        bytes[2] = buf[1];
-        bytes[1] = buf[2];
-        bytes[0] = buf[3];
-        buf = bytes;
-    }
-    
-    rs_write(savef, buf, 4);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_int(int inf, int *i)
-{
-    unsigned char bytes[4];
-    int input = 0;
-    unsigned char *buf = (unsigned char *)&input;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, &input, 4);
-
-    if (big_endian)
-    {
-        bytes[3] = buf[0];
-        bytes[2] = buf[1];
-        bytes[1] = buf[2];
-        bytes[0] = buf[3];
-        buf = bytes;
-    }
-    
-    *i = *((int *) buf);
-
     return(READSTAT);
 }
 
