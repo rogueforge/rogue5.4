@@ -43,7 +43,7 @@ extern bool	Got_ltc, In_shell, Wizard;
 
 extern char	Fruit[], Prbuf[], Whoami[];
 extern int 	Orig_dsusp;
-extern int	Fd;
+extern FILE	*Fd;
 
 /*
  * Function types
@@ -112,10 +112,4 @@ unsigned long int md_ntohl(unsigned long int x);
 unsigned long int md_htonl(unsigned long int x);
 int	md_hasclreol();
 int	md_unlink(char *file);
-int	md_unlink_open_file(char *file, int inf);
-
-
-#ifdef _WIN32
-#define fdopen _fdopen
-#define fileno _fileno
-#endif
+int	md_unlink_open_file(char *file, FILE *inf);

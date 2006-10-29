@@ -82,8 +82,8 @@ score(int amount, int flags, char monst)
 	    delwin(Hw);
     }
 
-    if (Fd >= 0)
-	outf = (FILE *)fdopen(Fd, "w");
+    if (Fd != NULL)
+	outf = Fd;
     else
 	return;
 
@@ -111,9 +111,9 @@ score(int amount, int flags, char monst)
 #endif
     rd_score(top_ten, Fd);
     fclose(outf);
-    md_close(Fd);
+    fclose(Fd);
     open_score(0);
-    outf = (FILE *) fdopen(Fd, "w");
+    outf = Fd;
     /*
      * Insert her in list if need be
      */

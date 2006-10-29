@@ -22,7 +22,7 @@ typedef struct {
 
 char	*s_vowelstr();
 
-extern char	encstr[], frob;
+extern char	encstr[];
 
 char *lockfile = "/tmp/.fredlock";
 
@@ -121,7 +121,7 @@ s_encwrite(char *start, unsigned int size, FILE *outf)
 
     e1 = encstr;
     e2 = statlist;
-    fb = frob;
+    fb = 0;
 
     while (size--)
     {
@@ -147,7 +147,7 @@ s_encread(char *start, unsigned int size, int inf)
     int read_size;
     extern char statlist[];
 
-    fb = frob;
+    fb = 0;
 
     if ((read_size = read(inf, start, size)) == 0 || read_size == -1)
 	return;

@@ -24,17 +24,16 @@
 
 SCORE	Top_ten[10];
 
-char	frob,
-	Buf[BUFSIZ],
-	*Reason[] = {
+char	Buf[BUFSIZ],
+	*reason[] = {
 		"killed",
 		"quit",
 		"A total winner",
 		"killed with Amulet",
 	};
 
-int	Seed,
-	Inf;
+int	Seed;
+FILE	*Inf;
 
 struct passwd	*getpwnam();
 bool do_comm();
@@ -54,11 +53,10 @@ char	**av;
 		scorefile = av[1];
 	Seed = md_getpid();
 
-	if ((Inf = md_open(scorefile, 2, 0)) < 0) {
+	if ((Inf = fopen(scorefile, "r+")) < 0) {
 		perror(scorefile);
 		exit(1);
 	}
-	frob = 0;
 	s_encread((char *) Top_ten, sizeof Top_ten, Inf);
 
 	while (do_comm())
@@ -100,7 +98,6 @@ do_comm(void)
 			void (*fp)(int);
 
 			fp = signal(SIGINT, SIG_IGN);
-			frob = 0;
 			s_encwrite((char *) Top_ten, sizeof Top_ten, outf);
 			s_unlock_sc();
 			signal(SIGINT, fp);

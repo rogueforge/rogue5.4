@@ -43,6 +43,7 @@
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="../pdcurses"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;SCOREFILE;ALLSCORES"
+				IgnoreStandardIncludePath="true"
 				StringPooling="true"
 				MinimalRebuild="true"
 				ExceptionHandling="0"

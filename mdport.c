@@ -144,10 +144,10 @@ md_raw_standend()
 }
 
 int
-md_unlink_open_file(char *file, int inf)
+md_unlink_open_file(char *file, FILE *inf)
 {
 #ifdef _WIN32
-    _close(inf);
+    fclose(inf);
     _chmod(file, 0600);
     return( _unlink(file) );
 #else

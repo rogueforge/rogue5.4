@@ -21,8 +21,6 @@ typedef struct stat STAT;
 
 extern char version[], encstr[];
 
-static char Frob;
-
 static STAT Sbuf;
 
 /*
@@ -126,7 +124,7 @@ auto_save(int sig)
     for (i = 0; i < NSIG; i++)
 	signal(i, SIG_IGN);
     if (File_name[0] != '\0' && ((savef = fopen(File_name, "w")) != NULL ||
-	(md_unlink_open_file(File_name, fileno(savef)) >= 0 && (savef = fopen(File_name, "w")) != NULL)))
+	(md_unlink_open_file(File_name, savef) >= 0 && (savef = fopen(File_name, "w")) != NULL)))
 	    save_file(savef);
     exit(0);
 }
@@ -148,16 +146,11 @@ save_file(FILE *savef)
      * DO NOT DELETE.  This forces stdio to allocate the output buffer
      * so that malloc doesn't get confused on restart
      */
-    Frob = 0;
-    fwrite(&Frob, sizeof Frob, 1, savef);
-
-    fstat(fileno(savef), &Sbuf);
     encwrite(version, strlen(version)+1, savef);
     sprintf(buf,"%d x %d\n", LINES, COLS);
     encwrite(buf,80,savef);
     rs_save_file(savef);
     fflush(savef);
-    fstat(fileno(savef), &Sbuf);
     fclose(savef);
     exit(0);
 }
@@ -170,9 +163,8 @@ save_file(FILE *savef)
 bool
 restore(char *file, char **envp)
 {
-    int inf;
+    FILE *inf;
     bool syml;
-    char fb;
     extern char **environ;
     auto char buf[MAXSTR];
     auto STAT sbuf2;
@@ -191,17 +183,15 @@ restore(char *file, char **envp)
     signal(SIGTSTP, SIG_IGN);
 # endif
 #endif
-    if ((inf = md_open(file, 0, 0)) < 0)
+    if ((inf = fopen(file,"w+")) == NULL)
     {
 	perror(file);
 	return FALSE;
     }
-    fstat(inf, &sbuf2);
+    stat(file, &sbuf2);
     syml = is_symlink(file);
 
     fflush(stdout);
-    md_read(inf, &Frob, sizeof Frob);
-    fb = Frob;
     encread(buf, (unsigned) strlen(version) + 1, inf);
     if (strcmp(buf, version) != 0)
     {
@@ -299,7 +289,7 @@ encwrite(char *start, size_t size, FILE *outf)
     size_t o_size = size;
     e1 = encstr;
     e2 = statlist;
-    fb = Frob;
+    fb = 0;
 
     while(size)
     {
@@ -323,15 +313,16 @@ encwrite(char *start, size_t size, FILE *outf)
  *	Perform an encrypted read
  */
 size_t
-encread(char *start, size_t size, int inf)
+encread(char *start, size_t size, FILE *inf)
 {
     char *e1, *e2, fb;
-    int temp, read_size;
+    int temp;
+    size_t read_size;
     extern char statlist[];
 
-    fb = Frob;
+    fb = 0;
 
-    if ((read_size = md_read(inf, start, (int)size)) == 0 || read_size == -1)
+    if ((read_size = fread(start,1,size,inf)) == 0 || read_size == -1)
 	return(read_size);
 
     e1 = encstr;
@@ -357,7 +348,7 @@ static char scoreline[100];
  *	Read in the score file
  */
 void
-rd_score(SCORE *top_ten, int fd)
+rd_score(SCORE *top_ten, FILE *fd)
 {
     unsigned int i;
 

@@ -113,9 +113,9 @@ open_score()
     if (*Lockfile)
         strcat(Lockfile, "/");
     strcat(Lockfile, "rogue54.lck");
-    Fd = md_open(Scorefile, O_RDWR | O_CREAT, 0666);
+    Fd = fopen(Scorefile, "w+");
 #else
-    Fd = -1;
+    Fd = NULL;
 #endif
     md_normaluser();
 }
@@ -423,7 +423,7 @@ ucount(void)
  *	lock the score file.  If it takes too long, ask the user if
  *	they care to wait.  Return TRUE if the lock is successful.
  */
-static int lfd = -1;
+static FILE *lfd = NULL;
 bool
 lock_sc(void)
 {
@@ -432,17 +432,17 @@ lock_sc(void)
     static struct stat sbuf;
 
 over:
-    if ((lfd=md_creat(Lockfile, 0000)) >= 0)
+    if ((lfd=fopen(Lockfile, "w+")) != NULL)
 	return TRUE;
     for (cnt = 0; cnt < 5; cnt++)
     {
 	md_sleep(1);
-	if ((lfd=md_creat(Lockfile, 0000)) >= 0)
+	if ((lfd=fopen(Lockfile, "w+")) != NULL)
 	    return TRUE;
     }
     if (stat(Lockfile, &sbuf) < 0)
     {
-	lfd=md_creat(Lockfile, 0000);
+	lfd=fopen(Lockfile, "w+");
 	return TRUE;
     }
     if (time(NULL) - sbuf.st_mtime > 10)
@@ -460,11 +460,11 @@ over:
 	if (Prbuf[0] == 'y')
 	    for (;;)
 	    {
-		if ((lfd=md_creat(Lockfile, 0000)) >= 0)
+		if ((lfd=fopen(Lockfile, "w+")) != 0)
 		    return TRUE;
 		if (stat(Lockfile, &sbuf) < 0)
 		{
-		    lfd=md_creat(Lockfile, 0000);
+		    lfd=fopen(Lockfile, "w+");
 		    return TRUE;
 		}
 		if (time(NULL) - sbuf.st_mtime > 10)
@@ -489,13 +489,9 @@ void
 unlock_sc()
 {
 #ifdef SCOREFILE
-    if (lfd != -1)
-#ifdef _WIN32
-        _close(lfd);
-#else
-	close(lfd);
-#endif
-    lfd = -1;
+    if (lfd != NULL)
+        fclose(lfd);
+    lfd = NULL;
     md_unlink(Lockfile);
 #endif
 }
