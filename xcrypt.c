@@ -204,9 +204,8 @@ ascii_to_bin(char ch)
 static void
 des_init()
 {
-	int	j, b, k, inbit, obit;
+	int	i, j, b, k, inbit, obit;
 	unsigned int	*p, *il, *ir, *fl, *fr;
-	unsigned char i;
 
 	old_rawkey0 = old_rawkey1 = 0;
 	saltbits = 0;
@@ -238,7 +237,7 @@ des_init()
 	 * initialise the inverted key permutation.
 	 */
 	for (i = 0; i < 64; i++) {
-		init_perm[final_perm[i] = IP[i] - 1] = i;
+		init_perm[final_perm[i] = IP[i] - 1] = (unsigned char) i;
 		inv_key_perm[i] = 255;
 	}
 
@@ -247,7 +246,7 @@ des_init()
 	 * compression permutation.
 	 */
 	for (i = 0; i < 56; i++) {
-		inv_key_perm[key_perm[i] - 1] = i;
+		inv_key_perm[key_perm[i] - 1] = (unsigned char) i;
 		inv_comp_perm[i] = 255;
 	}
 
@@ -255,7 +254,7 @@ des_init()
 	 * Invert the key compression permutation.
 	 */
 	for (i = 0; i < 48; i++) {
-		inv_comp_perm[comp_perm[i] - 1] = i;
+		inv_comp_perm[comp_perm[i] - 1] = (unsigned char) i;
 	}
 
 	/*
@@ -317,7 +316,7 @@ des_init()
 	 * handling the output of the S-box arrays setup above.
 	 */
 	for (i = 0; i < 32; i++)
-		un_pbox[pbox[i] - 1] = i;
+		un_pbox[pbox[i] - 1] = (unsigned char) i;
 
 	for (b = 0; b < 4; b++)
 		for (i = 0; i < 256; i++) {
