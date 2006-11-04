@@ -456,7 +456,7 @@ struct monster {
 
 extern bool	After, Again, Allscore, Amulet, Door_stop, Fight_flush,
 		Firstmove, Has_hit, Inv_describe, Jump, Kamikaze,
-		Lower_msg, Move_on, Msg_esc, Noscore, Pack_used[],
+		Lower_msg, Move_on, Msg_esc, Pack_used[],
 		Passgo, Playing, Q_comm, Running, Save_msg, See_floor,
 		Seenstairs, Stat_msg, Terse, To_death, Tombstone;
 
@@ -467,7 +467,7 @@ extern char	Dir_ch, File_name[], Home[], Huh[], *Inv_t_name[],
 
 extern int	A_class[], Count, Food_left, Hungry_state, Inpack,
 		Inv_type, Lastscore, Level, Max_hit, Max_level, Mpos,
-		N_objs, No_command, No_food, No_move, Ntraps, Purse,
+		N_objs, No_command, No_food, No_move, Noscore, Ntraps, Purse,
 		Quiet, Vf_hit;
 
 extern unsigned int	numscores;
@@ -503,11 +503,12 @@ void	_free_list(THING **ptr);
 void	addmsg(char *fmt, ...);
 bool	add_haste(bool potion);
 void	add_pack(THING *obj, bool silent);
+void	add_pass();
 void	add_str(str_t *sp, int amt);
 void	accnt_maze(int y, int x, int ny, int nx);
 void	aggravate();
 int	attack(THING *mp);
-int	badcheck(char *name, struct obj_info *info, int bound);
+void	badcheck(char *name, struct obj_info *info, int bound);
 void	bounce(THING *weap, char *mname, bool noend);
 void	call();
 void	call_it(struct obj_info *info);
@@ -517,6 +518,8 @@ void	chg_str(int amt);
 void	check_level();
 void	conn(int r1, int r2);
 void	command();
+void	create_obj();
+
 void	current(THING *cur, char *how, char *where);
 void	d_level();
 void	death(char monst);
@@ -601,7 +604,8 @@ char	*pick_color(char *col);
 int	pick_one(struct obj_info *info, int nitems);
 void	pick_up(char ch);
 void	picky_inven();
-int	pr_spec(struct obj_info *info, int nitems);
+void	pr_spec(struct obj_info *info, int nitems);
+void	pr_list();
 void	put_bool(void *b);
 void	put_inv_t(void *ip);
 void	put_str(void *str);
@@ -636,6 +640,7 @@ void	set_oldch(THING *tp, coord *cp);
 void	setup();
 void	shell();
 bool	show_floor();
+void	show_map();
 void	show_win(char *message);
 int	sign(int nm);
 int	spread(int nm);
@@ -678,6 +683,7 @@ bool	seen_stairs(void);
 bool	turn_ok(int y, int x);
 bool	turn_see(bool turn_off);
 bool	is_current(THING *obj);
+int	passwd();
 
 char	be_trapped(coord *tc);
 char	floor_ch();

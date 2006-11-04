@@ -66,7 +66,7 @@ md_init()
 #if defined(__DJGPP__) || defined(_WIN32)
     _fmode = _O_BINARY;
 #endif
-#if defined(__CYGWIN__) || defined(__MSYS__)
+#if defined(__CYGWIN__)
     ESCDELAY=250;
 #endif
 }

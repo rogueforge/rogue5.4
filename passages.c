@@ -306,8 +306,9 @@ door(struct room *rm, coord *cp)
  * add_pass:
  *	Add the passages to the current window (wizard command)
  */
+
 void
-add_pass(void)
+add_pass()
 {
     PLACE *pp;
     int y, x;

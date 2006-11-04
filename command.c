@@ -318,7 +318,8 @@ over:
 		    }
 		    else
 		    {
-			if (Wizard = passwd()) 
+			Wizard = passwd();
+			if (Wizard) 
 			{
 			    Noscore = TRUE;
 			    turn_see(FALSE);

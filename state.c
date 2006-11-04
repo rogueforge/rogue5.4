@@ -2051,7 +2051,7 @@ rs_save_file(FILE *savef)
 
     rs_write_boolean(savef, After);                 /* 1  */    /* extern.c */
     rs_write_boolean(savef, Again);                 /* 2  */
-    rs_write_boolean(savef, Noscore);               /* 3  */
+    rs_write_int(savef, Noscore);                   /* 3  */
     rs_write_boolean(savef, Seenstairs);            /* 4  */
     rs_write_boolean(savef, Amulet);                /* 5  */
     rs_write_boolean(savef, Door_stop);             /* 6  */
@@ -2081,7 +2081,7 @@ rs_save_file(FILE *savef)
     rs_write_boolean(savef, To_death);              /* 26 */
     rs_write_boolean(savef, Tombstone);             /* 27 */
 #ifdef MASTER
-    rs_write_boolean(savef, Wizard);                /* 28 */
+    rs_write_int(savef, Wizard);                /* 28 */
 #else
     rs_write_boolean(savef, 0);                     /* 28 */
 #endif
@@ -2178,15 +2178,16 @@ rs_save_file(FILE *savef)
 int
 rs_restore_file(FILE *inf)
 {
-    bool junk;
-    int junk3;
+#ifndef MASTER
+    int junk;
+#endif
     
     if (read_error || format_error)
         return(READSTAT);
 
     rs_read_boolean(inf, &After);               /* 1  */    /* extern.c */
     rs_read_boolean(inf, &Again);               /* 2  */
-    rs_read_boolean(inf, &Noscore);             /* 3  */
+    rs_read_int(inf, &Noscore);                 /* 3  */
     rs_read_boolean(inf, &Seenstairs);          /* 4  */
     rs_read_boolean(inf, &Amulet);              /* 5  */
     rs_read_boolean(inf, &Door_stop);           /* 6  */
@@ -2216,9 +2217,9 @@ rs_restore_file(FILE *inf)
     rs_read_boolean(inf, &To_death);            /* 26 */
     rs_read_boolean(inf, &Tombstone);           /* 27 */
 #ifdef WIZARD
-    rs_read_boolean(inf, &Wizard);              /* 28 */
+    rs_read_int(inf, &Wizard);              /* 28 */
 #else
-    rs_read_boolean(inf, &junk);                /* 28 */
+    rs_read_int(inf, &junk);                /* 28 */
 #endif
     rs_read_booleans(inf, Pack_used, 26);       /* 29 */
     rs_read_char(inf, &Dir_ch);
@@ -2301,7 +2302,7 @@ rs_restore_file(FILE *inf)
 #ifdef MASTER
     rs_read_int(inf,&Total);                            /* 5.4-list.c    */
 #else
-    rs_read_int(inf,&junk3);
+    rs_read_int(inf,&junk);
 #endif
     rs_read_int(inf,&Between);                          /* 5.4-daemons.c    */
     rs_read_coord(inf, &nh);                            /* 5.4-move.c       */

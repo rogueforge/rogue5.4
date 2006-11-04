@@ -114,8 +114,9 @@ type_name(int type)
  * create_obj:
  *	Wizard command for getting anything he wants
  */
+
 void
-create_obj(void)
+create_obj()
 {
     THING *obj;
     char ch, bless;
@@ -224,8 +225,8 @@ teleport()
  * passwd:
  *	See if user knows password
  */
-bool
-passwd(void)
+int
+passwd()
 {
     char *sp, c;
     static char buf[MAXSTR];
@@ -234,7 +235,12 @@ passwd(void)
     Mpos = 0;
     sp = buf;
     while ((c = readchar()) != '\n' && c != '\r' && c != ESCAPE)
-	*sp++ = c;
+	if (c == md_killchar())
+	    sp = buf;
+	else if (c == md_erasechar() && sp > buf)
+	    sp--;
+	else
+	    *sp++ = c;
     if (sp == buf)
 	return FALSE;
     *sp = '\0';
@@ -245,8 +251,9 @@ passwd(void)
  * show_map:
  *	Print out the map for the wizard
  */
+
 void
-show_map(void)
+show_map()
 {
     int y, x, real;
 
@@ -254,7 +261,8 @@ show_map(void)
     for (y = 1; y < NUMLINES - 1; y++)
 	for (x = 0; x < NUMCOLS; x++)
 	{
-	    if (!(real = flat(y, x) & F_REAL))
+	    real = flat(y, x);
+	    if (!(real & F_REAL))
 		wstandout(Hw);
 	    wmove(Hw, y, x);
 	    waddch(Hw, chat(y, x));

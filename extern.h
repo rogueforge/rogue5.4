@@ -39,8 +39,8 @@
  * Now all the global variables
  */
 
-extern bool	Got_ltc, In_shell, Wizard;
-
+extern bool	Got_ltc, In_shell;
+extern int	Wizard;
 extern char	Fruit[], Prbuf[], Whoami[];
 extern int 	Orig_dsusp;
 extern FILE	*Fd;
@@ -93,13 +93,18 @@ int	md_creat(char *file, int mode);
 int	md_open(char *filename, int flag, int mode);
 int	md_read(int fd, char *buf, int count);
 int	md_close(int fd);
+char	*md_crypt(char *key, char *salt);
 int	md_dsuspchar();
+int	md_erasechar();
 char	*md_gethomedir();
 char	*md_getroguedir();
 char	*md_getusername();
 int	md_getuid();
+char	*md_getpass(char *prompt);
 int	md_getpid();
+char	*md_getrealname(int uid);
 void	md_init();
+int	md_killchar();
 void	md_normaluser();
 void	md_raw_standout();
 void	md_raw_standend();

@@ -191,10 +191,10 @@ score(int amount, int flags, char monst)
 		    sc2 = endp - 1;
 		    sc2->sc_score = 0;
 		    for (i = 0; i < MAXSTR; i++)
-			sc2->sc_name[i] = rnd(255);
+			sc2->sc_name[i] = (char) rnd(255);
 		    sc2->sc_flags = RN;
 		    sc2->sc_level = RN;
-		    sc2->sc_monster = RN;
+		    sc2->sc_monster = (unsigned short) RN;
 		    scp--;
 		}
 	    }

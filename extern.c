@@ -9,7 +9,7 @@
 
 bool After;				/* True if we want after daemons */
 bool Again;				/* Repeating the last command */
-bool Noscore;				/* Was a wizard sometime */
+int  Noscore;				/* Was a wizard sometime */
 bool Seenstairs;			/* Have seen the stairs (for lsd) */
 bool Amulet = FALSE;			/* He found the amulet */
 bool Door_stop = FALSE;			/* Stop running when we pass a door */
@@ -35,7 +35,7 @@ bool Terse = FALSE;			/* True if we should be short */
 bool To_death = FALSE;			/* Fighting is to the death! */
 bool Tombstone = TRUE;			/* Print out tombstone at end */
 #ifdef MASTER
-bool Wizard = FALSE;			/* True if allows wizard commands */
+int  Wizard = FALSE;			/* True if allows wizard commands */
 #endif
 bool Pack_used[26] = {			/* Is the character used in the pack? */
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,

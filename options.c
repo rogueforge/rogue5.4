@@ -370,7 +370,7 @@ get_num(void *vp, WINDOW *win)
     static char buf[MAXSTR];
 
     if ((i = get_str(buf, win)) == NORM)
-	*opt = atoi(buf);
+	*opt = (short) atoi(buf);
     return i;
 }
 #endif

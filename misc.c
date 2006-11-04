@@ -252,7 +252,8 @@ find_obj(int y, int x)
 		return obj;
     }
 #ifdef MASTER
-    msg(sprintf(Prbuf, "Non-object %d,%d", y, x));
+    sprintf(Prbuf, "Non-object %d,%d", y, x);
+    msg(Prbuf);
     return NULL;
 #else
     /* NOTREACHED */

@@ -638,8 +638,9 @@ nullstr(THING *ignored)
  * pr_list:
  *	List possible potions, scrolls, etc. for wizard.
  */
+
 void
-pr_list(void)
+pr_list()
 {
     int ch;
 
@@ -673,6 +674,7 @@ pr_list(void)
  * pr_spec:
  *	Print specific list of possible items to choose from
  */
+
 void
 pr_spec(struct obj_info *info, int nitems)
 {
