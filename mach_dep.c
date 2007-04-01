@@ -42,13 +42,17 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <string.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 #include <fcntl.h>
+#include <errno.h>
 #include <time.h>
 
 #define NOOP(x) (x += 0)
 
-static char Scorefile[PATH_MAX] = "rogue54.scr";
-static char Lockfile[PATH_MAX] = "rogue54.lck";
+static char Scorefile[PATH_MAX];
+static char Lockfile[PATH_MAX];
 
 # ifndef NUMSCORES
 #	define	NUMSCORES	10
@@ -92,32 +96,24 @@ init_check()
 
 /*
  * open_score:
- *	Open up the score file for future use, and then
- *	setuid(getuid()) in case we are running setuid.
+ *	Open up the score file for future use
  */
 
 void
 open_score()
 {
-    char *homedir = md_getroguedir();
+    strncpy(Scorefile, SCOREFILE, PATH_MAX);
+    strncpy(Lockfile, LOCKFILE, PATH_MAX);
 
-    if (homedir == NULL)
-        homedir = "";
+    Scorefile[PATH_MAX-1] = 0;
+    Lockfile[PATH_MAX-1] = 0;
 
-#ifdef SCOREFILE
-    strcpy(Scorefile, homedir);
-    if (*Scorefile)
-        strcat(Scorefile,"/");
-    strcat(Scorefile, "rogue54.scr");
-    strcpy(Lockfile, homedir);
-    if (*Lockfile)
-        strcat(Lockfile, "/");
-    strcat(Lockfile, "rogue54.lck");
-    Fd = fopen(Scorefile, "w+");
-#else
-    Fd = NULL;
-#endif
-    md_normaluser();
+    scoreboard = fopen(Scorefile, "r+");
+
+    if (scoreboard == NULL) { 
+         fprintf(stderr, "Could not open %s for writing: %s\n", Scorefile, strerror(errno)); 
+         fflush(stderr); 
+    } 
 }
 
 /*
@@ -477,6 +473,8 @@ over:
 	else
 	    return FALSE;
     }
+#else
+    return TRUE;
 #endif
 }
 

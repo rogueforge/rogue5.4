@@ -46,7 +46,6 @@ score(int amount, int flags, char monst)
     int i;
     SCORE *sc2;
     SCORE *top_ten, *endp;
-    FILE *outf;
 # ifdef MASTER
     int prflags = 0;
 # endif
@@ -82,11 +81,6 @@ score(int amount, int flags, char monst)
 	    delwin(Hw);
     }
 
-    if (Fd != NULL)
-	outf = Fd;
-    else
-	return;
-
     top_ten = (SCORE *) malloc(numscores * sizeof (SCORE));
     endp = &top_ten[numscores];
     for (scp = top_ten; scp < endp; scp++)
@@ -109,11 +103,7 @@ score(int amount, int flags, char monst)
 	else if (strcmp(Prbuf, "edit") == 0)
 	    prflags = 2;
 #endif
-    rd_score(top_ten, Fd);
-    fclose(outf);
-    fclose(Fd);
-    open_score(0);
-    outf = Fd;
+    rd_score(top_ten, scoreboard);
     /*
      * Insert her in list if need be
      */
@@ -208,7 +198,6 @@ score(int amount, int flags, char monst)
 	else
 	    break;
     }
-    fseek(outf, 0L, SEEK_SET);
     /*
      * Update the list file
      */
@@ -217,12 +206,11 @@ score(int amount, int flags, char monst)
 	if (lock_sc())
 	{
 	    fp = signal(SIGINT, SIG_IGN);
-	    wr_score(top_ten, outf);
+	    wr_score(top_ten, scoreboard);
 	    unlock_sc();
 	    signal(SIGINT, fp);
 	}
     }
-    fclose(outf);
 }
 
 /*

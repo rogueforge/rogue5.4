@@ -43,7 +43,7 @@ extern bool	Got_ltc, In_shell;
 extern int	Wizard;
 extern char	Fruit[], Prbuf[], Whoami[];
 extern int 	Orig_dsusp;
-extern FILE	*Fd;
+extern FILE	*scoreboard;
 
 /*
  * Function types
@@ -97,7 +97,6 @@ char	*md_crypt(char *key, char *salt);
 int	md_dsuspchar();
 int	md_erasechar();
 char	*md_gethomedir();
-char	*md_getroguedir();
 char	*md_getusername();
 int	md_getuid();
 char	*md_getpass(char *prompt);

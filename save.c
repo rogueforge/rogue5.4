@@ -352,6 +352,8 @@ rd_score(SCORE *top_ten, FILE *fd)
 {
     unsigned int i;
 
+    rewind(fd);
+
     for(i = 0; i < numscores; i++)
     {
         encread(top_ten[i].sc_name, MAXSTR, fd);
@@ -371,6 +373,8 @@ void
 wr_score(SCORE *top_ten, FILE *outf)
 {
     unsigned int i;
+
+	rewind(outf);
 
     for(i = 0; i < numscores; i++)
     {

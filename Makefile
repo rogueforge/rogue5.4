@@ -31,7 +31,7 @@ MISC  =	Makefile $(MISC_C) LICENSE.TXT $(PROGRAM).sln $(PROGRAM).vcproj $(DOCS)\
         $(DOCSRC)
 
 CC    = gcc
-ROPTS = -DALLSCORES -DSCOREFILE
+ROPTS = -DALLSCORES -DSCOREFILE=\"rogue54.scr\" -DLOCKFILE=\"rogue54.lck\"
 COPTS = -O3
 CFLAGS= $(COPTS) $(ROPTS) 
 LIBS =	-lcurses

@@ -87,6 +87,9 @@ main(int argc, char **argv, char **envp)
      * check for print-score option
      */
     open_score();
+
+	md_normaluser(); /* we drop any setgid/setuid priveldges here */
+
     if (argc == 2)
 	if (strcmp(argv[1], "-s") == 0)
 	{

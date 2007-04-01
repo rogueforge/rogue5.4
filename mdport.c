@@ -224,8 +224,18 @@ void
 md_normaluser()
 {
 #ifndef _WIN32
-    setuid(getuid());
-    setgid(getgid());
+    gid_t realgid = getgid();
+    uid_t realuid = getuid();
+
+    if (setresgid(-1, realgid, realgid) != 0) {
+	perror("Could not drop setgid privileges.  Aborting.");
+	exit(1);
+    }
+
+    if (setresuid(-1, realuid, realuid) != 0) {
+	perror("Could not drop setuid privileges.  Aborting.");
+	exit(1);
+    }
 #endif
 }
 
@@ -400,8 +410,7 @@ md_shellescape()
         /*
          * Set back to original user, just in case
          */
-        setuid(getuid());
-        setgid(getgid());
+        md_normaluser();
         execl(sh == NULL ? "/bin/sh" : sh, "shell", "-i", 0);
         perror("No shelly");
         _exit(-1);
@@ -434,42 +443,6 @@ directory_exists(char *dirname)
         return (sb.st_mode & S_IFDIR);
 
     return(0);
-}
-
-char *
-md_getroguedir()
-{
-    static char path[1024];
-    char *end,*home;
-
-    if ( (home = getenv("ROGUEHOME")) != NULL)
-    {
-        if (*home)
-        {
-            strncpy(path, home, PATH_MAX - 20);
-
-            end = &path[strlen(path)-1];
-
-            while( (end >= path) && ((*end == '/') || (*end == '\\')))
-                *end-- = '\0';
-
-            if (directory_exists(path))
-                return(path);
-        }
-    }
-
-    if (directory_exists("/var/games/roguelike"))
-        return("/var/games/roguelike");
-    if (directory_exists("/var/lib/roguelike"))
-        return("/var/lib/roguelike");
-    if (directory_exists("/var/roguelike"))
-        return("/var/roguelike");
-    if (directory_exists("/usr/games/lib"))
-        return("/usr/games/lib");
-    if (directory_exists("/games/roguelik"))
-        return("/games/roguelik");
-
-    return("");
 }
 
 char *

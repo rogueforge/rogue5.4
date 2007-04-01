@@ -2057,11 +2057,7 @@ rs_save_file(FILE *savef)
     rs_write_boolean(savef, Door_stop);             /* 6  */
     rs_write_boolean(savef, Fight_flush);           /* 7  */
     rs_write_boolean(savef, Firstmove);             /* 8  */
-#ifdef TIOCGLTC
     rs_write_boolean(savef, Got_ltc);               /* 9  */
-#else
-    rs_write_boolean(savef, 0);                     /* 9  */
-#endif
     rs_write_boolean(savef, Has_hit);               /* 10 */
     rs_write_boolean(savef, In_shell);              /* 11 */
     rs_write_boolean(savef, Inv_describe);          /* 12 */
@@ -2080,11 +2076,7 @@ rs_save_file(FILE *savef)
     rs_write_boolean(savef, Terse);                 /* 25 */
     rs_write_boolean(savef, To_death);              /* 26 */
     rs_write_boolean(savef, Tombstone);             /* 27 */
-#ifdef MASTER
-    rs_write_int(savef, Wizard);                /* 28 */
-#else
-    rs_write_boolean(savef, 0);                     /* 28 */
-#endif
+    rs_write_int(savef, Wizard);                    /* 28 */
     rs_write_booleans(savef, Pack_used, 26);        /* 29 */
     rs_write_char(savef, Dir_ch);
     rs_write_chars(savef, File_name, MAXSTR);
@@ -2118,7 +2110,6 @@ rs_save_file(FILE *savef)
     rs_write_int(savef, No_food);
     rs_write_ints(savef,A_class,MAXARMORS);
     rs_write_int(savef, Count);
-    rs_write_int(savef, Fd);
     rs_write_int(savef, Food_left);
     rs_write_int(savef, Lastscore);
     rs_write_int(savef, No_command);
@@ -2161,11 +2152,7 @@ rs_save_file(FILE *savef)
     rs_write_obj_info(savef, Ws_info, MAXSTICKS);      
     
     rs_write_daemons(savef, &d_list[0], 20);            /* 5.4-daemon.c */
-#ifdef MASTER
     rs_write_int(savef,Total);                          /* 5.4-list.c   */
-#else
-    rs_write_int(savef,0);
-#endif
     rs_write_int(savef,Between);                        /* 5.4-daemons.c*/
     rs_write_coord(savef, nh);                          /* 5.4-move.c    */
     rs_write_int(savef, Group);                         /* 5.4-weapons.c */
@@ -2177,11 +2164,7 @@ rs_save_file(FILE *savef)
 
 int
 rs_restore_file(FILE *inf)
-{
-#ifndef MASTER
-    int junk;
-#endif
-    
+{ 
     if (read_error || format_error)
         return(READSTAT);
 
@@ -2193,11 +2176,7 @@ rs_restore_file(FILE *inf)
     rs_read_boolean(inf, &Door_stop);           /* 6  */
     rs_read_boolean(inf, &Fight_flush);         /* 7  */
     rs_read_boolean(inf, &Firstmove);           /* 8  */
-#ifdef TIOCGLTC
     rs_read_boolean(inf, &Got_ltc);             /* 9  */
-#else
-    rs_read_boolean(inf, &junk);                /* 9  */
-#endif
     rs_read_boolean(inf, &Has_hit);             /* 10 */
     rs_read_boolean(inf, &In_shell);            /* 11 */
     rs_read_boolean(inf, &Inv_describe);        /* 12 */
@@ -2216,11 +2195,7 @@ rs_restore_file(FILE *inf)
     rs_read_boolean(inf, &Terse);               /* 25 */
     rs_read_boolean(inf, &To_death);            /* 26 */
     rs_read_boolean(inf, &Tombstone);           /* 27 */
-#ifdef WIZARD
-    rs_read_int(inf, &Wizard);              /* 28 */
-#else
-    rs_read_int(inf, &junk);                /* 28 */
-#endif
+    rs_read_int(inf, &Wizard);              	/* 28 */
     rs_read_booleans(inf, Pack_used, 26);       /* 29 */
     rs_read_char(inf, &Dir_ch);
     rs_read_chars(inf, File_name, MAXSTR);
@@ -2254,7 +2229,6 @@ rs_restore_file(FILE *inf)
     rs_read_int(inf, &No_food);
     rs_read_ints(inf,A_class,MAXARMORS);
     rs_read_int(inf, &Count);
-    rs_read_int(inf, &Fd);
     rs_read_int(inf, &Food_left);
     rs_read_int(inf, &Lastscore);
     rs_read_int(inf, &No_command);
@@ -2299,11 +2273,7 @@ rs_restore_file(FILE *inf)
     rs_read_obj_info(inf, Ws_info, MAXSTICKS);       
 
     rs_read_daemons(inf, d_list, 20);                   /* 5.4-daemon.c     */
-#ifdef MASTER
     rs_read_int(inf,&Total);                            /* 5.4-list.c    */
-#else
-    rs_read_int(inf,&junk);
-#endif
     rs_read_int(inf,&Between);                          /* 5.4-daemons.c    */
     rs_read_coord(inf, &nh);                            /* 5.4-move.c       */
     rs_read_int(inf,&Group);                            /* 5.4-weapons.c    */

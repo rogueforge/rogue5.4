@@ -34,9 +34,7 @@ bool Stat_msg = FALSE;			/* Should status() print as a msg() */
 bool Terse = FALSE;			/* True if we should be short */
 bool To_death = FALSE;			/* Fighting is to the death! */
 bool Tombstone = TRUE;			/* Print out tombstone at end */
-#ifdef MASTER
 int  Wizard = FALSE;			/* True if allows wizard commands */
-#endif
 bool Pack_used[26] = {			/* Is the character used in the pack? */
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
@@ -103,7 +101,7 @@ int A_class[MAXARMORS] = {		/* Armor class for each armor type */
 };
 
 int Count = 0;				/* Number of times to repeat command */
-FILE *Fd;				/* File descriptor for score file */
+FILE *scoreboard = (FILE *)NULL;	/* File descriptor for score file */
 int Food_left;				/* Amount of food in hero's stomach */
 int Lastscore = -1;			/* Score before this turn */
 int No_command = 0;			/* Number of turns asleep */
