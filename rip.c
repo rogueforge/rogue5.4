@@ -103,7 +103,7 @@ score(int amount, int flags, char monst)
 	else if (strcmp(Prbuf, "edit") == 0)
 	    prflags = 2;
 #endif
-    rd_score(top_ten, scoreboard);
+    rd_score(top_ten);
     /*
      * Insert her in list if need be
      */
@@ -206,7 +206,7 @@ score(int amount, int flags, char monst)
 	if (lock_sc())
 	{
 	    fp = signal(SIGINT, SIG_IGN);
-	    wr_score(top_ten, scoreboard);
+	    wr_score(top_ten);
 	    unlock_sc();
 	    signal(SIGINT, fp);
 	}

@@ -348,21 +348,26 @@ static char scoreline[100];
  *	Read in the score file
  */
 void
-rd_score(SCORE *top_ten, FILE *fd)
+rd_score(SCORE *top_ten)
 {
     unsigned int i;
 
-    rewind(fd);
+	if (scoreboard == NULL)
+		return;
 
-    for(i = 0; i < numscores; i++)
+	rewind(scoreboard); 
+
+	for(i = 0; i < numscores; i++)
     {
-        encread(top_ten[i].sc_name, MAXSTR, fd);
-        encread(scoreline, 100, fd);
+        encread(top_ten[i].sc_name, MAXSTR, scoreboard);
+        encread(scoreline, 100, scoreboard);
         sscanf(scoreline, " %u %hu %u %hu %hu %lx \n",
             &top_ten[i].sc_uid, &top_ten[i].sc_score,
             &top_ten[i].sc_flags, &top_ten[i].sc_monster,
             &top_ten[i].sc_level, &top_ten[i].sc_time);
     }
+
+	rewind(scoreboard); 
 }
 
 /*
@@ -370,20 +375,25 @@ rd_score(SCORE *top_ten, FILE *fd)
  *	Read in the score file
  */
 void
-wr_score(SCORE *top_ten, FILE *outf)
+wr_score(SCORE *top_ten)
 {
     unsigned int i;
 
-	rewind(outf);
+	if (scoreboard == NULL)
+		return;
+
+	rewind(scoreboard);
 
     for(i = 0; i < numscores; i++)
     {
           memset(scoreline,0,100);
-          encwrite(top_ten[i].sc_name, MAXSTR, outf);
+          encwrite(top_ten[i].sc_name, MAXSTR, scoreboard);
           sprintf(scoreline, " %u %hu %u %hu %hu %lx \n",
               top_ten[i].sc_uid, top_ten[i].sc_score,
               top_ten[i].sc_flags, top_ten[i].sc_monster,
               top_ten[i].sc_level, top_ten[i].sc_time);
-          encwrite(scoreline,100,outf);
+          encwrite(scoreline,100,scoreboard);
     }
+
+	rewind(scoreboard); 
 }

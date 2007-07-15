@@ -101,7 +101,7 @@ int A_class[MAXARMORS] = {		/* Armor class for each armor type */
 };
 
 int Count = 0;				/* Number of times to repeat command */
-FILE *scoreboard = (FILE *)NULL;	/* File descriptor for score file */
+FILE *scoreboard = NULL;		/* File descriptor for score file */
 int Food_left;				/* Amount of food in hero's stomach */
 int Lastscore = -1;			/* Score before this turn */
 int No_command = 0;			/* Number of turns asleep */

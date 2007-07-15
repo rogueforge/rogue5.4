@@ -16,5 +16,5 @@ struct sc_ent {
 
 typedef struct sc_ent SCORE;
 
-void	rd_score(SCORE *top_ten, FILE *fd);
-void	wr_score(SCORE *top_ten, FILE *outf);
+void	rd_score(SCORE *top_ten);
+void	wr_score(SCORE *top_ten);

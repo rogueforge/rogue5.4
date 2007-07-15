@@ -83,10 +83,17 @@ main(int argc, char **argv, char **envp)
 	Dnum = lowtime + md_getpid();
     Seed = Dnum;
 
+    open_score();
+
+	/* 
+     * Drop setuid/setgid after opening the scoreboard file. 
+     */ 
+
+    md_normaluser();
+
     /*
      * check for print-score option
      */
-    open_score();
 
 	md_normaluser(); /* we drop any setgid/setuid priveldges here */
 

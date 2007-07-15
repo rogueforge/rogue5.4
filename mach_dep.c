@@ -51,9 +51,6 @@
 
 #define NOOP(x) (x += 0)
 
-static char Scorefile[PATH_MAX];
-static char Lockfile[PATH_MAX];
-
 # ifndef NUMSCORES
 #	define	NUMSCORES	10
 #	define	NUMNAME		"Ten"
@@ -102,11 +99,17 @@ init_check()
 void
 open_score()
 {
-    strncpy(Scorefile, SCOREFILE, PATH_MAX);
-    strncpy(Lockfile, LOCKFILE, PATH_MAX);
+#ifdef SCOREFILE
+     char *Scorefile = SCOREFILE;
+     /* 
+      * We drop setgid privileges after opening the score file, so subsequent 
+      * open()'s will fail.  Just reuse the earlier filehandle. 
+      */
 
-    Scorefile[PATH_MAX-1] = 0;
-    Lockfile[PATH_MAX-1] = 0;
+     if (scoreboard != NULL) { 
+         rewind(scoreboard); 
+         return; 
+     } 
 
     scoreboard = fopen(Scorefile, "r+");
 
@@ -114,6 +117,10 @@ open_score()
          fprintf(stderr, "Could not open %s for writing: %s\n", Scorefile, strerror(errno)); 
          fflush(stderr); 
     } 
+
+#else
+	scoreboard = NULL;
+#endif
 }
 
 /*
@@ -423,9 +430,10 @@ static FILE *lfd = NULL;
 bool
 lock_sc(void)
 {
-#ifdef SCOREFILE
+#if defined(SCOREFILE) && defined(LOCKFILE)
     int cnt;
     static struct stat sbuf;
+    char *Lockfile = LOCKFILE;
 
 over:
     if ((lfd=fopen(Lockfile, "w+")) != NULL)
@@ -486,11 +494,11 @@ over:
 void
 unlock_sc()
 {
-#ifdef SCOREFILE
+#if defined(SCOREFILE) && defined(LOCKFILE)
     if (lfd != NULL)
         fclose(lfd);
     lfd = NULL;
-    md_unlink(Lockfile);
+    md_unlink(LOCKFILE);
 #endif
 }
 
