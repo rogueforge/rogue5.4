@@ -34,7 +34,8 @@ AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([alarm getpass memset setenv strchr strerror])
-AC_FUNC_GETLOADAVG
+#AC_FUNC_GETLOADAVG
+AC_CHECK_FUNCS([getloadavg])
 
 if test -d /var/games ; then
     SCOREFILE=/var/games/rogue54/rogue54.scr
