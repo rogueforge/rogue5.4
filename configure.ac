@@ -3,7 +3,6 @@
 
 AC_PREREQ(2.59)
 AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
-AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([armor.c])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile])
@@ -36,6 +35,12 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([alarm getpass memset setenv strchr strerror])
 #AC_FUNC_GETLOADAVG
 AC_CHECK_FUNCS([getloadavg])
+
+AC_CHECK_PROG([NROFF], [nroff], [nroff],)
+AC_CHECK_PROG([GROFF], [groff], [groff],)
+AC_CHECK_PROG([COLCRT], [colcrt], [colcrt],)
+AC_CHECK_PROG([TBL], [tbl], [tbl],)
+AC_CHECK_PROG([SED], [sed], [sed],)
 
 if test -d /var/games ; then
     SCOREFILE=/var/games/rogue54/rogue54.scr
