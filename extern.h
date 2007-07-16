@@ -4,6 +4,10 @@
  * @(#)extern.h	4.35 (Berkeley) 02/05/99
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /*
  * Don't change the constants, since they are used for sizes in many
  * places in the program.

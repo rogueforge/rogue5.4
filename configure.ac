@@ -1,0 +1,199 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.59)
+AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
+AM_INIT_AUTOMAKE
+AC_CONFIG_SRCDIR([armor.c])
+AC_CONFIG_HEADER([config.h])
+AC_CONFIG_FILES([Makefile])
+
+# Checks for programs.
+AC_PROG_CC
+
+# Checks for libraries.
+
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h nlist.h stdlib.h string.h sys/ioctl.h termios.h unistd.h utmp.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+AC_C_CONST
+AC_TYPE_UID_T
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+MP_WITH_CURSES
+# Checks for library functions.
+AC_FUNC_FORK
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_LSTAT
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_FUNC_MALLOC
+AC_TYPE_SIGNAL
+AC_FUNC_STAT
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([alarm getpass memset setenv strchr strerror])
+AC_FUNC_GETLOADAVG
+
+if test -d /var/games ; then
+    SCOREFILE=/var/games/rogue54/rogue54.scr
+else
+    SCOREFILE=rogue54.scr
+fi
+
+if test -d /var/lock ; then
+    LOCKFILE=/var/lock/LCK..rogue54
+else
+    LOCKFILE=rogue54.lck
+fi
+
+AC_ARG_ENABLE([scorefile],[AS_HELP_STRING([--enable-scorefile=SCOREFILE], [override scoreboard filename])],[],[])
+AC_MSG_CHECKING([for scoreboard file])
+if test "x$enable_scorefile" = "xno" ; then
+AC_MSG_RESULT([disabled])
+elif test "x$enable_scorefile" = "x" ; then
+AC_MSG_RESULT([$SCOREFILE])
+AC_DEFINE_UNQUOTED([SCOREFILE], ["$SCOREFILE"], [Rogue 5.4 Scorefile])
+else
+AC_DEFINE_UNQUOTED([SCOREFILE], ["$enable_scorefile"], [Define to file to use for scoreboard])
+AC_MSG_RESULT([$enable_scorefile])
+fi
+
+AC_ARG_ENABLE([lockfile],[AS_HELP_STRING([--enable-lockfile=LOCKFILE], [override lockfile filename])],[],[])
+AC_MSG_CHECKING([for scoreboard lockfile file])
+if test "x$enable_lockfile" = "xno" ; then
+AC_MSG_RESULT([disabled])
+elif test "x$enable_lockfile" = "x" ; then
+AC_MSG_RESULT([$LOCKFILE])
+AC_DEFINE_UNQUOTED([LOCKFILE], ["$LOCKFILE"], [Rogue 5.4 Scoreboard lock file])
+else
+AC_DEFINE_UNQUOTED([LOCKFILE], ["$enable_lockfile"], [Define to file to use for scoreboard lockfile])
+AC_MSG_RESULT([$enable_lockfile])
+fi
+
+AC_ARG_ENABLE([wizardmode],[AS_HELP_STRING([--enable-wizardmode], [enable availability of wizard mode @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([if wizard mode is enabled])
+if test "x$enable_wizardmode" = "xno" ; then
+AC_MSG_RESULT([no])
+elif test "x$enable_wizardmode" = "x" ; then
+AC_MSG_RESULT([no])
+else
+AC_DEFINE([MASTER], [], [Define to include wizard mode])
+if test "x$enable_wizardmode" != "xyes" ; then
+AC_DEFINE_UNQUOTED([PASSWD],[$enable_wizardmode], [Define crypt(3) wizard mode password])
+fi
+AC_MSG_RESULT([yes])
+fi
+
+AC_ARG_ENABLE([allscores],[AS_HELP_STRING([--enable-allscores], [enable scoreboard to show top scores, not just top players @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([if allscores is enabled])
+if test "x$enable_allscores" = "xyes" ; then
+AC_DEFINE([ALLSCORES], [1], [Define if scorefile is top scores, not top players])
+AC_MSG_RESULT([yes])
+else
+AC_MSG_RESULT([no])
+fi
+
+AC_ARG_ENABLE([checktime],[AS_HELP_STRING([--enable-checktime], [enable checktime @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([if checktime is enabled])
+if test "x$enable_checktime" = "xyes" ; then
+AC_DEFINE([CHECKTIME], [1], [Define if checktime feature should be enabled])
+AC_MSG_RESULT([yes])
+else
+AC_MSG_RESULT([no])
+fi
+
+AC_ARG_ENABLE([maxload],[AS_HELP_STRING([--enable-maxload], [enable maxload @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([runtime execution limit (maximum system load average)])
+if test "x$enable_maxload" = "xyes" ; then
+AC_DEFINE([MAXLOAD], [100], [Define if maxload feature should be enabled])
+AC_MSG_RESULT([100])
+elif test "x$enable_maxload" = "x" ; then
+AC_MSG_RESULT([unlimited])
+elif test "x$enable_maxload" = "xno" ; then
+AC_MSG_RESULT([unlimited])
+else
+AC_DEFINE_UNQUOTED([MAXLOAD], [$enable_maxload], [Define if maxload feature should be enabled])
+AC_MSG_RESULT([$enable_maxload])
+fi
+
+AC_ARG_ENABLE([maxusers],[AS_HELP_STRING([--enable-maxusers], [enable maxuser @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([runtime execution limit (maximum online system users)])
+if test "x$enable_maxusers" = "xyes" ; then
+AC_DEFINE([MAXUSERS], [100], [Define if maxusers feature should be enabled])
+AC_MSG_RESULT([100])
+elif test "x$enable_maxusers" = "x" ; then
+AC_MSG_RESULT([unlimited])
+elif test "x$enable_maxload" = "xno" ; then 
+AC_MSG_RESULT([unlimited])
+else
+AC_DEFINE_UNQUOTED([MAXLOAD], [$enable_maxusers], [Define if maxusers feature should be enabled])
+AC_MSG_RESULT([$enable_maxusers])
+fi
+
+AC_ARG_ENABLE([numscores],[AS_HELP_STRING([--enable-numscores], [number of scores to store in scoreboard @<:@default=10@:>@])],[],[])
+AC_MSG_CHECKING([what the number of scores to store in scoreboard is])
+if test "x$numscores" = "xyes" ; then
+AC_DEFINE([NUMSCORES], [10], [number of scores to store in scoreboard])
+AC_MSG_RESULT([10])
+elif test "x$enable_numscores" = "x" ; then
+AC_DEFINE([NUMSCORES], [10], [number of scores to store in scoreboard])
+AC_MSG_RESULT([10])
+elif test "x$enable_numscores" = "xno" ; then 
+AC_DEFINE([NUMSCORES], [10], [number of scores to store in scoreboard])
+AC_MSG_RESULT([10])
+else
+AC_DEFINE_UNQUOTED([NUMSCORES], [$enable_numscores], [number of scores to store in scoreboard])
+AC_MSG_RESULT([$enable_numscores])
+fi
+
+AC_ARG_ENABLE([numname],[AS_HELP_STRING([--enable-numname], [word for number of scores to store in scoreboard @<:@default=Ten@:>@])],[],[])
+AC_MSG_CHECKING([word for the number of scores to store in scoreboard is])
+if test "x$enable_numname" = "xyes" ; then
+AC_DEFINE([NUMNAME], ["Ten"], [word for the number of scores to store in scoreboard])
+AC_MSG_RESULT([Ten])
+elif test "x$enable_numname" = "x" ; then
+AC_DEFINE([NUMNAME], ["Ten"], [word for the number of scores to store in scoreboard])
+AC_MSG_RESULT([Ten])
+elif test "x$enable_numname" = "xno" ; then 
+AC_DEFINE([NUMNAME], ["Ten"], [word for the number of scores to store in scoreboard])
+AC_MSG_RESULT([Ten])
+else
+AC_DEFINE_UNQUOTED([NUMNAME], ["$enable_numname"], [word for the number of scores to store in scoreboard])
+AC_MSG_RESULT([$enable_numname])
+fi
+
+AC_ARG_ENABLE([loadav],[AS_HELP_STRING([--enable-loadav=NAMELIST], [use program's load average function (unlikely to work) @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([whether to use program's built in load average function])
+if test "x$enable_loadav" = "xyes" ; then
+AC_DEFINE([LOADAV], [], [define if we should use program's load average function instead of system])
+AC_DEFINE([NAMELIST], [/vmunix], [kernel file to pass to nlist() when reading load average (unlikely to work)])
+AC_MSG_RESULT([/vmunix])
+elif test "x$enable_loadav" = "x" ; then
+AC_MSG_RESULT([no])
+elif test "x$enable_loadav" = "xno" ; then 
+AC_MSG_RESULT([no])
+else
+AC_DEFINE([LOADAV], [], [define if we should use program's load average function instead of system])
+AC_DEFINE_UNQUOTED([NAMELIST], [$enable_loadav], [kernel file to pass to nlist() when reading load average (unlikely to work)])
+AC_MSG_RESULT([$enable_loadav])
+fi
+
+AC_ARG_ENABLE([ucount],[AS_HELP_STRING([--enable-ucount=UTMPFILE], [use program's own function to count users (unlikely to work) @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([whether to use program's built in user counting function])
+if test "x$enable_ucount" = "xyes" ; then
+AC_DEFINE([UCOUNT], [], [define if we should use program's user counting function instead of system's])
+AC_DEFINE([UTMP], [/etc/utmp], [utmp like file to pass to ucount() when counting online users (unlikely to work)])
+AC_MSG_RESULT([/etc/utmp])
+elif test "x$enable_ucount" = "x" ; then
+AC_MSG_RESULT([no])
+elif test "x$enable_count" = "xno" ; then 
+AC_MSG_RESULT([no])
+else
+AC_DEFINE([UCOUNT], [], [define if we should use program's user counting function instead of system's])
+AC_DEFINE_UNQUOTED([UTMP], [$enable_ucount], [utmp like file to pass to ucount() when counting online users (unlikely to work)])
+AC_MSG_RESULT([$enable_ucount])
+fi
+
+AC_OUTPUT
