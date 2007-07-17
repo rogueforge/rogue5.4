@@ -4,7 +4,14 @@
  * @(#)extern.h	4.35 (Berkeley) 02/05/99
  */
 
+
 #ifdef HAVE_CONFIG_H
+#ifdef PDCURSES
+#undef HAVE_UNISTD_H
+#undef HAVE_LIMITS_H
+#undef HAVE_MEMORY_H
+#undef HAVE_STRING_H
+#endif
 #include "config.h"
 #endif
 
@@ -14,7 +21,7 @@
  */
 
 #ifndef _WIN32
-#include <sys/ioctl.h>
+//#include <sys/ioctl.h>
 #endif
 #include <stdlib.h>
 
@@ -52,8 +59,6 @@ extern FILE	*scoreboard;
 /*
  * Function types
  */
-
-#include <stdlib.h>
 
 void    auto_save(int);
 void	come_down();
@@ -93,10 +98,6 @@ void	checkout(int sig);
 #endif
 
 int	md_chmod(char *filename, int mode);
-int	md_creat(char *file, int mode);
-int	md_open(char *filename, int flag, int mode);
-int	md_read(int fd, char *buf, int count);
-int	md_close(int fd);
 char	*md_crypt(char *key, char *salt);
 int	md_dsuspchar();
 int	md_erasechar();

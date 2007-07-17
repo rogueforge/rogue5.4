@@ -32,9 +32,6 @@
  *			for high load average.
  */
 
-#ifdef _WIN32
-#include <io.h>
-#endif
 #include <curses.h>
 #include "extern.h"
 #include <signal.h>
@@ -42,7 +39,7 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <string.h>
-#ifndef _WIN32
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <fcntl.h>

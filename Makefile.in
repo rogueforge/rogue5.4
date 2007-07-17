@@ -37,7 +37,7 @@ MISC  =	Makefile $(MISC_C) LICENSE.TXT $(PROGRAM).sln $(PROGRAM).vcproj $(DOCS)\
         $(DOCSRC)
 
 CC    = @CC@
-CFLAGS= @CFLAGS@
+CFLAGS= @CFLAGS@ 
 LIBS =	@LIBS@
 RM    = rm -f
 GROFF = @GROFF@
@@ -49,11 +49,12 @@ SCOREFILE = @SCOREFILE@
 LOCKFILE = @LOCKFILE@
 GROUPOWNER = @GROUPOWNER@
 SETGID = @SETGID@
+CPPFLAGS =@DEFS@ @CPPFLAGS@
 
 .SUFFIXES: .obj
 
 .c.obj:
-	$(CC) $(CFLAGS) /c $*.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) /c $*.c
     
 $(PROGRAM): $(HDRS) $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@

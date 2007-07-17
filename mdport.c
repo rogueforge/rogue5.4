@@ -16,6 +16,10 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #if defined(_WIN32)
 #include <Windows.h>
 #include <Lmcons.h>
@@ -40,7 +44,11 @@
 
 #include <curses.h>
 #if !defined(DJGPP)
+#ifdef HAVE_NCURSES_TERM_H
+#include <ncurses/term.h>
+#else
 #include <term.h>
+#endif
 #endif
 
 #include <stdio.h>
@@ -167,50 +175,6 @@ md_unlink(char *file)
 }
 
 int
-md_creat(char *file, int mode)
-{
-    int fd;
-#ifdef _WIN32
-    mode = _S_IREAD | _S_IWRITE;
-    fd = _open(file,O_CREAT | O_EXCL | O_WRONLY, mode);
-#else
-    fd = open(file,O_CREAT | O_EXCL | O_WRONLY, mode);
-#endif
-
-    return(fd);
-}
-
-int
-md_open(char *filename, int flag, int mode)
-{
-#ifdef _WIN32
-    return( _open(filename,flag,mode) );
-#else
-    return( open(filename,flag,mode) );
-#endif
-}
-
-int
-md_read(int fd, char *buf, int count)
-{
-#ifdef _WIN32
-    return( _read(fd,buf,count) );
-#else
-    return( read(fd,buf,count) );
-#endif
-}
-
-int
-md_close(int fd)
-{
-#ifdef _WIN32
-    return( _close(fd) );
-#else
-    return( close(fd) );
-#endif
-}
-
-int
 md_chmod(char *filename, int mode)
 {
 #ifdef _WIN32
@@ -223,16 +187,32 @@ md_chmod(char *filename, int mode)
 void
 md_normaluser()
 {
-#ifndef _WIN32
-    gid_t realgid = getgid();
-    uid_t realuid = getuid();
+#if defined(HAVE_GETGID) && defined(HAVE_GETUID)
+	gid_t realgid = getgid();
+	uid_t realuid = getuid();
 
+#if defined(HAVE_SETRESGID)
     if (setresgid(-1, realgid, realgid) != 0) {
-	perror("Could not drop setgid privileges.  Aborting.");
-	exit(1);
+#elif defined (HAVE_SETREGID) 
+    if (setregid(realgid, realgid) != 0) {
+#elif defined (HAVE_SETGID)
+	if (setgid(realgid) != 0) {
+#else
+	if (0) {
+#endif
+		perror("Could not drop setgid privileges.  Aborting.");
+		exit(1);
     }
 
+#if defined(HAVE_SETRESUID)
     if (setresuid(-1, realuid, realuid) != 0) {
+#elif defined(HAVE_SETREUID)
+    if (setreuid(realuid, realuid) != 0) {
+#elif defined(HAVE_SETUID)
+	if (setuid(realuid) != 0) {
+#else
+	if (0) {
+#endif
 	perror("Could not drop setuid privileges.  Aborting.");
 	exit(1);
     }
@@ -242,7 +222,7 @@ md_normaluser()
 int
 md_getuid()
 {
-#ifndef _WIN32
+#ifdef HAVE_GETUID
     return( getuid() );
 #else
     return(42);
@@ -1188,5 +1168,3 @@ md_readchar()
 
     return(ch & 0x7F);
 }
-
-
