@@ -42,7 +42,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="../pdcurses"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;ALLSCORES;MASTER;SCOREFILE=\&quot;rogue54.scr\&quot;;LOCKFILE=\&quot;rogue54.lck\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;ALLSCORES;HAVE_CURSES_H;HAVE_TERM_H;MASTER;SCOREFILE=\&quot;rogue54.scr\&quot;;LOCKFILE=\&quot;rogue54.lck\&quot;"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
