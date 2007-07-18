@@ -17,65 +17,226 @@
 */
 
 #ifdef HAVE_CONFIG_H
+#ifdef PDCURSES
+#undef HAVE_UNISTD_H
+#undef HAVE_LIMITS_H
+#undef HAVE_MEMORY_H
+#undef HAVE_STRING_H
+#endif
 #include "config.h"
+#elif defined(_WIN32)
+#define HAVE_TERM_H
+#define HAVE__SPAWNL
+#define HAVE_SYS_TYPES_H
+#define HAVE_PROCESS_H
 #endif
 
 #if defined(_WIN32)
 #include <Windows.h>
 #include <Lmcons.h>
-#include <process.h>
 #include <io.h>
 #include <conio.h>
 #pragma warning( disable: 4201 ) 
 #include <shlobj.h>
 #pragma warning( default: 4201 ) 
 #include <Shlwapi.h>
-#include <sys/types.h>
 #undef MOUSE_MOVED
-#elif defined(__DJGPP__)
+#endif
+
+#if defined(HAVE_STDLIB_H)
+#include <stdlib.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES)
+#include <sys/types.h>
+#endif
+
+#if defined(HAVE_PROCESS_H)
 #include <process.h>
-#else
+#endif
+
+#if defined(HAVE_PWD_H)
 #include <pwd.h>
+#endif
+
+#if defined(HAVE_SYS_UTSNAME)
 #include <sys/utsname.h>
-#include <unistd.h>
-#include <termios.h>
+#endif
+
+#if defined(HAVE_ARPA_INET_H)
 #include <arpa/inet.h> // Solaris 2.8 required this for htonl() and ntohl()
 #endif
 
-#include <curses.h>
-#if !defined(DJGPP)
-#ifdef HAVE_NCURSES_TERM_H
-#include <ncurses/term.h>
-#else
-#include <term.h>
-#endif
+#if defined(HAVE_TERMIOS_H)
+#include <termios.h>
 #endif
 
-#include <stdio.h>
+#if defined(HAVE_UNISTD_H)
+#include <unistd.h>
+#endif
+
+#if defined(HAVE_TERM_H)
+#include <term.h>
+#elif defined(HAVE_NCURSES_TERM_H)
+#include <ncurses/term.h>
+#endif
+
 #include <fcntl.h>
 #include <limits.h>
 #include <sys/stat.h>
 #include <signal.h>
+#include <curses.h>
 #include "extern.h"
+
+#if !defined(PATH_MAX) && defined(_MAX_PATH)
+#define PATH_MAX _MAX_PATH
+#endif
+
+#if !defined(PATH_MAX) && defined(_PATH_MAX)
+#define PATH_MAX _PATH_MAX
+#endif
 
 #define NOOP(x) (x += 0)
 
 void
 md_init()
 {
-#ifdef __INTERIX
+#if defined(__INTERIX)
     char *term;
 
     term = getenv("TERM");
 
     if (term == NULL)
         setenv("TERM","interix");
-#endif
-#if defined(__DJGPP__) || defined(_WIN32)
+#elif defined(__DJGPP__)
     _fmode = _O_BINARY;
-#endif
-#if defined(__CYGWIN__)
+#elif defined(_WIN32)
+    _fmode = _O_BINARY;
+#elif defined(__CYGWIN__)
     ESCDELAY=250;
+#endif
+
+#if defined(DUMP)
+	md_onsignal_default();
+#else
+	md_onsignal_exit();
+#endif
+}
+
+void
+md_onsignal_default()
+{
+#ifdef SIGHUP
+    signal(SIGHUP, SIG_DFL);
+#endif
+#ifdef SIGQUIT
+    signal(SIGQUIT, SIG_DFL);
+#endif
+#ifdef SIGILL
+    signal(SIGILL, SIG_DFL);
+#endif
+#ifdef SIGTRAP
+    signal(SIGTRAP, SIG_DFL);
+#endif
+#ifdef SIGIOT
+    signal(SIGIOT, SIG_DFL);
+#endif
+#ifdef SIGEMT
+    signal(SIGEMT, SIG_DFL);
+#endif
+#ifdef SIGFPE
+    signal(SIGFPE, SIG_DFL);
+#endif
+#ifdef SIGBUS
+    signal(SIGBUS, SIG_DFL);
+#endif
+#ifdef SIGSEGV
+    signal(SIGSEGV, SIG_DFL);
+#endif
+#ifdef SIGSYS
+    signal(SIGSYS, SIG_DFL);
+#endif
+#ifdef SIGTERM
+    signal(SIGTERM, SIG_DFL);
+#endif
+}
+
+void
+md_onsignal_exit()
+{
+#ifdef SIGHUP
+    signal(SIGHUP, SIG_DFL);
+#endif
+#ifdef SIGQUIT
+    signal(SIGQUIT, exit);
+#endif
+#ifdef SIGILL
+    signal(SIGILL, exit);
+#endif
+#ifdef SIGTRAP
+    signal(SIGTRAP, exit);
+#endif
+#ifdef SIGIOT
+    signal(SIGIOT, exit);
+#endif
+#ifdef SIGEMT
+    signal(SIGEMT, exit);
+#endif
+#ifdef SIGFPE
+    signal(SIGFPE, exit);
+#endif
+#ifdef SIGBUS
+    signal(SIGBUS, exit);
+#endif
+#ifdef SIGSEGV
+    signal(SIGSEGV, exit);
+#endif
+#ifdef SIGSYS
+    signal(SIGSYS, exit);
+#endif
+#ifdef SIGTERM
+    signal(SIGTERM, exit);
+#endif
+}
+
+void
+md_onsignal_autosave()
+{
+#ifdef SIGHUP
+    signal(SIGHUP, auto_save);
+#endif
+#ifdef SIGQUIT
+	signal(SIGQUIT, endit);
+#endif
+#ifdef SIGILL
+    signal(SIGILL, auto_save);
+#endif
+#ifdef SIGTRAP
+    signal(SIGTRAP, auto_save);
+#endif
+#ifdef SIGIOT
+    signal(SIGIOT, auto_save);
+#endif
+#ifdef SIGEMT
+    signal(SIGEMT, auto_save);
+#endif
+#ifdef SIGFPE
+    signal(SIGFPE, auto_save);
+#endif
+#ifdef SIGBUS
+    signal(SIGBUS, auto_save);
+#endif
+#ifdef SIGSEGV
+    signal(SIGSEGV, auto_save);
+#endif
+#ifdef SIGSYS
+    signal(SIGSYS, auto_save);
+#endif
+#ifdef SIGTERM
+    signal(SIGTERM, auto_save);
+#endif
+#ifdef SIGINT
+    signal(SIGINT, quit);
 #endif
 }
 
@@ -239,7 +400,6 @@ md_getpid()
 #endif
 }
 
-
 char *
 md_getusername()
 {
@@ -253,8 +413,7 @@ md_getusername()
     mybuffer = buffer;
     GetUserName(mybuffer,&size);
     l = mybuffer;
-#endif
-#if !defined(_WIN32) && !defined(DJGPP)
+#elif defined(HAVE_GETPWUID)
     struct passwd *pw;
 
     pw = getpwuid(getuid());
@@ -367,21 +526,15 @@ md_getshell()
 int
 md_shellescape()
 {
-#if (!defined(_WIN32) && !defined(__DJGPP__))
+#if defined(HAVE_WORKING_FORK)
     int ret_status;
     int pid;
     void (*myquit)(int);
     void (*myend)(int);
-#endif
     char *sh;
 
     sh = md_getshell();
 
-#if defined(_WIN32)
-    return((int)_spawnl(_P_WAIT,sh,"shell",NULL,0));
-#elif defined(__DJGPP__)
-    return ( spawnl(P_WAIT,sh,"shell",NULL,0) );
-#else
     while((pid = fork()) < 0)
         sleep(1);
 
@@ -397,7 +550,7 @@ md_shellescape()
     }
     else /* Application */
     {
-	myend = signal(SIGINT, SIG_IGN);
+    	myend = signal(SIGINT, SIG_IGN);
 #ifdef SIGQUIT
         myquit = signal(SIGQUIT, SIG_IGN);
 #endif  
@@ -409,8 +562,13 @@ md_shellescape()
         signal(SIGQUIT, myend);
 #endif
     }
-
     return(ret_status);
+#elif defined(HAVE__SPAWNL) 
+    return((int)_spawnl(_P_WAIT,md_getshell(),"shell",NULL,0));
+#elif defined(HAVE_SPAWNL)
+    return ( spawnl(P_WAIT,md_getshell(),"shell",NULL,0) );
+#else
+	return(0);
 #endif
 }
 
@@ -456,7 +614,7 @@ md_crypt(char *key, char *salt)
 char *
 md_getpass(char *prompt)
 {
-#ifdef _WIN32
+#ifndef HAVE_GETPASS
     static char password_buffer[9];
     char *p = password_buffer;
     int c, count = 0;
@@ -1167,4 +1325,140 @@ md_readchar()
     raw();
 
     return(ch & 0x7F);
+}
+
+#if defined(LOADAV) && defined(HAVE_NLIST_H) && defined(HAVE_NLIST)
+/*
+ * loadav:
+ *	Looking up load average in core (for system where the loadav()
+ *	system call isn't defined
+ */
+
+#include <nlist.h>
+
+struct nlist avenrun = {
+    "_avenrun"
+};
+
+void
+md_loadav(double *avg)
+{
+    int kmem;
+
+    if ((kmem = open("/dev/kmem", 0)) < 0)
+	goto bad;
+    nlist(NAMELIST, &avenrun);
+    if (avenrun.n_type == 0)
+    {
+	close(kmem);
+bad:
+	avg[0] = 0.0;
+	avg[1] = 0.0;
+	avg[2] = 0.0;
+	return;
+    }
+
+    lseek(kmem, (long) avenrun.n_value, 0);
+    read(kmem, (char *) avg, 3 * sizeof (double));
+    close(kmem);
+}
+#else
+void
+md_loadav(double *avg)
+{
+#if defined(HAVE_LOADAV)
+	loadav(avg);
+#elif defined(HAVE_GETLOADAVG)
+	getloadavg(avg,3);
+#else
+	avg[0] = avg[1] = avg[2] = 0;
+#endif
+}
+#endif
+
+#ifndef NSIG
+#define NSIG 32
+#endif
+
+void
+md_ignoreallsignals()
+{
+	int i;
+
+	for (i = 0; i < NSIG; i++)
+		signal(i, SIG_IGN);
+}
+
+void
+md_tstphold()
+{
+#ifdef SIGTSTP
+    /*
+     * If a process can be suspended, this code wouldn't work
+     */
+# ifdef SIG_HOLD
+    signal(SIGTSTP, SIG_HOLD);
+# else
+    signal(SIGTSTP, SIG_IGN);
+# endif
+#endif
+}
+
+void
+md_tstpresume()
+{
+#ifdef SIGTSTP
+    signal(SIGTSTP, tstp);
+#endif
+}
+
+void
+md_tstpsignal()
+{
+#ifdef SIGTSTP
+    kill(0, SIGTSTP);		/* send actual signal and suspend process */
+#endif
+}
+
+#if defined(CHECKTIME)
+void
+md_start_checkout_timer(int time)
+{
+    int  checkout();
+
+#if defined(HAVE_ALARM) && defined(SIGALRM)
+    signal(SIGALRM, checkout);
+	alarm(time);
+#endif
+    num_checks = 0;
+}
+
+void
+md_stop_checkout_timer()
+{
+#if defined(SIGALRM)
+    signal(SIGALRM, SIG_IGN);
+#endif
+}
+
+#endif
+
+/*
+ * is_symlink:
+ *	See if the file has a symbolic link
+ */
+int
+md_issymlink(char *sp)
+{
+#ifdef S_IFLNK
+    struct stat sbuf2;
+
+    if (lstat(sp, &sbuf2) < 0)
+	return FALSE;
+    else
+	return ((sbuf2.st_mode & S_IFMT) != S_IFREG);
+#else
+    NOOP(sp);
+    return FALSE;
+#endif
 }

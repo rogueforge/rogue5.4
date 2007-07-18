@@ -4,18 +4,15 @@
  * @(#)save.c	4.33 (Berkeley) 06/01/83
  */
 
-#include <curses.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
+#include <curses.h>
 #include "rogue.h"
 #include "score.h"
-
-#ifndef NSIG
-#define NSIG 32
-#endif
 
 typedef struct stat STAT;
 
@@ -117,16 +114,16 @@ void
 auto_save(int sig)
 {
     FILE *savef;
-    int i;
 
     NOOP(sig);
 
-    for (i = 0; i < NSIG; i++)
-	signal(i, SIG_IGN);
+    md_ignoreallsignals();
+
     if (File_name[0] != '\0' && ((savef = fopen(File_name, "w")) != NULL ||
 	(md_unlink_open_file(File_name, savef) >= 0 && (savef = fopen(File_name, "w")) != NULL)))
 	    save_file(savef);
-    exit(0);
+    
+	exit(0);
 }
 
 /*
@@ -164,7 +161,7 @@ bool
 restore(char *file, char **envp)
 {
     FILE *inf;
-    bool syml;
+    int syml;
     extern char **environ;
     auto char buf[MAXSTR];
     auto STAT sbuf2;
@@ -173,23 +170,15 @@ restore(char *file, char **envp)
     if (strcmp(file, "-r") == 0)
 	file = File_name;
 
-#ifdef SIGTSTP
-    /*
-     * If a process can be suspended, this code wouldn't work
-     */
-# ifdef SIG_HOLD
-    signal(SIGTSTP, SIG_HOLD);
-# else
-    signal(SIGTSTP, SIG_IGN);
-# endif
-#endif
-    if ((inf = fopen(file,"w+")) == NULL)
+	md_tstphold();
+
+	if ((inf = fopen(file,"w+")) == NULL)
     {
 	perror(file);
 	return FALSE;
     }
     stat(file, &sbuf2);
-    syml = is_symlink(file);
+    syml = md_issymlink(file);
 
     fflush(stdout);
     encread(buf, (unsigned) strlen(version) + 1, inf);
@@ -228,11 +217,7 @@ restore(char *file, char **envp)
      * inode for as long as possible
      */
 
-    if (
-#ifdef MASTER
-	!Wizard &&
-#endif
-	md_unlink_open_file(file, inf) < 0)
+    if (!Wizard && md_unlink_open_file(file, inf) < 0)
     {
 	printf("Cannot unlink file\n");
 	return FALSE;
@@ -246,9 +231,7 @@ restore(char *file, char **envp)
     /*
      * defeat multiple restarting from the same place
      */
-#ifdef MASTER
     if (!Wizard)
-#endif
 	if (sbuf2.st_nlink != 1 || syml)
 	{
 	    endwin();
@@ -262,9 +245,8 @@ restore(char *file, char **envp)
 	printf("\n\"He's dead, Jim\"\n");
 	return FALSE;
     }
-#ifdef SIGTSTP
-    signal(SIGTSTP, tstp);
-#endif
+
+	md_tstpresume();
 
     environ = envp;
     strcpy(File_name, file);

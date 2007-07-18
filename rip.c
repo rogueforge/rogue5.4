@@ -5,17 +5,16 @@
  * @(#)rip.c	4.57 (Berkeley) 02/05/99
  */
 
-#include <curses.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <ctype.h>
-#include <stdio.h>
+#include <fcntl.h>
+#include <curses.h>
 #include "rogue.h"
 #include "score.h"
-
-#include <fcntl.h>
 
 static char *Rip[] = {
 "                       __________\n",
@@ -46,9 +45,7 @@ score(int amount, int flags, char monst)
     int i;
     SCORE *sc2;
     SCORE *top_ten, *endp;
-# ifdef MASTER
     int prflags = 0;
-# endif
     void (*fp)(int);
     unsigned int uid;
     static char *reason[] = {
@@ -60,11 +57,7 @@ score(int amount, int flags, char monst)
 
     start_score();
 
- if (flags >= 0
-#ifdef MASTER
-	    || Wizard
-#endif
-	)
+ if (flags >= 0 || Wizard)
     {
 	mvaddstr(LINES - 1, 0 , "[Press return to continue]");
         refresh();
@@ -96,14 +89,13 @@ score(int amount, int flags, char monst)
 
     signal(SIGINT, SIG_DFL);
 
-#ifdef MASTER
     if (Wizard)
 	if (strcmp(Prbuf, "names") == 0)
 	    prflags = 1;
 	else if (strcmp(Prbuf, "edit") == 0)
 	    prflags = 2;
-#endif
-    rd_score(top_ten);
+
+	rd_score(top_ten);
     /*
      * Insert her in list if need be
      */
@@ -165,12 +157,12 @@ score(int amount, int flags, char monst)
 		scp->sc_level);
 	    if (scp->sc_flags == 0 || scp->sc_flags == 3)
 		printf(" by %s", killname((char) scp->sc_monster, TRUE));
-# ifdef MASTER
-	    if (prflags == 1)
+
+	    if (Wizard && (prflags == 1))
 	    {
 	    printf(" (%s)", md_getrealname(scp->sc_uid));
 	    }
-	    else if (prflags == 2)
+	    else if (Wizard && (prflags == 2))
 	    {
 		fflush(stdout);
 		fgets(Prbuf,10,stdin);
@@ -189,7 +181,6 @@ score(int amount, int flags, char monst)
 		}
 	    }
 	    else
-# endif /* MASTER */
                 printf(".");
 	    if (sc2 == scp)
 		    md_raw_standend();

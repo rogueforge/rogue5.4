@@ -32,37 +32,34 @@
  *			for high load average.
  */
 
-#include <curses.h>
-#include "extern.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>
 #include <string.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <fcntl.h>
 #include <errno.h>
 #include <time.h>
+#include <curses.h>
+#include "extern.h"
 
 #define NOOP(x) (x += 0)
 
-# ifndef NUMSCORES
-#	define	NUMSCORES	10
-#	define	NUMNAME		"Ten"
-# endif
+#if !defined(NUMSCORES)
+#define NUMSCORES	10
+#define NUMNAME		"Ten"
+#endif
 
 unsigned int numscores = NUMSCORES;
 char *Numname = NUMNAME;
 
-# ifdef ALLSCORES
+#if defined(ALLSCORES)
 bool Allscore = TRUE;
-# else  /* ALLSCORES */
+#else  /* ALLSCORES */
 bool Allscore = FALSE;
-# endif /* ALLSCORES */
+#endif /* ALLSCORES */
 
-#ifdef CHECKTIME
+#if defined(CHECKTIME)
 static int Num_checks;		/* times we've gone over in checkout() */
 #endif /* CHECKTIME */
 
@@ -96,8 +93,8 @@ init_check()
 void
 open_score()
 {
-#ifdef SCOREFILE
-     char *Scorefile = SCOREFILE;
+#if defined(SCOREFILE)
+	char *Scorefile = SCOREFILE;
      /* 
       * We drop setgid privileges after opening the score file, so subsequent 
       * open()'s will fail.  Just reuse the earlier filehandle. 
@@ -128,50 +125,27 @@ open_score()
 void
 setup()
 {
-#ifdef CHECKTIME
-    int  checkout();
+
+#if !defined(DUMP)
+	md_onsignal_autosave();
+#else
+	md_onsignal_default();
 #endif
 
-#ifdef SIGHUP
-    signal(SIGHUP, auto_save);
-#endif
-#ifndef DUMP
-    signal(SIGILL, auto_save);
-#ifdef SIGTRAP
-    signal(SIGTRAP, auto_save);
-#endif
-#ifdef SIGIOT
-    signal(SIGIOT, auto_save);
-#endif
-#ifdef SIGEMT
-    signal(SIGEMT, auto_save);
-#endif
-    signal(SIGFPE, auto_save);
-#ifdef SIGBUS
-    signal(SIGBUS, auto_save);
-#endif
-    signal(SIGSEGV, auto_save);
-#ifdef SIGSYS
-    signal(SIGSYS, auto_save);
-#endif
-    signal(SIGTERM, auto_save);
+#if defined(CHECKTIME)
+	md_start_checkout_timer(CHECKTIME*60);
 #endif
 
-    signal(SIGINT, quit);
-#ifndef DUMP
-#ifdef SIGQUIT
-    signal(SIGQUIT, endit);
-#endif
-#endif
-#ifdef CHECKTIME
-    signal(SIGALRM, checkout);
-    alarm(CHECKTIME * 60);
-    Num_checks = 0;
-#endif
-    raw();				/* Raw mode */
+	raw();				/* Raw mode */
     noecho();				/* Echo off */
     keypad(stdscr,1);
     getltchars();			/* get the local tty chars */
+
+#if defined(DEBUG)
+	debug = 1;
+#else
+	debug = 0;
+#endif
 }
 
 /*
@@ -219,28 +193,8 @@ playltchars(void)
 void
 start_score()
 {
-#ifdef CHECKTIME
-    signal(SIGALRM, SIG_IGN);
-#endif
-}
-
-/*
- * is_symlink:
- *	See if the file has a symbolic link
- */
-bool
-is_symlink(char *sp)
-{
-#ifdef S_IFLNK
-    struct stat sbuf2;
-
-    if (lstat(sp, &sbuf2) < 0)
-	return FALSE;
-    else
-	return ((sbuf2.st_mode & S_IFMT) != S_IFREG);
-#else
-    NOOP(sp);
-    return FALSE;
+#if defined(CHECKTIME)
+	md_stop_checkout_timer();
 #endif
 }
 
@@ -252,18 +206,18 @@ is_symlink(char *sp)
 bool
 too_much(void)
 {
-#ifdef MAXLOAD
+#if defined(MAXLOAD);
     double avec[3];
 #else
     int cnt;
 #endif
 
-#ifdef MAXLOAD
-    loadav(avec);
+#if defined(MAXLOAD)
+    md_loadav(avec);
     if (avec[1] > (MAXLOAD / 10.0))
 	return TRUE;
 #endif
-#ifdef MAXUSERS
+#if defined(MAXUSERS)
     if (ucount() > MAXUSERS)
 	return TRUE;
 #endif
@@ -277,10 +231,8 @@ too_much(void)
 bool
 author(void)
 {
-#ifdef MASTER
     if (Wizard)
 	return TRUE;
-#endif
     switch (md_getuid())
     {
 	case -1:
@@ -291,7 +243,7 @@ author(void)
 }
 #endif
 
-#ifdef CHECKTIME
+#if defined(CHECKTIME)
 /*
  * checkout:
  *	Check each CHECKTIME seconds to see if the load is too high
@@ -306,7 +258,6 @@ checkout(int sig)
     };
     int checktime;
 
-    signal(SIGALRM, checkout);
     if (too_much())
     {
 	if (author())
@@ -317,7 +268,6 @@ checkout(int sig)
 	else if (Num_checks++ == 3)
 	    fatal("Sorry.  You took too long.  You are dead\n");
 	checktime = (CHECKTIME * 60) / Num_checks;
-	alarm(checktime);
 	chmsg(msgs[Num_checks - 1], ((double) checktime / 60.0));
     }
     else
@@ -327,8 +277,10 @@ checkout(int sig)
 	    Num_checks = 0;
 	    chmsg("The load has dropped back down.  You have a reprieve");
 	}
-	alarm(CHECKTIME * 60);
+	checktime = (CHECKTIME * 60);
     }
+
+	md_start_checkout_timer(checktime);
 }
 
 /*
@@ -351,44 +303,7 @@ chmsg(char *fmt, int arg)
 }
 #endif
 
-#ifdef LOADAV
-/*
- * loadav:
- *	Looking up load average in core (for system where the loadav()
- *	system call isn't defined
- */
-
-#include <nlist.h>
-
-struct nlist avenrun = {
-    "_avenrun"
-};
-
-void
-loadav(double *avg)
-{
-    int kmem;
-
-    if ((kmem = open("/dev/kmem", 0)) < 0)
-	goto bad;
-    nlist(NAMELIST, &avenrun);
-    if (avenrun.n_type == 0)
-    {
-	close(kmem);
-bad:
-	avg[0] = 0.0;
-	avg[1] = 0.0;
-	avg[2] = 0.0;
-	return;
-    }
-
-    lseek(kmem, (long) avenrun.n_value, 0);
-    read(kmem, (char *) avg, 3 * sizeof (double));
-    close(kmem);
-}
-#endif
-
-#ifdef UCOUNT
+#if defined(UCOUNT)
 /*
  * ucount:
  *	Count number of users on the system

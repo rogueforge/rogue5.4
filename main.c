@@ -6,11 +6,11 @@
  * @(#)main.c	4.22 (Berkeley) 02/05/99
  */
 
-#include <curses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <time.h>
+#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -25,43 +25,15 @@ main(int argc, char **argv, char **envp)
 
     md_init();
 
-#ifndef DUMP
-#ifdef SIGQUIT
-    signal(SIGQUIT, exit);
-#endif
-    signal(SIGILL, exit);
-#ifdef SIGTRAP
-    signal(SIGTRAP, exit);
-#endif
-#ifdef SIGIOT
-    signal(SIGIOT, exit);
-#endif
-#ifdef SIGEMT
-    signal(SIGEMT, exit);
-#endif
-    signal(SIGFPE, exit);
-#ifdef SIGBUS
-    signal(SIGBUS, exit);
-#endif
-    signal(SIGSEGV, exit);
-#ifdef SIGSYS
-    signal(SIGSYS, exit);
-#endif
-#endif
-
-#ifdef MASTER
     /*
      * Check to see if he is a wizard
      */
     if (argc >= 2 && argv[1][0] == '\0')
-	if (strcmp(PASSWD, md_crypt(md_getpass("Wizard's password: "), "mT")) == 0)
-	{
-	    Wizard = TRUE;
-	    Player.t_flags |= SEEMONST;
-	    argv++;
-	    argc--;
-	}
-#endif
+		if (enable_wizardmode(md_getpass("Wizard's password: ")))
+		{
+			argv++;
+			argc--;
+		}
 
     /*
      * get Home and options from environment
@@ -76,11 +48,9 @@ main(int argc, char **argv, char **envp)
     if (env == NULL || Whoami[0] == '\0')
         strucpy(Whoami, md_getusername(), (int) strlen(md_getusername()));
     lowtime = (int) time(NULL);
-#ifdef MASTER
     if (Wizard && getenv("SEED") != NULL)
 	Dnum = atoi(getenv("SEED"));
     else
-#endif
 	Dnum = lowtime + md_getpid();
     Seed = Dnum;
 
@@ -122,11 +92,9 @@ main(int argc, char **argv, char **envp)
     if (argc == 2)
 	if (!restore(argv[1], envp))	/* Note: restore will never return */
 	    my_exit(1);
-#ifdef MASTER
     if (Wizard)
 	printf("Hello %s, welcome to dungeon #%d", Whoami, Dnum);
     else
-#endif
 	printf("Hello %s, just a moment while I dig the dungeon...", Whoami);
     fflush(stdout);
 
@@ -156,9 +124,7 @@ main(int argc, char **argv, char **envp)
     idlok(stdscr, TRUE);
     idlok(Hw, TRUE);
 
-#ifdef MASTER
     Noscore = Wizard;
-#endif
     new_level();			/* Draw current level */
     /*
      * Start up daemons and fuses
@@ -218,16 +184,18 @@ roll(int number, int sides)
     return dtotal;
 }
 
-#ifdef SIGTSTP
 /*
  * tstp:
  *	Handle stop and start signals
  */
+
 void
 tstp(int ignored)
 {
     int y, x;
     int oy, ox;
+
+	NOOP(ignored);
 
     /*
      * leave nicely
@@ -237,12 +205,12 @@ tstp(int ignored)
     endwin();
     resetltchars();
     fflush(stdout);
-    kill(0, SIGTSTP);		/* send actual signal and suspend process */
+	md_tstpsignal();
 
     /*
      * start back up again
      */
-    signal(SIGTSTP, tstp);
+	md_tstpresume();
     raw();
     noecho();
     keypad(stdscr,1);
@@ -255,7 +223,6 @@ tstp(int ignored)
     curscr->_cury = oy;
     curscr->_curx = ox;
 }
-#endif
 
 /*
  * playit:
