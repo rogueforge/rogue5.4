@@ -47,17 +47,31 @@ AC_DEFUN([MP_WITH_CURSES],
    fi
    if test ! "$CURSES_LIB"
    then
-     AC_CACHE_CHECK([for working local pdcurses], mp_cv_lpdcurses,
-       [LIBS="$mp_save_LIBS ../pdcurs33/pdcurses.a"
+     AC_CACHE_CHECK([for working pdcur], mp_cv_pdcur,
+       [LIBS="$mp_save_LIBS -lpdcur"
         AC_TRY_LINK(
-          [#include "../pdcurs33/curses.h"],
+          [#include <curses.h>],
+          [chtype a; int b=A_STANDOUT, c=KEY_LEFT; initscr(); ],
+          mp_cv_pdcur=yes, mp_cv_pdcur=no)])
+     if test "$mp_cv_pdcur" = yes
+     then
+       AC_DEFINE(HAVE_CURSES_H, 1, [Define to 1 if libcurses is requested])
+       CURSES_LIB="-lpdcur"
+     fi
+   fi
+   if test ! "$CURSES_LIB"
+   then
+     AC_CACHE_CHECK([for working peer pdcurses], mp_cv_lpdcurses,
+       [LIBS="$mp_save_LIBS ../pdcurses/pdcurses.a"
+        AC_TRY_LINK(
+          [#include "../pdcurses/curses.h"],
           [chtype a; int b=A_STANDOUT, c=KEY_LEFT; initscr(); ],
           mp_cv_lpdcurses=yes, mp_cv_lpdcurses=no)])
      if test "$mp_cv_lpdcurses" = yes
      then
        AC_DEFINE(HAVE_CURSES_H, 1, [Define to 1 if libcurses is requested])
-       CURSES_LIB="../pdcurs33/pdcurses.a"
-       RF_ADDTO(CPPFLAGS,"-I../pdcurs33")
+       CURSES_LIB="../pdcurses/pdcurses.a"
+       RF_ADDTO(CPPFLAGS,"-I../pdcurses")
      fi
    fi
    if test ! "$CURSES_LIB" ; then
@@ -91,3 +105,4 @@ AC_DEFUN(RF_ADDTO,[
     done
   fi
 ])dnl
+

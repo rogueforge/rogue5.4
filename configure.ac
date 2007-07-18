@@ -2,10 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.56)
-AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
+AC_INIT([Rogue],[5.4.2], [yendor@rogueforge.net])
 AC_CONFIG_SRCDIR([armor.c])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile])
+AC_CANONICAL_SYSTEM([])
 
 # Checks for programs.
 AC_PROG_CC
@@ -14,7 +15,7 @@ AC_PROG_CC
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h nlist.h stdlib.h string.h sys/ioctl.h termios.h unistd.h utmp.h term.h ncurses/term.h])
+AC_CHECK_HEADERS([arpa/inet.h sys/utsname.h pwd.h fcntl.h limits.h nlist.h stdlib.h string.h sys/ioctl.h termios.h unistd.h utmp.h term.h ncurses/term.h process.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -31,8 +32,7 @@ AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([alarm getpass memset setenv strchr strerror setresgid setregid setgid setresuid setreuid setuid getuid getgid])
-AC_CHECK_FUNCS([getloadavg])
+AC_CHECK_FUNCS([alarm getpass memset setenv strchr nlist _spawnl spawnl getpwuid loadav getloadavg strerror setresgid setregid setgid setresuid setreuid setuid getuid getgid])
 
 AC_CHECK_PROG([NROFF], [nroff], [nroff],)
 AC_CHECK_PROG([GROFF], [groff], [groff],)
