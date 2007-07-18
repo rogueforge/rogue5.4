@@ -4,9 +4,10 @@
  * @(#)init.c	4.31 (Berkeley) 02/05/99
  */
 
-#include <curses.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -349,34 +350,20 @@ init_materials()
     }
 }
 
-#ifdef MASTER
-# define	NT	NUMTHINGS, "things"
-# define	MP	MAXPOTIONS, "potions"
-# define	MS	MAXSCROLLS, "scrolls"
-# define	MR	MAXRINGS, "rings"
-# define	MWS	MAXSTICKS, "sticks"
-# define	MW	MAXWEAPONS, "weapons"
-# define	MA	MAXARMORS, "armor"
-#else
-# define	NT	NUMTHINGS
-# define	MP	MAXPOTIONS
-# define	MS	MAXSCROLLS
-# define	MR	MAXRINGS
-# define	MWS	MAXSTICKS
-# define	MW	MAXWEAPONS
-# define	MA	MAXARMORS
-#endif
+#define	NT	NUMTHINGS, "things"
+#define	MP	MAXPOTIONS, "potions"
+#define	MS	MAXSCROLLS, "scrolls"
+#define	MR	MAXRINGS, "rings"
+#define	MWS	MAXSTICKS, "sticks"
+#define	MW	MAXWEAPONS, "weapons"
+#define	MA	MAXARMORS, "armor"
 
 /*
  * sumprobs:
  *	Sum up the probabilities for items appearing
  */
 void
-sumprobs(struct obj_info *info, int bound
-#ifdef MASTER
-	, char *name
-#endif
-)
+sumprobs(struct obj_info *info, int bound, char *name)
 {
     struct obj_info *endp, *start;
 
@@ -384,9 +371,9 @@ sumprobs(struct obj_info *info, int bound
     endp = info + bound;
     while (++info < endp)
 	info->oi_prob += (info - 1)->oi_prob;
-#ifdef MASTER
-    badcheck(name, start, bound);
-#endif
+
+	if (debug)
+		badcheck(name, start, bound);
 }
 
 /*
@@ -405,7 +392,6 @@ init_probs()
     sumprobs(Arm_info, MA);
 }
 
-#ifdef MASTER
 /*
  * badcheck:
  *	Check to see if a series of probabilities sums to 100
@@ -425,7 +411,6 @@ badcheck(char *name, struct obj_info *info, int bound)
     while (getchar() != '\n')
 	continue;
 }
-#endif
 
 /*
  * pick_color:

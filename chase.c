@@ -4,6 +4,7 @@
  * @(#)chase.c	4.57 (Berkeley) 02/05/99
  */
 
+#include <stdlib.h>
 #include <curses.h>
 #include "rogue.h"
 
@@ -281,12 +282,16 @@ runto(coord *runner)
     /*
      * If we couldn't find him, something is funny
      */
-#ifdef MASTER
-    if ((tp = moat(runner->y, runner->x)) == NULL)
-	msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
-#else
+
     tp = moat(runner->y, runner->x);
-#endif
+
+	if (tp == NULL) {
+		if (Wizard && debug)
+			msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
+
+		return;
+	}
+
     /*
      * Start the beastie running
      */
@@ -429,12 +434,11 @@ roomin(coord *cp)
 	    return rp;
 
     msg("in some bizarre place (%d, %d)", unc(*cp));
-#ifdef MASTER
-    abort();
+
+	if (Wizard && debug)
+		abort();
+
     return NULL;
-#else
-    return NULL;
-#endif
 }
 
 /*

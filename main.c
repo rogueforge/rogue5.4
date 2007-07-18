@@ -7,6 +7,7 @@
  */
 
 #include <curses.h>
+#include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <time.h>

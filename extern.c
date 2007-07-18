@@ -35,6 +35,7 @@ bool Terse = FALSE;			/* True if we should be short */
 bool To_death = FALSE;			/* Fighting is to the death! */
 bool Tombstone = TRUE;			/* Print out tombstone at end */
 int  Wizard = FALSE;			/* True if allows wizard commands */
+int  debug = FALSE;
 bool Pack_used[26] = {			/* Is the character used in the pack? */
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,

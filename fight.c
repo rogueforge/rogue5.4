@@ -4,9 +4,10 @@
  * @(#)fight.c	4.67 (Berkeley) 09/06/83
  */
 
-#include <curses.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>
 #include "rogue.h"
 
 #define	EQSTR(a, b)	(strcmp(a, b) == 0)
@@ -63,12 +64,15 @@ fight(coord *mp, THING *weap, bool thrown)
     /*
      * Find the monster we want to fight
      */
-#ifdef MASTER
-    if ((tp = moat(mp->y, mp->x)) == NULL)
-	debug("Fight what @ %d,%d", mp->y, mp->x);
-#else
+
     tp = moat(mp->y, mp->x);
-#endif
+
+	if (tp == NULL) {
+		if (Wizard && debug)
+			msg("Fight what @ %d,%d", mp->y, mp->x);
+
+		return FALSE;
+	}
     /*
      * Since we are fighting, things are not quiet so no healing takes
      * place.
@@ -449,10 +453,10 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	    int proll;
 
 	    proll = roll(ndice, nsides);
-#ifdef MASTER
-	    if (ndice + nsides > 0 && proll <= 0)
-		debug("Damage for %dx%d came out %d, dplus = %d, Add_dam = %d, def_arm = %d", ndice, nsides, proll, dplus, Add_dam[att->s_str], def_arm);
-#endif
+
+	    if ((Wizard) && (ndice + nsides > 0 && proll <= 0))
+		msg("Damage for %dx%d came out %d, dplus = %d, add_dam = %d, def_arm = %d", ndice, nsides, proll, dplus, Add_dam[att->s_str], def_arm);
+
 	    damage = dplus + proll + Add_dam[att->s_str];
 	    def->s_hpt -= max(0, damage);
 	    did_hit = TRUE;

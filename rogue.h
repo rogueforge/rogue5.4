@@ -5,7 +5,6 @@
  */
 
 #include "extern.h"
-#include <stdarg.h>
 
 #undef lines 
 
@@ -71,9 +70,6 @@
 #define flat(y,x)	(Places[((x) << 5) + (y)].p_flags)
 #define moat(y,x)	(Places[((x) << 5) + (y)].p_monst)
 #define unc(cp)		(cp).y, (cp).x
-#ifdef MASTER
-#define debug		if (Wizard) msg
-#endif
 
 /*
  * Things that appear on the screens
@@ -118,9 +114,7 @@
 #define RIGHT		1
 #define BOLT_LENGTH	6
 #define LAMPDIST	3
-#ifdef MASTER
 #define	PASSWD		"mTBellIQOsLNA"
-#endif
 
 /*
  * Save against things
@@ -674,7 +668,6 @@ bool	dropcheck(THING *obj);
 bool	fallpos(coord *pos, coord *newpos);
 bool	find_floor(struct room *rp, coord *cp, int limit, bool monst);
 bool	is_magic(THING *obj);
-bool	is_symlink(char *sp);
 bool	levit_check();
 bool	pack_room(bool from_floor, THING *obj);
 bool	roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl);
@@ -706,6 +699,9 @@ int	get_num(void *vp, WINDOW *win);
 int	get_sf(void *vp, WINDOW *win);
 int	get_str(void *vopt, WINDOW *win);
 int	trip_ch(int y, int x, int ch);
+
+int enable_wizardmode();
+int wizard_command(int ch);
 
 coord	*find_dest(THING *tp);
 coord	*rndmove(THING *who);

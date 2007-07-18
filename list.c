@@ -4,6 +4,7 @@
  * @(#)list.c	4.12 (Berkeley) 02/05/99
  */
 
+#include <stdlib.h>
 #include <curses.h>
 #include "rogue.h"
 
@@ -71,9 +72,7 @@ _free_list(THING **ptr)
 void
 discard(THING *item)
 {
-#ifdef MASTER
     Total--;
-#endif
     free((char *) item);
 }
 
@@ -86,15 +85,18 @@ new_item(void)
 {
     THING *item;
 
-#ifdef MASTER
-    if ((item = calloc(1, sizeof *item)) == NULL)
-	msg("ran out of memory after %d items", Total);
-    else
-	Total++;
-#else
     item = calloc(1, sizeof *item);
-#endif
-    item->l_next = NULL;
-    item->l_prev = NULL;
+
+	if (item == NULL) {
+		if (Wizard && debug)
+			msg("ran out of memory after %d items", Total);
+	}
+    else
+	{
+		Total++;
+        item->l_next = NULL;
+        item->l_prev = NULL;
+	}
+
     return item;
 }

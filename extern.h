@@ -4,7 +4,6 @@
  * @(#)extern.h	4.35 (Berkeley) 02/05/99
  */
 
-
 #ifdef HAVE_CONFIG_H
 #ifdef PDCURSES
 #undef HAVE_UNISTD_H
@@ -13,6 +12,12 @@
 #undef HAVE_STRING_H
 #endif
 #include "config.h"
+#elif defined(_WIN32)
+#define HAVE_CURSES_H
+#define HAVE_TERM_H
+#define HAVE__SPAWNL
+#define HAVE_SYS_TYPES_H
+#define HAVE_PROCESS_H
 #endif
 
 /*
@@ -20,22 +25,6 @@
  * places in the program.
  */
 
-#ifndef _WIN32
-//#include <sys/ioctl.h>
-#endif
-#include <stdlib.h>
-
-#undef SIGTSTP
-
-#if defined(_WIN32) && !defined(__MINGW32__)
-#ifdef _PATH_MAX
-#define PATH_MAX _PATH_MAX
-#endif
-#ifdef _MAX_PATH
-#define PATH_MAX _MAX_PATH
-#endif
-#endif
-#include <stdlib.h>
 #define MAXSTR		1024	/* maximum length of strings */
 #define MAXLINES	32	/* maximum number of screen lines used */
 #define MAXCOLS		80	/* maximum number of screen columns used */
@@ -52,6 +41,7 @@
 
 extern bool	Got_ltc, In_shell;
 extern int	Wizard;
+extern int 	debug;
 extern char	Fruit[], Prbuf[], Whoami[];
 extern int 	Orig_dsusp;
 extern FILE	*scoreboard;
@@ -82,7 +72,7 @@ void	set_order();
 void	sight();
 void	stomach();
 void	swander();
-int	tstp();
+void	tstp();
 void	unconfuse();
 void	unsee();
 void	visuals();
@@ -93,9 +83,7 @@ char	*killname(char monst, bool doart);
 char	*nothing(char type);
 char	*type_name(int type);
 
-#ifdef CHECKTIME
-void	checkout(int sig);
-#endif
+int	checkout();
 
 int	md_chmod(char *filename, int mode);
 char	*md_crypt(char *key, char *salt);
@@ -122,3 +110,12 @@ unsigned long int md_htonl(unsigned long int x);
 int	md_hasclreol();
 int	md_unlink(char *file);
 int	md_unlink_open_file(char *file, FILE *inf);
+void md_tstpsignal();
+void md_tstphold();
+void md_tstpresume();
+void md_ignoreallsignals();
+void md_onsignal_autosave();
+void md_onsignal_exit();
+void md_onsignal_default();
+int md_issymlink(char *sp);
+

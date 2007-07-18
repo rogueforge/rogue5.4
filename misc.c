@@ -4,9 +4,10 @@
  * @(#)misc.c	4.66 (Berkeley) 08/06/83
  */
 
-#include <curses.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -26,13 +27,6 @@ look(bool wakeup)
     int passcount;
     char pfl, *fp, pch;
     int sy, sx, sumhero = 0, diffhero = 0;
-# ifdef DEBUG
-    static bool done = FALSE;
-
-    if (done)
-	return;
-    done = TRUE;
-# endif /* DEBUG */
     passcount = 0;
     rp = Proom;
     if (!ce(Oldpos, Hero))
@@ -165,9 +159,6 @@ look(bool wakeup)
 	Running = FALSE;
     if (!Running || !Jump)
 	mvaddch(Hero.y, Hero.x, PLAYER);
-# ifdef DEBUG
-    done = FALSE;
-# endif /* DEBUG */
 }
 
 /*
@@ -251,14 +242,13 @@ find_obj(int y, int x)
 	if (obj->o_pos.y == y && obj->o_pos.x == x)
 		return obj;
     }
-#ifdef MASTER
-    sprintf(Prbuf, "Non-object %d,%d", y, x);
-    msg(Prbuf);
+
+	if (Wizard && debug) {
+		sprintf(Prbuf, "Non-object %d,%d", y, x);
+		msg(Prbuf);
+	}
+
     return NULL;
-#else
-    /* NOTREACHED */
-    return NULL;
-#endif
 }
 
 /*

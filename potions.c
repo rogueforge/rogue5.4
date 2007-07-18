@@ -4,8 +4,8 @@
  * @(#)potions.c	4.46 (Berkeley) 06/07/83
  */
 
-#include <curses.h>
 #include <ctype.h>
+#include <curses.h>
 #include "rogue.h"
 
 typedef struct
@@ -199,11 +199,12 @@ quaff()
 	    do_pot(P_BLIND, TRUE);
 	when P_LEVIT:
 	    do_pot(P_LEVIT, TRUE);
-#ifdef MASTER
+
 	otherwise:
-	    msg("what an odd tasting potion!");
-	    return;
-#endif
+		if (Wizard && debug) {
+			msg("what an odd tasting potion!");
+			return;
+		}
     }
     status();
     /*
