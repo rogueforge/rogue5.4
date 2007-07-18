@@ -4,6 +4,7 @@
  * @(#)passages.c	4.22 (Berkeley) 02/05/99
  */
 
+#include <stdlib.h>
 #include <curses.h>
 #include "rogue.h"
 
@@ -203,10 +204,9 @@ conn(int r1, int r2)
 	turn_delta.x = 0;
 	turn_distance = abs(spos.y - epos.y);
     }
-#ifdef MASTER
     else
-	debug("error in connection tables");
-#endif
+		if (Wizard && debug)
+			msg("error in connection tables");
 
     turn_spot = rnd(distance - 1) + 1;		/* where turn starts */
 
@@ -300,46 +300,6 @@ door(struct room *rm, coord *cp)
     else
 	pp->p_ch = DOOR;
 }
-
-#ifdef MASTER
-/*
- * add_pass:
- *	Add the passages to the current window (wizard command)
- */
-
-void
-add_pass()
-{
-    PLACE *pp;
-    int y, x;
-    char ch;
-
-    for (y = 1; y < NUMLINES - 1; y++)
-	for (x = 0; x < NUMCOLS; x++)
-	{
-	    pp = INDEX(y, x);
-	    if ((pp->p_flags & F_PASS) || pp->p_ch == DOOR ||
-		(!(pp->p_flags&F_REAL) && (pp->p_ch == '|' || pp->p_ch == '-')))
-	    {
-		ch = pp->p_ch;
-		if (pp->p_flags & F_PASS)
-		    ch = PASSAGE;
-		pp->p_flags |= F_SEEN;
-		move(y, x);
-		if (pp->p_monst != NULL)
-		    pp->p_monst->t_oldch = pp->p_ch;
-		else if (pp->p_flags & F_REAL)
-		    addch(ch);
-		else
-		{
-		    standout();
-		    addch((pp->p_flags & F_PASS) ? PASSAGE : DOOR);
-		    standend();
-		}
-	    }
-	}
-}
-#endif
 
 /*
  * passnum:

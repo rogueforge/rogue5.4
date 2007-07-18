@@ -4,9 +4,10 @@
  * @(#)command.c	4.73 (Berkeley) 08/06/83
  */
 
-#include <curses.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -57,10 +58,9 @@ command()
 	/*
 	 * Read command or continue run
 	 */
-#ifdef MASTER
 	if (Wizard)
 	    Noscore = TRUE;
-#endif
+
 	if (!No_command)
 	{
 	    if (Running || To_death)
@@ -118,10 +118,10 @@ command()
 		    case 'z': case 'B': case 'C': case 'H': case 'I':
 		    case 'J': case 'K': case 'L': case 'N': case 'U':
 		    case 'Y':
-#ifdef MASTER
-		    case CTRL('D'): case CTRL('A'):
-#endif
 			break;
+		    case CTRL('D'): case CTRL('A'):
+			if (Wizard)
+				break;
 		    default:
 			Count = 0;
 		}
@@ -307,28 +307,6 @@ over:
 			    *fp |= F_SEEN;
 			}
 		    }
-#ifdef MASTER
-		when '+':
-		    After = FALSE;
-		    if (Wizard)
-		    {
-			Wizard = FALSE;
-			turn_see(TRUE);
-			msg("not wizard any more");
-		    }
-		    else
-		    {
-			Wizard = passwd();
-			if (Wizard) 
-			{
-			    Noscore = TRUE;
-			    turn_see(FALSE);
-			    msg("you are suddenly as smart as Ken Arnold in dungeon #%d", Dnum);
-			}
-			else
-			    msg("sorry");
-		    }
-#endif
 		when ESCAPE:	/* Escape */
 		    Door_stop = FALSE;
 		    Count = 0;
@@ -358,65 +336,9 @@ over:
 		    After = FALSE;
 		otherwise:
 		    After = FALSE;
-#ifdef MASTER
-		    if (Wizard) switch (ch)
-		    {
-			when '|': msg("@ %d,%d", Hero.y, Hero.x);
-			when 'C': create_obj();
-			when '$': msg("Inpack = %d", Inpack);
-			when CTRL('G'): inventory(Lvl_obj, 0);
-			when CTRL('W'): whatis(FALSE, 0);
-			when CTRL('D'): Level++; new_level();
-			when CTRL('A'): Level--; new_level();
-			when CTRL('F'): show_map();
-			when CTRL('T'): teleport();
-			when CTRL('E'): msg("food left: %d", Food_left);
-			when CTRL('C'): add_pass();
-			when CTRL('X'): turn_see(on(Player, SEEMONST));
-			when CTRL('~'):
-			{
-			    THING *item;
-
-			    if ((item = get_item("charge", STICK)) != NULL)
-				item->o_charges = 10000;
-			}
-			when CTRL('I'):
-			{
-			    int i;
-			    THING *obj;
-
-			    for (i = 0; i < 9; i++)
-				raise_level();
-			    /*
-			     * Give him a sword (+1,+1)
-			     */
-			    obj = new_item();
-			    init_weapon(obj, TWOSWORD);
-			    obj->o_hplus = 1;
-			    obj->o_dplus = 1;
-			    add_pack(obj, TRUE);
-			    Cur_weapon = obj;
-			    /*
-			     * And his suit of armor
-			     */
-			    obj = new_item();
-			    obj->o_type = ARMOR;
-			    obj->o_which = PLATE_MAIL;
-			    obj->o_arm = -5;
-			    obj->o_flags |= ISKNOW;
-			    obj->o_count = 1;
-			    obj->o_group = 0;
-			    Cur_armor = obj;
-			    add_pack(obj, TRUE);
-			}
-			when '*' :
-			    pr_list();
-			otherwise:
-			    illcom(ch);
-		    }
-		    else
-#endif
-			illcom(ch);
+			
+			if (!wizard_command(ch))
+				illcom(ch);
 	    }
 	    /*
 	     * turn off flags if no longer needed
