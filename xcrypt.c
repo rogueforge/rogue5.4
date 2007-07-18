@@ -55,9 +55,6 @@
 unsigned long int md_ntohl(unsigned long int x);
 unsigned long int md_htonl(unsigned long int x);
 
-#ifdef MASTER
-# include <stdio.h>
-#endif
 #define _PASSWORD_EFMT1 '_'
 
 static unsigned char	IP[64] = {
