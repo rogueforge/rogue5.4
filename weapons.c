@@ -4,9 +4,9 @@
  * @(#)weapons.c	4.34 (Berkeley) 02/05/99
  */
 
-#include <curses.h>
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>
 #include "rogue.h"
 
 #define NO_WEAPON -1

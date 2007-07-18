@@ -4,8 +4,8 @@
  * @(#)move.c	4.49 (Berkeley) 02/05/99
  */
 
-#include <curses.h>
 #include <ctype.h>
+#include <curses.h>
 #include "rogue.h"
 
 /*

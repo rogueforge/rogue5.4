@@ -4,9 +4,10 @@
  * @(#)io.c	4.32 (Berkeley) 02/05/99
  */
 
-#include <curses.h>
+#include <stdarg.h>
 #include <ctype.h>
 #include <string.h>
+#include <curses.h>
 #include "rogue.h"
 
 /*

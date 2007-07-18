@@ -1,5 +1,5 @@
-#include <curses.h>
 #include <string.h>
+#include <curses.h>
 #include "rogue.h"
 
 #define TREAS_ROOM 20	/* one chance in TREAS_ROOM for a treasure room */

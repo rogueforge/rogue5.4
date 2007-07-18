@@ -16,6 +16,11 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#include <stdlib.h>
+#include <string.h>
+#include <curses.h>
+#include "rogue.h"
+
 /************************************************************************/
 /* Save State Code                                                      */
 /************************************************************************/
@@ -44,12 +49,6 @@
 #define RSID_CTYPES       0XABCD0015
 #define RSID_COORDLIST    0XABCD0016
 #define RSID_ROOMS        0XABCD0017
-
-#include <curses.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "rogue.h"
 
 #define READSTAT (format_error || read_error )
 #define WRITESTAT (write_error)
