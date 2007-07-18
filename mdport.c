@@ -31,6 +31,9 @@
 #define HAVE_PROCESS_H
 #endif
 
+#include <stdlib.h>
+#include <string.h>
+
 #if defined(_WIN32)
 #include <Windows.h>
 #include <Lmcons.h>
