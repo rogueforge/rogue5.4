@@ -345,7 +345,6 @@ shell()
     putchar('\n');
     In_shell = TRUE;
     After = FALSE;
-    sh = getenv("SHELL");
     fflush(stdout);
     /*
      * Fork and do a shell
