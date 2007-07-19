@@ -56,6 +56,9 @@ CPPFLAGS =@DEFS@ @CPPFLAGS@
 .c.obj:
 	$(CC) $(CFLAGS) $(CPPFLAGS) /c $*.c
     
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $*.c
+    
 $(PROGRAM): $(HDRS) $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
     
