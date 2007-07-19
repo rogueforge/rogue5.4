@@ -67,7 +67,7 @@
 #endif
 
 #if defined(HAVE_ARPA_INET_H)
-#include <arpa/inet.h> // Solaris 2.8 required this for htonl() and ntohl()
+#include <arpa/inet.h> /* Solaris 2.8 required this for htonl() and ntohl() */
 #endif
 
 #if defined(HAVE_TERMIOS_H)
@@ -77,6 +77,8 @@
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
+
+#include <curses.h> /* AIX requires curses.h be included before term.h */
 
 #if defined(HAVE_TERM_H)
 #include <term.h>
@@ -88,7 +90,6 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <signal.h>
-#include <curses.h>
 #include "extern.h"
 
 #if !defined(PATH_MAX) && defined(_MAX_PATH)
@@ -1319,7 +1320,7 @@ md_readchar()
 	    case ALT_PAD8   : ch = CTRL('K'); break;
 	    case ALT_PAD9   : ch = CTRL('U'); break;
 #endif
-#ifdef KEY_BACKSPACE // NCURSES in Keypad mode sends this for Ctrl-H
+#ifdef KEY_BACKSPACE /* NCURSES in Keypad mode sends this for Ctrl-H */
             case KEY_BACKSPACE: ch = CTRL('H'); break;
 #endif
 	}
