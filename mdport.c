@@ -268,7 +268,9 @@ md_putchar(int c)
     putchar(c);
 }
 
+#ifdef _WIN32
 static int md_standout_mode = 0;
+#endif
 
 void
 md_raw_standout()
