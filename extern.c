@@ -48,7 +48,6 @@ char Huh[MAXSTR];			/* The last message printed */
 char *P_colors[MAXPOTIONS];		/* Colors of the potions */
 char Prbuf[2*MAXSTR];			/* Buffer for sprintfs */
 char *R_stones[MAXRINGS];		/* Stone settings of the rings */
-char *Release;				/* Release number of program */
 char Runch;				/* Direction player is Running */
 char *S_names[MAXSCROLLS];		/* Names of the scrolls */
 char Take;				/* Thing she is taking */
