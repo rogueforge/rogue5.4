@@ -241,7 +241,7 @@ get_str(void *vopt, WINDOW *win)
     char *sp;
     int oy, ox;
     int i;
-    char c;
+    signed char c;
     static char buf[MAXSTR];
 
     getyx(win, oy, ox);
