@@ -116,8 +116,10 @@ md_init()
     _fmode = _O_BINARY;
 #elif defined(_WIN32)
     _fmode = _O_BINARY;
-#elif defined(__CYGWIN__)
-    ESCDELAY=250;
+#endif
+
+#if defined(HAVE_ESCDELAY)
+    ESCDELAY=64;
 #endif
 
 #if defined(DUMP)

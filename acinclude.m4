@@ -74,6 +74,19 @@ AC_DEFUN([MP_WITH_CURSES],
        RF_ADDTO(CPPFLAGS,"-I../pdcurses")
      fi
    fi
+   AC_CACHE_CHECK([for ESCDELAY variable],
+		   [mc_cv_ncurses_escdelay],
+		   [AC_TRY_LINK([], [
+			extern int ESCDELAY;
+			ESCDELAY = 0;
+			],
+			[mc_cv_ncurses_escdelay=yes],
+			[mc_cv_ncurses_escdelay=no])
+    ])
+    if test "$mc_cv_ncurses_escdelay" = yes; then
+	AC_DEFINE(HAVE_ESCDELAY, 1,
+		  [Define if ncurses has ESCDELAY variable])
+    fi
    if test ! "$CURSES_LIB" ; then
        LIBS="$mp_save_LIBS"
    fi
@@ -105,4 +118,5 @@ AC_DEFUN(RF_ADDTO,[
     done
   fi
 ])dnl
+
 
