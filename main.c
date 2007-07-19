@@ -335,8 +335,6 @@ leave(int sig)
 void
 shell()
 {
-    char *sh;
-
     /*
      * Set the terminal back to original mode
      */
