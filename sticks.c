@@ -314,7 +314,7 @@ fire_bolt(coord *start, coord *dir, char *name)
     hit_hero = (bool)(start != &Hero);
     used = FALSE;
     changed = FALSE;
-    for (c1 = spotpos; c1 < &spotpos[BOLT_LENGTH] && !used; c1++)
+    for (c1 = spotpos; c1 <= &spotpos[BOLT_LENGTH-1] && !used; c1++)
     {
 	pos.y += dir->y;
 	pos.x += dir->x;

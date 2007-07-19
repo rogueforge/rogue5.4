@@ -27,7 +27,7 @@ d_slot(void)
 {
     struct delayed_action *dev;
 
-    for (dev = d_list; dev < &d_list[MAXDAEMONS]; dev++)
+    for (dev = d_list; dev <= &d_list[MAXDAEMONS-1]; dev++)
 	if (dev->d_type == EMPTY)
 	    return dev;
 
@@ -46,7 +46,7 @@ find_slot(void (*func)())
 {
     struct delayed_action *dev;
 
-    for (dev = d_list; dev < &d_list[MAXDAEMONS]; dev++)
+    for (dev = d_list; dev <= &d_list[MAXDAEMONS-1]; dev++)
 	if (dev->d_type != EMPTY && func == dev->d_func)
 	    return dev;
     return NULL;
@@ -98,7 +98,7 @@ do_daemons(int flag)
     /*
      * Loop through the devil list
      */
-    for (dev = d_list; dev < &d_list[MAXDAEMONS]; dev++)
+    for (dev = d_list; dev <= &d_list[MAXDAEMONS-1]; dev++)
 	/*
 	 * Executing each one, giving it the proper arguments
 	 */
@@ -162,7 +162,7 @@ do_fuses(int flag)
     /*
      * Step though the list
      */
-    for (wire = d_list; wire < &d_list[MAXDAEMONS]; wire++)
+    for (wire = d_list; wire <= &d_list[MAXDAEMONS-1]; wire++)
 	/*
 	 * Decrementing counters and starting things we want.  We also need
 	 * to remove the fuse from the list once it has gone off.

@@ -206,7 +206,7 @@ do_maze(struct room *rp)
     int starty, startx;
     static coord pos;
 
-    for (sp = &Maze[0][0]; sp < &Maze[NUMLINES / 3][NUMCOLS / 3 + 1]; sp++)
+    for (sp = &Maze[0][0]; sp <= &Maze[NUMLINES / 3][NUMCOLS / 3]; sp++)
     {
 	sp->used = FALSE;
 	sp->nexits = 0;
@@ -241,7 +241,7 @@ dig(int y, int x)
     for (;;)
     {
 	cnt = 0;
-	for (cp = del; cp < &del[4]; cp++)
+	for (cp = del; cp <= &del[3]; cp++)
 	{
 	    newy = y + cp->y;
 	    newx = x + cp->x;
