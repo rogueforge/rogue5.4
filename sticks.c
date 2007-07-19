@@ -43,7 +43,6 @@ do_zap()
     int y, x;
     char *name;
     char monster, oldch;
-    char omonst;
     static THING bolt;
 
     if ((obj = get_item("zap with", STICK)) == NULL)
@@ -107,7 +106,7 @@ do_zap()
 	    }
 	    if ((tp = moat(y, x)) != NULL)
 	    {
-		omonst = monster = tp->t_type;
+		monster = tp->t_type;
 		if (monster == 'F')
 		    Player.t_flags &= ~ISHELD;
 		switch (obj->o_which) {
