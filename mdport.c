@@ -1319,6 +1319,9 @@ md_readchar()
 	    case ALT_PAD8   : ch = CTRL('K'); break;
 	    case ALT_PAD9   : ch = CTRL('U'); break;
 #endif
+#ifdef KEY_BACKSPACE // NCURSES in Keypad mode sends this for Ctrl-H
+            case KEY_BACKSPACE: ch = CTRL('H'); break;
+#endif
 	}
 
 	break;
