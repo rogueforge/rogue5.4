@@ -154,7 +154,7 @@ readchar()
 
     ch = (char) md_readchar();
 
-    if ((ch == 3) || (ch == 0))
+    if (ch == 3)
     {
 	quit(0);
         return(27);
