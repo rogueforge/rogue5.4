@@ -97,7 +97,7 @@ dnl RF_ADDTO(variable, value)
 dnl
 dnl  Add value to variable
 dnl
-AC_DEFUN(RF_ADDTO,[
+AC_DEFUN([RF_ADDTO],[
   if test "x$$1" = "x"; then
     test "x$silent" != "xyes" && echo "  setting $1 to \"$2\""
     $1="$2"
