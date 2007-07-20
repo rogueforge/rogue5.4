@@ -1,18 +1,84 @@
+###############################################################################
 #
 # Makefile for rogue
-# @(#)Makefile	4.21 (Berkeley) 02/04/99
 #
 # Rogue: Exploring the Dungeons of Doom
 # Copyright (C) 1980-1983, 1985, 1999 Michael Toy, Ken Arnold and Glenn Wichman
 # All rights reserved.
-#
+#       
 # See the file LICENSE.TXT for full copyright and licensing information.
 #
+###############################################################################
+        
+###############################################################################
+# Site configuration occurs beneath this comment
+# Typically ./configure (autoconf tools) configures this section
+# This section could be manually configured if autoconf/configure fails
+###############################################################################
 
 DISTNAME=rogue5.4.2
+
 PROGRAM=rogue54
 
 O=o
+
+#CC=gcc
+CC    = @CC@
+
+#CFLAGS=-O2
+CFLAGS= @CFLAGS@ 
+
+#LIBS=-lcurses
+LIBS =	@LIBS@
+
+#RM=rm -f
+RM    = rm -f
+
+#GROFF=groff
+GROFF = @GROFF@
+
+#NROFF=nroff
+NROFF = @NROFF@
+
+#TBL=tbl
+TBL   = @TBL@
+
+#COLCRT=colcrt
+COLCRT = @COLCRT@
+
+#SED=sed
+SED   = @SED@
+
+#SCOREFILE=rogue54.scr
+SCOREFILE = @SCOREFILE@
+
+#LOCKFILE=rogue54.lck
+LOCKFILE = @LOCKFILE@
+
+#GROUPOWNER=games
+GROUPOWNER = games
+
+#CPPFLAGS=-DHAVE_CONFIG_H
+CPPFLAGS =@DEFS@ @CPPFLAGS@
+
+INSTALL=./install-sh
+
+CHGRP=chgrp
+
+MKDIR=mkdir
+
+TOUCH=touch
+
+DESTDIR=
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+
+###############################################################################
+# Site configuration occurs above this comment
+# It should not be necessary to change anything below this comment
+############################################################################### 
 
 HDRS=	rogue.h extern.h score.h
 
@@ -35,21 +101,6 @@ DOCSRC= rogue.me rogue.6
 DOCS  = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat readme54.html
 MISC  =	Makefile $(MISC_C) LICENSE.TXT $(PROGRAM).sln $(PROGRAM).vcproj $(DOCS)\
         $(DOCSRC)
-
-CC    = @CC@
-CFLAGS= @CFLAGS@ 
-LIBS =	@LIBS@
-RM    = rm -f
-GROFF = @GROFF@
-NROFF = @NROFF@
-TBL   = @TBL@
-COLCRT = @COLCRT@
-SED   = @SED@
-SCOREFILE = @SCOREFILE@
-LOCKFILE = @LOCKFILE@
-GROUPOWNER = @GROUPOWNER@
-SETGID = @SETGID@
-CPPFLAGS =@DEFS@ @CPPFLAGS@
 
 .SUFFIXES: .obj
 
@@ -101,8 +152,8 @@ dist: clean $(PROGRAM)
 	gzip -f $(DISTNAME)-`uname`.tar
 
 install:
-	install-sh -g $GROUPOWNER --mode=2755 $(PROGRAM) $(DESTDIR)$(bindir)
-	mkdir -p $SCOREDIR
-	mkdir -p $LOCKDIR
-	chgrp $GROUPOWNER $SCOREDIR
-	
+	-$(TOUCH) test
+	-$(INSTALL) -g $(GROUPOWNER) -m 02755 $(PROGRAM) $(DESTDIR)$(bindir)
+	-if test ! -f $(SCOREFILE) ; then $(INSTALL) -g $(GROUPOWNER) -m 0664 test $(SCOREFILE) ; fi
+	-if test ! -f $(LOCKFILE) ; then $(INSTALL) -m 0666 test $(LOCKFILE) ; $(RM) $(LOCKFILE) ; fi
+	-$(RM) test

@@ -680,6 +680,8 @@ GROFF
 COLCRT
 TBL
 SED
+SCOREFILE
+LOCKFILE
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1267,9 +1269,9 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-scorefile=SCOREFILE
-                          override scoreboard filename
+                          enable scoreboard with given filename
   --enable-lockfile=LOCKFILE
-                          override lockfile filename
+                          enable scoreboard lockfile with given filename
   --enable-wizardmode     enable availability of wizard mode [default=no]
   --enable-allscores      enable scoreboard to show top scores, not just top
                           players [default=no]
@@ -5961,18 +5963,6 @@ fi
 
 
 
-if test -d /var/games ; then
-    SCOREFILE=/var/games/rogue54/rogue54.scr
-else
-    SCOREFILE=rogue54.scr
-fi
-
-if test -d /var/lock ; then
-    LOCKFILE=/var/lock/LCK..rogue54
-else
-    LOCKFILE=rogue54.lck
-fi
-
 # Check whether --enable-scorefile was given.
 if test "${enable_scorefile+set}" = set; then
   enableval=$enable_scorefile;
@@ -5981,25 +5971,29 @@ fi
 { echo "$as_me:$LINENO: checking for scoreboard file" >&5
 echo $ECHO_N "checking for scoreboard file... $ECHO_C" >&6; }
 if test "x$enable_scorefile" = "xno" ; then
-{ echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6; }
+SCOREFILE=""
+elif test "x$enable_scorefile" = "xyes" ;  then
+SCOREFILE=\"rogue54.scr\"
 elif test "x$enable_scorefile" = "x" ; then
+SCOREFILE=\"rogue54.scr\"
+else
+SCOREFILE=\"$enable_scorefile\"
+fi
+
+if test $SCOREFILE != "" ; then
+
+cat >>confdefs.h <<_ACEOF
+#define SCOREFILE $SCOREFILE
+_ACEOF
+
 { echo "$as_me:$LINENO: result: $SCOREFILE" >&5
 echo "${ECHO_T}$SCOREFILE" >&6; }
-
-cat >>confdefs.h <<_ACEOF
-#define SCOREFILE "$SCOREFILE"
-_ACEOF
-
 else
-
-cat >>confdefs.h <<_ACEOF
-#define SCOREFILE "$enable_scorefile"
-_ACEOF
-
-{ echo "$as_me:$LINENO: result: $enable_scorefile" >&5
-echo "${ECHO_T}$enable_scorefile" >&6; }
+{ echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6; }
 fi
+
+
 
 # Check whether --enable-lockfile was given.
 if test "${enable_lockfile+set}" = set; then
@@ -6009,25 +6003,29 @@ fi
 { echo "$as_me:$LINENO: checking for scoreboard lockfile file" >&5
 echo $ECHO_N "checking for scoreboard lockfile file... $ECHO_C" >&6; }
 if test "x$enable_lockfile" = "xno" ; then
-{ echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6; }
+LOCKFILE=
+elif test "x$enable_lockfile" = "xyes" ; then
+LOCKFILE=\"rogue54.lck\"
 elif test "x$enable_lockfile" = "x" ; then
+LOCKFILE=\"rogue54.lck\"
+else
+LOCKFILE=\"$enable_lockfile\"
+fi
+
+if test "x$LOCKFILE" != "x" ; then
+
+cat >>confdefs.h <<_ACEOF
+#define LOCKFILE $LOCKFILE
+_ACEOF
+
 { echo "$as_me:$LINENO: result: $LOCKFILE" >&5
 echo "${ECHO_T}$LOCKFILE" >&6; }
-
-cat >>confdefs.h <<_ACEOF
-#define LOCKFILE "$LOCKFILE"
-_ACEOF
-
 else
-
-cat >>confdefs.h <<_ACEOF
-#define LOCKFILE "$enable_lockfile"
-_ACEOF
-
-{ echo "$as_me:$LINENO: result: $enable_lockfile" >&5
-echo "${ECHO_T}$enable_lockfile" >&6; }
+{ echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6; }
 fi
+
+
 
 # Check whether --enable-wizardmode was given.
 if test "${enable_wizardmode+set}" = set; then
@@ -7005,10 +7003,12 @@ GROFF!$GROFF$ac_delim
 COLCRT!$COLCRT$ac_delim
 TBL!$TBL$ac_delim
 SED!$SED$ac_delim
+SCOREFILE!$SCOREFILE$ac_delim
+LOCKFILE!$LOCKFILE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 66; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 68; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

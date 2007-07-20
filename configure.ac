@@ -40,41 +40,47 @@ AC_CHECK_PROG([COLCRT], [colcrt], [colcrt],)
 AC_CHECK_PROG([TBL], [tbl], [tbl],)
 AC_CHECK_PROG([SED], [sed], [sed],)
 
-if test -d /var/games ; then
-    SCOREFILE=/var/games/rogue54/rogue54.scr
-else
-    SCOREFILE=rogue54.scr
-fi
-
-if test -d /var/lock ; then
-    LOCKFILE=/var/lock/LCK..rogue54
-else
-    LOCKFILE=rogue54.lck
-fi
-
-AC_ARG_ENABLE([scorefile],[AC_HELP_STRING([--enable-scorefile=SCOREFILE], [override scoreboard filename])],[],[])
+AC_ARG_ENABLE([scorefile],[AC_HELP_STRING([--enable-scorefile=SCOREFILE], [enable scoreboard with given filename])],[],[])
 AC_MSG_CHECKING([for scoreboard file])
 if test "x$enable_scorefile" = "xno" ; then
-AC_MSG_RESULT([disabled])
+SCOREFILE=""
+elif test "x$enable_scorefile" = "xyes" ;  then
+SCOREFILE=\"rogue54.scr\"
 elif test "x$enable_scorefile" = "x" ; then
-AC_MSG_RESULT([$SCOREFILE])
-AC_DEFINE_UNQUOTED([SCOREFILE], ["$SCOREFILE"], [Rogue 5.4 Scorefile])
+SCOREFILE=\"rogue54.scr\"
 else
-AC_DEFINE_UNQUOTED([SCOREFILE], ["$enable_scorefile"], [Define to file to use for scoreboard])
-AC_MSG_RESULT([$enable_scorefile])
+SCOREFILE=\"$enable_scorefile\"
 fi
 
-AC_ARG_ENABLE([lockfile],[AC_HELP_STRING([--enable-lockfile=LOCKFILE], [override lockfile filename])],[],[])
+if test $SCOREFILE != "" ; then
+AC_DEFINE_UNQUOTED([SCOREFILE], [$SCOREFILE], [Define to file to use for scoreboard])
+AC_MSG_RESULT([$SCOREFILE])
+else
+AC_MSG_RESULT([disabled])
+fi
+
+AC_SUBST(SCOREFILE)
+
+AC_ARG_ENABLE([lockfile],[AC_HELP_STRING([--enable-lockfile=LOCKFILE], [enable scoreboard lockfile with given filename])],[],[])
 AC_MSG_CHECKING([for scoreboard lockfile file])
 if test "x$enable_lockfile" = "xno" ; then
-AC_MSG_RESULT([disabled])
+LOCKFILE=
+elif test "x$enable_lockfile" = "xyes" ; then
+LOCKFILE=\"rogue54.lck\"
 elif test "x$enable_lockfile" = "x" ; then
-AC_MSG_RESULT([$LOCKFILE])
-AC_DEFINE_UNQUOTED([LOCKFILE], ["$LOCKFILE"], [Rogue 5.4 Scoreboard lock file])
+LOCKFILE=\"rogue54.lck\"
 else
-AC_DEFINE_UNQUOTED([LOCKFILE], ["$enable_lockfile"], [Define to file to use for scoreboard lockfile])
-AC_MSG_RESULT([$enable_lockfile])
+LOCKFILE=\"$enable_lockfile\"
 fi
+
+if test "x$LOCKFILE" != "x" ; then
+AC_DEFINE_UNQUOTED([LOCKFILE], [$LOCKFILE], [Define to file to use for scoreboard lockfile])
+AC_MSG_RESULT([$LOCKFILE])
+else
+AC_MSG_RESULT([disabled])
+fi
+
+AC_SUBST(LOCKFILE)
 
 AC_ARG_ENABLE([wizardmode],[AC_HELP_STRING([--enable-wizardmode], [enable availability of wizard mode @<:@default=no@:>@])],[],[])
 AC_MSG_CHECKING([if wizard mode is enabled])
