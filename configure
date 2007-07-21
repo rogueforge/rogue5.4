@@ -680,6 +680,7 @@ GROFF
 COLCRT
 TBL
 SED
+PROGRAM
 SCOREFILE
 LOCKFILE
 LTLIBOBJS'
@@ -1292,6 +1293,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-ncurses          Force the use of ncurses over curses
+  --with-program-name     alternate executable name
 
 Some influential environment variables:
   CC          C compiler command
@@ -1737,7 +1739,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile"
+ac_config_files="$ac_config_files Makefile rogue.6 rogue.me rogue.cat rogue.doc"
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
@@ -5963,6 +5965,17 @@ fi
 
 
 
+
+# Check whether --with-program-name was given.
+if test "${with_program_name+set}" = set; then
+  withval=$with_program_name; progname="$withval"
+else
+  progname="rogue"
+fi
+
+PROGRAM=$progname
+
+
 # Check whether --enable-scorefile was given.
 if test "${enable_scorefile+set}" = set; then
   enableval=$enable_scorefile;
@@ -5971,19 +5984,19 @@ fi
 { echo "$as_me:$LINENO: checking for scoreboard file" >&5
 echo $ECHO_N "checking for scoreboard file... $ECHO_C" >&6; }
 if test "x$enable_scorefile" = "xno" ; then
-SCOREFILE=""
+SCOREFILE=
 elif test "x$enable_scorefile" = "xyes" ;  then
-SCOREFILE=\"rogue54.scr\"
+SCOREFILE=$progname.scr
 elif test "x$enable_scorefile" = "x" ; then
-SCOREFILE=\"rogue54.scr\"
+SCOREFILE=$progname.scr
 else
-SCOREFILE=\"$enable_scorefile\"
+SCOREFILE=$enable_scorefile
 fi
 
-if test $SCOREFILE != "" ; then
+if test "x$SCOREFILE" != "x" ; then
 
 cat >>confdefs.h <<_ACEOF
-#define SCOREFILE $SCOREFILE
+#define SCOREFILE "$SCOREFILE"
 _ACEOF
 
 { echo "$as_me:$LINENO: result: $SCOREFILE" >&5
@@ -6005,17 +6018,17 @@ echo $ECHO_N "checking for scoreboard lockfile file... $ECHO_C" >&6; }
 if test "x$enable_lockfile" = "xno" ; then
 LOCKFILE=
 elif test "x$enable_lockfile" = "xyes" ; then
-LOCKFILE=\"rogue54.lck\"
+LOCKFILE=$progname.lck
 elif test "x$enable_lockfile" = "x" ; then
-LOCKFILE=\"rogue54.lck\"
+LOCKFILE=$progname.lck
 else
-LOCKFILE=\"$enable_lockfile\"
+LOCKFILE=$enable_lockfile
 fi
 
 if test "x$LOCKFILE" != "x" ; then
 
 cat >>confdefs.h <<_ACEOF
-#define LOCKFILE $LOCKFILE
+#define LOCKFILE "$LOCKFILE"
 _ACEOF
 
 { echo "$as_me:$LINENO: result: $LOCKFILE" >&5
@@ -6322,6 +6335,7 @@ _ACEOF
 { echo "$as_me:$LINENO: result: $enable_ucount" >&5
 echo "${ECHO_T}$enable_ucount" >&6; }
 fi
+
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -6877,6 +6891,10 @@ do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "rogue.6") CONFIG_FILES="$CONFIG_FILES rogue.6" ;;
+    "rogue.me") CONFIG_FILES="$CONFIG_FILES rogue.me" ;;
+    "rogue.cat") CONFIG_FILES="$CONFIG_FILES rogue.cat" ;;
+    "rogue.doc") CONFIG_FILES="$CONFIG_FILES rogue.doc" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -7003,12 +7021,13 @@ GROFF!$GROFF$ac_delim
 COLCRT!$COLCRT$ac_delim
 TBL!$TBL$ac_delim
 SED!$SED$ac_delim
+PROGRAM!$PROGRAM$ac_delim
 SCOREFILE!$SCOREFILE$ac_delim
 LOCKFILE!$LOCKFILE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 68; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 69; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

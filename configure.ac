@@ -5,7 +5,7 @@ AC_PREREQ(2.56)
 AC_INIT([Rogue],[5.4.2], [yendor@rogueforge.net])
 AC_CONFIG_SRCDIR([armor.c])
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile rogue.6 rogue.cat rogue.doc])
 AC_CANONICAL_SYSTEM([])
 
 # Checks for programs.
@@ -40,20 +40,24 @@ AC_CHECK_PROG([COLCRT], [colcrt], [colcrt],)
 AC_CHECK_PROG([TBL], [tbl], [tbl],)
 AC_CHECK_PROG([SED], [sed], [sed],)
 
+AC_ARG_WITH(program-name, AC_HELP_STRING([--with-program-name],[alternate executable name]),[progname="$withval" ], [progname="rogue"] )
+PROGRAM=$progname
+AC_SUBST(PROGRAM)
+
 AC_ARG_ENABLE([scorefile],[AC_HELP_STRING([--enable-scorefile=SCOREFILE], [enable scoreboard with given filename])],[],[])
 AC_MSG_CHECKING([for scoreboard file])
 if test "x$enable_scorefile" = "xno" ; then
-SCOREFILE=""
+SCOREFILE=
 elif test "x$enable_scorefile" = "xyes" ;  then
-SCOREFILE=\"rogue54.scr\"
+SCOREFILE=$progname.scr
 elif test "x$enable_scorefile" = "x" ; then
-SCOREFILE=\"rogue54.scr\"
+SCOREFILE=$progname.scr
 else
-SCOREFILE=\"$enable_scorefile\"
+SCOREFILE=$enable_scorefile
 fi
 
-if test $SCOREFILE != "" ; then
-AC_DEFINE_UNQUOTED([SCOREFILE], [$SCOREFILE], [Define to file to use for scoreboard])
+if test "x$SCOREFILE" != "x" ; then
+AC_DEFINE_UNQUOTED([SCOREFILE], ["$SCOREFILE"], [Define to file to use for scoreboard])
 AC_MSG_RESULT([$SCOREFILE])
 else
 AC_MSG_RESULT([disabled])
@@ -66,15 +70,15 @@ AC_MSG_CHECKING([for scoreboard lockfile file])
 if test "x$enable_lockfile" = "xno" ; then
 LOCKFILE=
 elif test "x$enable_lockfile" = "xyes" ; then
-LOCKFILE=\"rogue54.lck\"
+LOCKFILE=$progname.lck
 elif test "x$enable_lockfile" = "x" ; then
-LOCKFILE=\"rogue54.lck\"
+LOCKFILE=$progname.lck
 else
-LOCKFILE=\"$enable_lockfile\"
+LOCKFILE=$enable_lockfile
 fi
 
 if test "x$LOCKFILE" != "x" ; then
-AC_DEFINE_UNQUOTED([LOCKFILE], [$LOCKFILE], [Define to file to use for scoreboard lockfile])
+AC_DEFINE_UNQUOTED([LOCKFILE], ["$LOCKFILE"], [Define to file to use for scoreboard lockfile])
 AC_MSG_RESULT([$LOCKFILE])
 else
 AC_MSG_RESULT([disabled])
@@ -205,5 +209,6 @@ AC_DEFINE([UCOUNT], [], [define if we should use program's user counting functio
 AC_DEFINE_UNQUOTED([UTMP], [$enable_ucount], [utmp like file to pass to ucount() when counting online users (unlikely to work)])
 AC_MSG_RESULT([$enable_ucount])
 fi
+
 
 AC_OUTPUT

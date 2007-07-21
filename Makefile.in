@@ -18,7 +18,7 @@
 
 DISTNAME=rogue5.4.2
 
-PROGRAM=rogue54
+PROGRAM=@PROGRAM@
 
 O=o
 
@@ -69,11 +69,18 @@ MKDIR=mkdir
 
 TOUCH=touch
 
+RMDIR=rmdir
+
 DESTDIR=
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+datarootdir=@datarootdir@
+datadir=@datadir@
 bindir=@bindir@
+mandir=@mandir@
+docdir=@docdir@
+man6dir = $(mandir)/man6
 
 ###############################################################################
 # Site configuration occurs above this comment
@@ -151,9 +158,20 @@ dist: clean $(PROGRAM)
 	tar cf $(DISTNAME)-`uname`.tar $(PROGRAM) LICENSE.TXT $(DOCS)
 	gzip -f $(DISTNAME)-`uname`.tar
 
-install:
+install: $(PROGRAM)
 	-$(TOUCH) test
-	-$(INSTALL) -g $(GROUPOWNER) -m 02755 $(PROGRAM) $(DESTDIR)$(bindir)
+	-$(INSTALL) -g $(GROUPOWNER) -m 02755 $(PROGRAM) $(DESTDIR)$(bindir)/$(PROGRAM)
+	-$(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(man6dir)/$(PROGRAM).6
+	-$(INSTALL) -m 0644 rogue.doc $(DESTDIR)$(docdir)$(PROGRAM)/$(PROGRAM).doc
 	-if test ! -f $(SCOREFILE) ; then $(INSTALL) -g $(GROUPOWNER) -m 0664 test $(SCOREFILE) ; fi
 	-if test ! -f $(LOCKFILE) ; then $(INSTALL) -m 0666 test $(LOCKFILE) ; $(RM) $(LOCKFILE) ; fi
 	-$(RM) test
+
+uninstall:	
+	-$(RM) $(DESTDIR)$(bindir)/$(PROGRAM)
+	-$(RM) $(DESTDIR)$(man6dir)/$(PROGRAM).6
+	-$(RM) $(DESTDIR)$(docdir)$(PROGRAM)/$(PROGRAM).doc
+	-$(RM) $(LOCKFILE)
+	-$(RMDIR) $(DESTDIR)$(docdir)$(PROGRAM)
+    
+reinstall: uninstall install
