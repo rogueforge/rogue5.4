@@ -977,7 +977,7 @@ you enjoy eating. It is basically a whimsy that rogue uses
 in a couple of places.</p>
 </blockquote>
 <p align="justify"><b>file</b>
-[<i>~/rogue.save</i>]</p>
+[<i>~/rogue.sav</i>]</p>
 <blockquote>
 	<p align="justify">The default file name for saving the game.
 If your phone is hung up by accident, rogue will
@@ -1010,7 +1010,7 @@ more.</p>
 
 <p align="justify">If you just want to see what the current top players/games list is, you can
 type</p>
-<p align="justify">% rogue &minus;s</p>
+<p align="justify">% @PROGRAM@ &minus;s</p>
 
 <h2 align="justify"><b>10. Acknowledgements</b></h2>
 
