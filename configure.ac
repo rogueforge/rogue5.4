@@ -5,7 +5,7 @@ AC_PREREQ(2.56)
 AC_INIT([Rogue],[5.4.2], [yendor@rogueforge.net])
 AC_CONFIG_SRCDIR([armor.c])
 AC_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile rogue.6 rogue.cat rogue.doc])
+AC_CONFIG_FILES([Makefile rogue.6 rogue.cat rogue.doc rogue.html])
 AC_CANONICAL_SYSTEM([])
 
 # Checks for programs.
@@ -210,5 +210,7 @@ AC_DEFINE_UNQUOTED([UTMP], [$enable_ucount], [utmp like file to pass to ucount()
 AC_MSG_RESULT([$enable_ucount])
 fi
 
+TARGET=$target
+AC_SUBST(TARGET)
 
 AC_OUTPUT
