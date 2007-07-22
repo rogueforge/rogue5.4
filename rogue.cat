@@ -6,7 +6,7 @@ NAME
        rogue - Exploring The Dungeons of Doom
 
 SYNOPSIS
-       /usr/games/rogue [ -r ] [ save_file ] [ -s ] [ -d ]
+       rogue [ -r ] [ save_file ] [ -s ] [ -d ]
 
 DESCRIPTION
        Rogue  is a computer fantasy game with a new twist.  It is crt oriented
@@ -44,7 +44,7 @@ AUTHORS
        Michael C. Toy, Kenneth C. R. C. Arnold, Glenn Wichman
 
 FILES
-       /usr/games/lib/rogue_roll   Score file
+       rogue.scr                   Score file
        ~/rogue.save                Default save file
 
 SEE ALSO
