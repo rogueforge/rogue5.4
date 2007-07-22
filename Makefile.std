@@ -35,7 +35,8 @@ AFILES   = Makefile.in configure.ac config.h.in config.sub config.guess \
            install-sh
 MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj 
 CC       = gcc
-CPPFLAGS = -DALLSCORES -DSCOREFILE=\"$(PROGRAM).scr\" -DLOCKFILE=\"$(PROGRAM).lck\"
+FEATURES = -DALLSCORES -DSCOREFILE=\"$(PROGRAM).scr\" -DLOCKFILE=\"$(PROGRAM).lck\"
+CPPFLAGS =
 CFLAGS   = -O3
 LDFLAGS  =
 LIBS     = -lcurses
@@ -43,16 +44,19 @@ RM       = rm -f
 MAKEFILE = -f Makefile.std
 SCOREFILE= $(PROGRAM).scr
 LOCKFILE = $(PROGRAM).lck
+OUTFLAG  = -o
+EXE      =
+
 .SUFFIXES: .obj
 
 .c.obj:
-	$(CC) $(CFLAGS) $(CPPFLAGS) /c $*.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(FEATURES) /c $*.c
     
 .c.o:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $*.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(FEATURES) -c $*.c
     
 $(PROGRAM): $(HDRS) $(OBJS) fixdocs
-	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) $(OUTFLAG)$@$(EXE)
  
 clean:
 	$(RM) $(OBJS1)
@@ -132,18 +136,19 @@ dist.mingw32:
 dist.djgpp:
 	@$(MAKE) $(MAKEFILE) --no-print-directory clean
 	@$(MAKE) $(MAKEFILE) --no-print-directory LDFLAGS="-L$(DJDIR)/LIB" \
-	LIBS="-lpdcur" $(PROGRAM)
+	LIBS="-lpdcurses" $(PROGRAM)
 	rm -f $(DISTNAME)-djgpp.zip
 	zip $(DISTNAME)-djgpp.zip $(PROGRAM) LICENSE.TXT $(DOCS)
 
 #
 # Use NMAKE to build this targer
 #
+
 dist.win32:
 	@$(MAKE) $(MAKEFILE) /NOLOGO O="obj" RM="-del" clean
 	@$(MAKE) $(MAKEFILE) /NOLOGO O="obj" CC="CL" \
 	    LIBS="..\pdcurses\pdcurses.lib shell32.lib user32.lib Advapi32.lib" \
-	    CPPFLAGS="-I..\pdcurses" \
+	    EXE=".exe" OUTFLAG="/Fe" CPPFLAGS="-I..\pdcurses" \
 	    CFLAGS="-nologo -Ox -wd4033 -wd4716" $(PROGRAM)
 	-del $(DISTNAME)-win32.zip
 	zip $(DISTNAME)-win32.zip $(PROGRAM).exe LICENSE.TXT $(DOCS)
