@@ -4,6 +4,7 @@
  * @(#)extern.h	4.35 (Berkeley) 02/05/99
  */
 
+
 #ifdef HAVE_CONFIG_H
 #ifdef PDCURSES
 #undef HAVE_UNISTD_H
@@ -25,6 +26,22 @@
  * places in the program.
  */
 
+#ifndef _WIN32
+//#include <sys/ioctl.h>
+#endif
+#include <stdlib.h>
+
+#undef SIGTSTP
+
+#if defined(_WIN32) && !defined(__MINGW32__)
+#ifdef _PATH_MAX
+#define PATH_MAX _PATH_MAX
+#endif
+#ifdef _MAX_PATH
+#define PATH_MAX _MAX_PATH
+#endif
+#endif
+#include <stdlib.h>
 #define MAXSTR		1024	/* maximum length of strings */
 #define MAXLINES	32	/* maximum number of screen lines used */
 #define MAXCOLS		80	/* maximum number of screen columns used */
@@ -41,7 +58,6 @@
 
 extern bool	Got_ltc, In_shell;
 extern int	Wizard;
-extern int 	debug;
 extern char	Fruit[], Prbuf[], Whoami[];
 extern int 	Orig_dsusp;
 extern FILE	*scoreboard;
@@ -72,7 +88,7 @@ void	set_order();
 void	sight();
 void	stomach();
 void	swander();
-void	tstp();
+void	tstp(int ignored);
 void	unconfuse();
 void	unsee();
 void	visuals();
@@ -83,7 +99,9 @@ char	*killname(char monst, bool doart);
 char	*nothing(char type);
 char	*type_name(int type);
 
+#ifdef CHECKTIME
 int	checkout();
+#endif
 
 int	md_chmod(char *filename, int mode);
 char	*md_crypt(char *key, char *salt);

@@ -6,9 +6,9 @@
  */
 
 #include <stdlib.h>
+#include <curses.h>
 #include <string.h>
 #include <ctype.h>
-#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -110,45 +110,6 @@ type_name(int type)
     return(0);
 }
 
-/*
- * telport:
- *	Bamf the hero someplace else
- */
-
-void
-teleport()
-{
-    static coord c;
-
-    mvaddch(Hero.y, Hero.x, floor_at());
-    find_floor((struct room *) NULL, &c, FALSE, TRUE);
-    if (roomin(&c) != Proom)
-    {
-	leave_room(&Hero);
-	Hero = c;
-	enter_room(&Hero);
-    }
-    else
-    {
-	Hero = c;
-	look(TRUE);
-    }
-    mvaddch(Hero.y, Hero.x, PLAYER);
-    /*
-     * turn off ISHELD in case teleportation was done while fighting
-     * a Flytrap
-     */
-    if (on(Player, ISHELD)) {
-	Player.t_flags &= ~ISHELD;
-	Vf_hit = 0;
-	strcpy(Monsters['F'-'A'].m_stats.s_dmg, "000x0");
-    }
-    No_move = 0;
-    Count = 0;
-    Running = FALSE;
-    flush_type();
-}
-
 #ifdef MASTER
 /*
  * create_obj:
@@ -220,7 +181,48 @@ create_obj()
     }
     add_pack(obj, FALSE);
 }
+#endif
 
+/*
+ * telport:
+ *	Bamf the hero someplace else
+ */
+
+void
+teleport()
+{
+    static coord c;
+
+    mvaddch(Hero.y, Hero.x, floor_at());
+    find_floor((struct room *) NULL, &c, FALSE, TRUE);
+    if (roomin(&c) != Proom)
+    {
+	leave_room(&Hero);
+	Hero = c;
+	enter_room(&Hero);
+    }
+    else
+    {
+	Hero = c;
+	look(TRUE);
+    }
+    mvaddch(Hero.y, Hero.x, PLAYER);
+    /*
+     * turn off ISHELD in case teleportation was done while fighting
+     * a Flytrap
+     */
+    if (on(Player, ISHELD)) {
+	Player.t_flags &= ~ISHELD;
+	Vf_hit = 0;
+	strcpy(Monsters['F'-'A'].m_stats.s_dmg, "000x0");
+    }
+    No_move = 0;
+    Count = 0;
+    Running = FALSE;
+    flush_type();
+}
+
+#ifdef MASTER
 /*
  * passwd:
  *	See if user knows password
@@ -271,220 +273,4 @@ show_map()
 	}
     show_win("---More (level map)---");
 }
-
-/*
- * add_pass:
- *	Add the passages to the current window (wizard command)
- */
-
-void
-add_pass()
-{
-    PLACE *pp;
-    int y, x;
-    char ch;
-
-    for (y = 1; y < NUMLINES - 1; y++)
-	for (x = 0; x < NUMCOLS; x++)
-	{
-	    pp = INDEX(y, x);
-	    if ((pp->p_flags & F_PASS) || pp->p_ch == DOOR ||
-		(!(pp->p_flags&F_REAL) && (pp->p_ch == '|' || pp->p_ch == '-')))
-	    {
-		ch = pp->p_ch;
-		if (pp->p_flags & F_PASS)
-		    ch = PASSAGE;
-		pp->p_flags |= F_SEEN;
-		move(y, x);
-		if (pp->p_monst != NULL)
-		    pp->p_monst->t_oldch = pp->p_ch;
-		else if (pp->p_flags & F_REAL)
-		    addch(ch);
-		else
-		{
-		    standout();
-		    addch((pp->p_flags & F_PASS) ? PASSAGE : DOOR);
-		    standend();
-		}
-	    }
-	}
-}
-
-/*
- * pr_list:
- *	List possible potions, scrolls, etc. for wizard.
- */
-
-void
-pr_list()
-{
-    int ch;
-
-    if (!terse)
-	addmsg("for ");
-    addmsg("what type");
-    if (!terse)
-	addmsg(" of object do you want a list");
-    msg("? ");
-    ch = readchar();
-    switch (ch)
-    {
-	case POTION:
-	    pr_spec(pot_info, MAXPOTIONS);
-	when SCROLL:
-	    pr_spec(scr_info, MAXSCROLLS);
-	when RING:
-	    pr_spec(ring_info, MAXRINGS);
-	when STICK:
-	    pr_spec(ws_info, MAXSTICKS);
-	when ARMOR:
-	    pr_spec(arm_info, MAXARMORS);
-	when WEAPON:
-	    pr_spec(weap_info, MAXWEAPONS);
-	otherwise:
-	    return;
-    }
-}
-
-/*
- * pr_spec:
- *	Print specific list of possible items to choose from
- */
-
-void
-pr_spec(struct obj_info *info, int nitems)
-{
-    struct obj_info *endp;
-    int i, lastprob;
-
-    endp = &info[nitems];
-    lastprob = 0;
-    for (i = '0'; info < endp; i++)
-    {
-	if (i == '9' + 1)
-	    i = 'a';
-	sprintf(prbuf, "%c: %%s (%d%%%%)", i, info->oi_prob - lastprob);
-	lastprob = info->oi_prob;
-	add_line(prbuf, info->oi_name);
-	info++;
-    }
-    end_line();
-}
-
-int
-enable_wizardmode(char *password)
-{
-	if (strcmp(PASSWD, md_crypt(password, "mT")) == 0)
-	{
-	    Wizard = TRUE;
-	    Player.t_flags |= SEEMONST;
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-int
-wizard_command(int ch)
-{
-	if (ch == '+')
-	{
-	    after = FALSE;
-	    if (wizard)
-	    {
-		wizard = FALSE;
-		turn_see(TRUE);
-		msg("not wizard any more");
-	    }
-	    else
-	    {
-		wizard = passwd();
-		if (wizard) 
-		{
-		    noscore = TRUE;
-		    turn_see(FALSE);
-		    msg("you are suddenly as smart as Ken Arnold in dungeon #%d", dnum);
-		}
-		else
-		    msg("sorry");
-	    }
-
-		return(0);
-	}
-
-	if (wizard) 
-	{
-		switch (ch)
-	    {
-			case '|': msg("@ %d,%d", Hero.y, Hero.x);
-			when 'C': create_obj();
-			when '$': msg("inpack = %d", inpack);
-			when CTRL('G'): inventory(lvl_obj, 0);
-			when CTRL('W'): whatis(FALSE, 0);
-			when CTRL('D'): level++; new_level();
-			when CTRL('A'): level--; new_level();
-			when CTRL('F'): show_map();
-			when CTRL('T'): teleport();
-			when CTRL('E'): msg("food left: %d", food_left);
-			when CTRL('C'): add_pass();
-			when CTRL('X'): turn_see(on(Player, SEEMONST));
-			when CTRL('~'):
-			{
-			    THING *item;
-
-			    if ((item = get_item("charge", STICK)) != NULL)
-				item->o_charges = 10000;
-			}
-			when CTRL('I'):
-			{
-			    int i;
-			    THING *obj;
-
-			    for (i = 0; i < 9; i++)
-				raise_level();
-			    /*
-			     * Give him a sword (+1,+1)
-			     */
-			    obj = new_item();
-			    init_weapon(obj, TWOSWORD);
-			    obj->o_hplus = 1;
-			    obj->o_dplus = 1;
-			    add_pack(obj, TRUE);
-			    cur_weapon = obj;
-			    /*
-			     * And his suit of armor
-			     */
-			    obj = new_item();
-			    obj->o_type = ARMOR;
-			    obj->o_which = PLATE_MAIL;
-			    obj->o_arm = -5;
-			    obj->o_flags |= ISKNOW;
-			    obj->o_count = 1;
-			    obj->o_group = 0;
-			    cur_armor = obj;
-			    add_pack(obj, TRUE);
-			}
-			when '*' :
-			    pr_list();
-			otherwise:
-			    return(0);
-		}
-		return(1);
-	}
-	return(0);
-}
-#else
-
-int
-enable_wizardmode(char *password)
-{
-	return FALSE;
-}
-
-int
-wizard_command(int ch)
-{
-	return -1;
-}
-
 #endif

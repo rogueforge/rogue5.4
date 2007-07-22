@@ -5,9 +5,9 @@
  */
 
 #include <stdarg.h>
+#include <curses.h>
 #include <ctype.h>
 #include <string.h>
-#include <curses.h>
 #include "rogue.h"
 
 /*

@@ -5,9 +5,9 @@
  * @(#)sticks.c	4.39 (Berkeley) 02/05/99
  */
 
+#include <curses.h>
 #include <string.h>
 #include <ctype.h>
-#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -224,10 +224,10 @@ do_zap()
 	    Ws_info[obj->o_which].oi_know = TRUE;
 	when WS_NOP:
 	    break;
-
+#ifdef MASTER
 	otherwise:
-	    if (Wizard && debug)
-			msg("what a bizarre schtick!");
+	    msg("what a bizarre schtick!");
+#endif
     }
     obj->o_charges--;
 }

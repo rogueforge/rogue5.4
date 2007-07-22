@@ -70,6 +70,9 @@
 #define flat(y,x)	(Places[((x) << 5) + (y)].p_flags)
 #define moat(y,x)	(Places[((x) << 5) + (y)].p_monst)
 #define unc(cp)		(cp).y, (cp).x
+#ifdef MASTER
+#define debug		if (wizard) msg
+#endif
 
 /*
  * Things that appear on the screens
@@ -114,7 +117,11 @@
 #define RIGHT		1
 #define BOLT_LENGTH	6
 #define LAMPDIST	3
+#ifdef MASTER
+#ifndef PASSWD
 #define	PASSWD		"mTBellIQOsLNA"
+#endif
+#endif
 
 /*
  * Save against things
@@ -699,9 +706,6 @@ int	get_num(void *vp, WINDOW *win);
 int	get_sf(void *vp, WINDOW *win);
 int	get_str(void *vopt, WINDOW *win);
 int	trip_ch(int y, int x, int ch);
-
-int enable_wizardmode();
-int wizard_command(int ch);
 
 coord	*find_dest(THING *tp);
 coord	*rndmove(THING *who);

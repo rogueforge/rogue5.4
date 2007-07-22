@@ -282,16 +282,12 @@ runto(coord *runner)
     /*
      * If we couldn't find him, something is funny
      */
-
+#ifdef MASTER
+    if ((tp = moat(runner->y, runner->x)) == NULL)
+	msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
+#else
     tp = moat(runner->y, runner->x);
-
-	if (tp == NULL) {
-		if (Wizard && debug)
-			msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
-
-		return;
-	}
-
+#endif
     /*
      * Start the beastie running
      */
@@ -434,11 +430,12 @@ roomin(coord *cp)
 	    return rp;
 
     msg("in some bizarre place (%d, %d)", unc(*cp));
-
-	if (Wizard && debug)
-		abort();
-
+#ifdef MASTER
+    abort();
     return NULL;
+#else
+    return NULL;
+#endif
 }
 
 /*

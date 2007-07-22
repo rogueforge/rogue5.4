@@ -72,7 +72,9 @@ _free_list(THING **ptr)
 void
 discard(THING *item)
 {
+#ifdef MASTER
     Total--;
+#endif
     free((char *) item);
 }
 
@@ -85,18 +87,15 @@ new_item(void)
 {
     THING *item;
 
-    item = calloc(1, sizeof *item);
-
-	if (item == NULL) {
-		if (Wizard && debug)
-			msg("ran out of memory after %d items", Total);
-	}
+#ifdef MASTER
+    if ((item = calloc(1, sizeof *item)) == NULL)
+	msg("ran out of memory after %d items", Total);
     else
-	{
-		Total++;
-        item->l_next = NULL;
-        item->l_prev = NULL;
-	}
-
+	Total++;
+#else
+    item = calloc(1, sizeof *item);
+#endif
+    item->l_next = NULL;
+    item->l_prev = NULL;
     return item;
 }

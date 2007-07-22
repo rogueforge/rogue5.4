@@ -4,10 +4,10 @@
  * @(#)monsters.c	4.46 (Berkeley) 02/05/99
  */
 
-#include <string.h>
-#include <ctype.h>
 #include <curses.h>
+#include <string.h>
 #include "rogue.h"
+#include <ctype.h>
 
 /*
  * List of monsters in rough order of vorpalness
@@ -129,8 +129,10 @@ wanderer()
 	standend();
     }
     runto(&tp->t_pos);
+#ifdef MASTER
     if (Wizard)
 	msg("started a wandering %s", Monsters[tp->t_type-'A'].m_name);
+#endif
 }
 
 /*
@@ -144,16 +146,12 @@ wake_monster(int y, int x)
     struct room *rp;
     char ch, *mname;
 
+#ifdef MASTER
+    if ((tp = moat(y, x)) == NULL)
+	msg("can't find monster in wake_monster");
+#else
     tp = moat(y, x);
-
-    if (tp == NULL)
-	{
-		if (Wizard && debug)
-			msg("can't find monster in wake_monster");
-
-		return NULL;
-	}
-
+#endif
     ch = tp->t_type;
     /*
      * Every time he sees mean monster, it might start chasing him

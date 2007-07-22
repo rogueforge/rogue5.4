@@ -4,10 +4,10 @@
  * @(#)scmisc.c	4.7 (Berkeley) 02/05/99
  */
 
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <ctype.h>
+# include	<stdio.h>
+# include	<sys/types.h>
+# include	<sys/stat.h>
+# include	<ctype.h>
 
 # define	TRUE		1
 # define	FALSE		0

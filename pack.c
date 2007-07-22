@@ -246,12 +246,12 @@ inventory(THING *list, int type)
 	    !(type == R_OR_S && (list->o_type == RING || list->o_type == STICK)))
 		continue;
 	N_objs++;
-
+#ifdef MASTER
 	if (!list->o_packch)
 	    strcpy(inv_temp, "%s");
 	else
+#endif
 	    sprintf(inv_temp, "%c) %%s", list->o_packch);
-
 	Msg_esc = TRUE;
 	if (add_line(inv_temp, inv_name(list, FALSE)) == ESCAPE)
 	{
@@ -302,10 +302,9 @@ pick_up(char ch)
 		Proom->r_goldval = 0;
 		break;
 	    default:
-
-		if (Wizard && debug)
-			msg("Where did you pick a '%s' up???", unctrl(ch));
-
+#ifdef MASTER
+		debug("Where did you pick a '%s' up???", unctrl(ch));
+#endif
 	    case ARMOR:
 	    case POTION:
 	    case FOOD:

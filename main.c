@@ -25,6 +25,7 @@ main(int argc, char **argv, char **envp)
 
     md_init();
 
+#ifdef MASTER
     /*
      * Check to see if he is a wizard
      */
@@ -34,6 +35,7 @@ main(int argc, char **argv, char **envp)
 			argv++;
 			argc--;
 		}
+#endif
 
     /*
      * get Home and options from environment
@@ -48,9 +50,11 @@ main(int argc, char **argv, char **envp)
     if (env == NULL || Whoami[0] == '\0')
         strucpy(Whoami, md_getusername(), (int) strlen(md_getusername()));
     lowtime = (int) time(NULL);
+#ifdef MASTER
     if (Wizard && getenv("SEED") != NULL)
 	Dnum = atoi(getenv("SEED"));
     else
+#endif
 	Dnum = lowtime + md_getpid();
     Seed = Dnum;
 
@@ -92,9 +96,11 @@ main(int argc, char **argv, char **envp)
     if (argc == 2)
 	if (!restore(argv[1], envp))	/* Note: restore will never return */
 	    my_exit(1);
+#ifdef MASTER
     if (Wizard)
 	printf("Hello %s, welcome to dungeon #%d", Whoami, Dnum);
     else
+#endif
 	printf("Hello %s, just a moment while I dig the dungeon...", Whoami);
     fflush(stdout);
 
@@ -123,8 +129,9 @@ main(int argc, char **argv, char **envp)
     Hw = newwin(LINES, COLS, 0, 0);
     idlok(stdscr, TRUE);
     idlok(Hw, TRUE);
-
+#ifdef MASTER
     Noscore = Wizard;
+#endif
     new_level();			/* Draw current level */
     /*
      * Start up daemons and fuses

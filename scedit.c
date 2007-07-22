@@ -4,11 +4,18 @@
  * @(#)scedit.c	4.6 (Berkeley) 02/05/99
  */
 
-#include <stdio.h>
-#include <signal.h>
-#include <ctype.h>
-#include <curses.h>
+# include   <curses.h>
+# include	<stdio.h>
+# include	<signal.h>
+# include	<ctype.h>
 
+#ifndef TRUE
+# define	TRUE	1
+#endif
+# define	FALSE	0
+#ifndef bool
+# define	bool	char
+#endif
 # define	RN	(((seed = seed*11109+13849) >> 16) & 0xffff)
 
 # define	MAXSTR	80

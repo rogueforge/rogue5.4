@@ -4,8 +4,8 @@
  * @(#)scrolls.c	4.44 (Berkeley) 02/05/99
  */
 
-#include <ctype.h>
 #include <curses.h>
+#include <ctype.h>
 #include "rogue.h"
 
 /*
@@ -291,12 +291,11 @@ def:
 	    }
 	    else
 		msg("you feel a strange sense of loss");
-
+#ifdef MASTER
 	otherwise:
-		if (Wizard && debug) {
-			msg("what a puzzling scroll!");
-			return;
-		}
+	    msg("what a puzzling scroll!");
+	    return;
+#endif
     }
     obj = orig_obj;
     look(TRUE);	/* put the result of the scroll on the screen */

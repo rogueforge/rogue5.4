@@ -5,9 +5,9 @@
  * @(#)things.c	4.53 (Berkeley) 02/05/99
  */
 
+#include <curses.h>
 #include <string.h>
 #include <ctype.h>
-#include <curses.h>
 #include "rogue.h"
 
 /*
@@ -102,13 +102,11 @@ inv_name(THING *obj, bool drop)
 	    strcpy(pb, "The Amulet of Yendor");
 	when GOLD:
 	    sprintf(Prbuf, "%d Gold pieces", obj->o_goldval);
-
+#ifdef MASTER
 	otherwise:
-		if (Wizard && debug) {
-			msg("Picked up something funny %s", unctrl(obj->o_type));
-			sprintf(pb, "Something bizarre %s", unctrl(obj->o_type));
-		}
-
+	    debug("Picked up something funny %s", unctrl(obj->o_type));
+	    sprintf(pb, "Something bizarre %s", unctrl(obj->o_type));
+#endif
     }
     if (Inv_describe)
     {
@@ -284,12 +282,11 @@ new_thing(void)
 	    cur->o_type = STICK;
 	    cur->o_which = pick_one(Ws_info, MAXSTICKS);
 	    fix_stick(cur);
-
+#ifdef MASTER
 	otherwise:
-		if (Wizard && debug) {
-			msg("Picked a bad kind of object");
-			wait_for(' ');
-		}
+	    debug("Picked a bad kind of object");
+	    wait_for(' ');
+#endif
     }
     return cur;
 }
@@ -311,14 +308,14 @@ pick_one(struct obj_info *info, int nitems)
 	    break;
     if (info == end)
     {
-
+#ifdef MASTER
 	if (Wizard)
 	{
 	    msg("bad pick_one: %d from %d items", i, nitems);
 	    for (info = start; info < end; info++)
 		msg("%s: %d%%", info->oi_name, info->oi_prob);
 	}
-
+#endif
 	info = start;
     }
     return (int)(info - start);
@@ -636,3 +633,65 @@ nullstr(THING *ignored)
     return "";
 }
 
+# ifdef	MASTER
+/*
+ * pr_list:
+ *	List possible potions, scrolls, etc. for wizard.
+ */
+
+void
+pr_list()
+{
+    int ch;
+
+    if (!terse)
+	addmsg("for ");
+    addmsg("what type");
+    if (!terse)
+	addmsg(" of object do you want a list");
+    msg("? ");
+    ch = readchar();
+    switch (ch)
+    {
+	case POTION:
+	    pr_spec(pot_info, MAXPOTIONS);
+	when SCROLL:
+	    pr_spec(scr_info, MAXSCROLLS);
+	when RING:
+	    pr_spec(ring_info, MAXRINGS);
+	when STICK:
+	    pr_spec(ws_info, MAXSTICKS);
+	when ARMOR:
+	    pr_spec(arm_info, MAXARMORS);
+	when WEAPON:
+	    pr_spec(weap_info, MAXWEAPONS);
+	otherwise:
+	    return;
+    }
+}
+
+/*
+ * pr_spec:
+ *	Print specific list of possible items to choose from
+ */
+
+void
+pr_spec(struct obj_info *info, int nitems)
+{
+    struct obj_info *endp;
+    int i, lastprob;
+
+    endp = &info[nitems];
+    lastprob = 0;
+    for (i = '0'; info < endp; i++)
+    {
+	if (i == '9' + 1)
+	    i = 'a';
+	sprintf(Prbuf, "%c: %%s (%d%%%%)", i, info->oi_prob - lastprob);
+	lastprob = info->oi_prob;
+	add_line(Prbuf, info->oi_name);
+	info++;
+    }
+    end_line();
+}
+# endif	/* MASTER */

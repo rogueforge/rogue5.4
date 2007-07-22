@@ -143,12 +143,6 @@ setup()
     noecho();				/* Echo off */
     keypad(stdscr,1);
     getltchars();			/* get the local tty chars */
-
-#if defined(DEBUG)
-	debug = 1;
-#else
-	debug = 0;
-#endif
 }
 
 /*
@@ -234,8 +228,10 @@ too_much(void)
 bool
 author(void)
 {
+#ifdef MASTER
     if (Wizard)
 	return TRUE;
+#endif
     switch (md_getuid())
     {
 	case -1:

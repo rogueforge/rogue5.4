@@ -45,7 +45,9 @@ score(int amount, int flags, char monst)
     int i;
     SCORE *sc2;
     SCORE *top_ten, *endp;
+#ifdef MASTER
     int prflags = 0;
+#endif
     void (*fp)(int);
     unsigned int uid;
     static char *reason[] = {
@@ -57,7 +59,11 @@ score(int amount, int flags, char monst)
 
     start_score();
 
- if (flags >= 0 || Wizard)
+ if (flags >= 0
+#ifdef MASTER
+            || Wizard
+#endif
+        )
     {
 	mvaddstr(LINES - 1, 0 , "[Press return to continue]");
         refresh();
@@ -89,13 +95,14 @@ score(int amount, int flags, char monst)
 
     signal(SIGINT, SIG_DFL);
 
+#ifdef MASTER
     if (Wizard)
 	if (strcmp(Prbuf, "names") == 0)
 	    prflags = 1;
 	else if (strcmp(Prbuf, "edit") == 0)
 	    prflags = 2;
-
-	rd_score(top_ten);
+#endif
+    rd_score(top_ten);
     /*
      * Insert her in list if need be
      */
@@ -157,12 +164,12 @@ score(int amount, int flags, char monst)
 		scp->sc_level);
 	    if (scp->sc_flags == 0 || scp->sc_flags == 3)
 		printf(" by %s", killname((char) scp->sc_monster, TRUE));
-
-	    if (Wizard && (prflags == 1))
+#ifdef MASTER
+	    if (prflags == 1))
 	    {
 	    printf(" (%s)", md_getrealname(scp->sc_uid));
 	    }
-	    else if (Wizard && (prflags == 2))
+	    else if (prflags == 2))
 	    {
 		fflush(stdout);
 		fgets(Prbuf,10,stdin);
@@ -181,6 +188,7 @@ score(int amount, int flags, char monst)
 		}
 	    }
 	    else
+#endif /* MASTER */
                 printf(".");
 	    if (sc2 == scp)
 		    md_raw_standend();

@@ -7,9 +7,9 @@
  */
 
 #include <stdlib.h>
+#include <curses.h>
 #include <ctype.h>
 #include <string.h>
-#include <curses.h>
 #include "rogue.h"
 
 #define	EQSTR(a, b, c)	(strncmp(a, b, c) == 0)
@@ -357,6 +357,8 @@ get_inv_t(void *vp, WINDOW *win)
     return NORM;
 }
 	
+
+#ifdef MASTER
 /*
  * get_num:
  *	Get a numeric option
@@ -372,6 +374,7 @@ get_num(void *vp, WINDOW *win)
 	*opt = (short) atoi(buf);
     return i;
 }
+#endif
 
 /*
  * parse_opts:

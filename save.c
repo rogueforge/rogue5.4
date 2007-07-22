@@ -217,7 +217,11 @@ restore(char *file, char **envp)
      * inode for as long as possible
      */
 
-    if (!Wizard && md_unlink_open_file(file, inf) < 0)
+    if (
+#ifdef MASTER
+        !Wizard &&
+#endif
+        md_unlink_open_file(file, inf) < 0)
     {
 	printf("Cannot unlink file\n");
 	return FALSE;
@@ -231,7 +235,9 @@ restore(char *file, char **envp)
     /*
      * defeat multiple restarting from the same place
      */
+#ifdef MASTER
     if (!Wizard)
+#endif
 	if (sbuf2.st_nlink != 1 || syml)
 	{
 	    endwin();
