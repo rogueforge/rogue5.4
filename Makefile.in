@@ -139,6 +139,13 @@ maintainer-clean:
 	$(RM) config.log
 	$(RM) $(PROGRAM).scr $(PROGRAM).lck
 
+stddocs:
+	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.6.in > rogue.6
+	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.me.in > rogue.me
+	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.html.in > rogue,html
+	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.doc.in > rogue.doc
+	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.cat.in > rogue.cat
+
 dist.src:
 	make clean
 	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC)

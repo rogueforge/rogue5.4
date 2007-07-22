@@ -44,7 +44,7 @@ AUTHORS
        Michael C. Toy, Kenneth C. R. C. Arnold, Glenn Wichman
 
 FILES
-       @SCOREFILE@		Score file
+       @SCOREFILE@                   Score file
        ~/rogue.save                Default save file
 
 SEE ALSO
