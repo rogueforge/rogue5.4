@@ -216,7 +216,8 @@ is_symlink(char *sp)
         return FALSE; 	 	 
     else 	 	 
         return ((sbuf2.st_mode & S_IFMT) != S_IFREG); 	 	 
-#else 	 	 
+#else
+	NOOP(sp);
     return FALSE; 	 	 
 #endif 
 } 
