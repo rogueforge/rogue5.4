@@ -123,9 +123,17 @@ $(PROGRAM): $(HDRS) $(OBJS)
 clean:
 	$(RM) $(OBJS1)
 	$(RM) $(OBJS2)
-	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe $(PROGRAM).lck
+	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe
 	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
     
+maintainer-clean:
+	$(RM) config.h
+	$(RM) Makefile
+	$(RM) config.status
+	$(RM) -r autom4te.cache
+	$(RM) config.log
+	$(RM) $(PROGRAM).scr $(PROGRAM).lck
+
 dist.src:
 	make clean
 	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC)
