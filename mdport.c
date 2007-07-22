@@ -1441,7 +1441,6 @@ md_start_checkout_timer(int time)
     signal(SIGALRM, checkout);
 	alarm(time);
 #endif
-    num_checks = 0;
 }
 
 void
@@ -1453,23 +1452,3 @@ md_stop_checkout_timer()
 }
 
 #endif
-
-/*
- * is_symlink:
- *	See if the file has a symbolic link
- */
-int
-md_issymlink(char *sp)
-{
-#ifdef S_IFLNK
-    struct stat sbuf2;
-
-    if (lstat(sp, &sbuf2) < 0)
-	return FALSE;
-    else
-	return ((sbuf2.st_mode & S_IFMT) != S_IFREG);
-#else
-    NOOP(sp);
-    return FALSE;
-#endif
-}

@@ -14,6 +14,8 @@
  * look:
  *	A quick glance all around the player
  */
+#undef DEBUG
+
 
 void
 look(bool wakeup)

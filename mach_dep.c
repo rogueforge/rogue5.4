@@ -19,15 +19,15 @@
  *			when people are playing.  Since it is divided
  *			by 10, to specify a load limit of 4.0, MAXLOAD
  *			should be "40".	 If defined, then
- *	LOADAV		Should it use it's own routine to get
- *			the load average?
- *	NAMELIST	If so, where does the system namelist
- *			hide?
+ *      LOADAV		Should it use it's own routine to get
+ *		        the load average?
+ *      NAMELIST	If so, where does the system namelist
+ *		        hide?
  *	MAXUSERS	What (if any) the maximum user count should be
- *	        	when people are playing.  If defined, then
- *	UCOUNT		Should it use it's own routine to count
- *			users?
- *	UTMP		If so, where does the user list hide?
+ *	                when people are playing.  If defined, then
+ *      UCOUNT		Should it use it's own routine to count
+ *		        users?
+ *      UTMP		If so, where does the user list hide?
  *	CHECKTIME	How often/if it should check during the game
  *			for high load average.
  */
@@ -45,21 +45,25 @@
 
 #define NOOP(x) (x += 0)
 
-#if !defined(NUMSCORES)
-#define NUMSCORES	10
-#define NUMNAME		"Ten"
-#endif
+#ifdef SCOREFILE
+
+# ifndef NUMSCORES
+#	define	NUMSCORES	10
+#	define	NUMNAME		"Ten"
+# endif
 
 unsigned int numscores = NUMSCORES;
 char *Numname = NUMNAME;
 
-#if defined(ALLSCORES)
+# ifdef ALLSCORES
 bool Allscore = TRUE;
-#else  /* ALLSCORES */
+# else  /* ALLSCORES */
 bool Allscore = FALSE;
-#endif /* ALLSCORES */
+# endif /* ALLSCORES */
 
-#if defined(CHECKTIME)
+#endif /* SCOREFILE */
+
+#ifdef CHECKTIME
 static int Num_checks;		/* times we've gone over in checkout() */
 #endif /* CHECKTIME */
 
@@ -93,17 +97,17 @@ init_check()
 void
 open_score()
 {
-#if defined(SCOREFILE)
-	char *Scorefile = SCOREFILE;
+#ifdef SCOREFILE
+    char *Scorefile = SCOREFILE;
      /* 
       * We drop setgid privileges after opening the score file, so subsequent 
       * open()'s will fail.  Just reuse the earlier filehandle. 
       */
 
-     if (scoreboard != NULL) { 
-         rewind(scoreboard); 
-         return; 
-     } 
+    if (scoreboard != NULL) { 
+        rewind(scoreboard); 
+        return; 
+    } 
 
     scoreboard = fopen(Scorefile, "r+");
 
@@ -114,9 +118,8 @@ open_score()
          fprintf(stderr, "Could not open %s for writing: %s\n", Scorefile, strerror(errno)); 
          fflush(stderr); 
     } 
-
 #else
-	scoreboard = NULL;
+    scoreboard = NULL;
 #endif
 }
 
@@ -128,18 +131,22 @@ open_score()
 void
 setup()
 {
+#ifdef CHECKTIME
+    int  checkout();
+#endif
 
-#if !defined(DUMP)
-	md_onsignal_autosave();
+#ifdef DUMP
+    md_onsignal_autosave();
 #else
-	md_onsignal_default();
+    md_onsignal_default();
 #endif
 
-#if defined(CHECKTIME)
-	md_start_checkout_timer(CHECKTIME*60);
+#ifdef CHECKTIME
+    md_start_checkout_timer(CHECKTIME*60);
+    num_checks = 0;
 #endif
 
-	raw();				/* Raw mode */
+    raw();				/* Raw mode */
     noecho();				/* Echo off */
     keypad(stdscr,1);
     getltchars();			/* get the local tty chars */
@@ -190,10 +197,29 @@ playltchars(void)
 void
 start_score()
 {
-#if defined(CHECKTIME)
-	md_stop_checkout_timer();
+#ifdef CHECKTIME
+    md_stop_checkout_timer();
 #endif
 }
+
+/* 	 	 
+ * is_symlink: 	 	 
+ *      See if the file has a symbolic link 	 	 
+  */ 	 	 
+bool 	 	 
+is_symlink(char *sp) 	 	 
+{ 	 	 
+#ifdef S_IFLNK 	 	 
+    struct stat sbuf2; 	 	 
+ 	 	 
+    if (lstat(sp, &sbuf2) < 0) 	 	 
+        return FALSE; 	 	 
+    else 	 	 
+        return ((sbuf2.st_mode & S_IFMT) != S_IFREG); 	 	 
+#else 	 	 
+    return FALSE; 	 	 
+#endif 
+} 
 
 #if defined(MAXLOAD) || defined(MAXUSERS)
 /*
@@ -203,18 +229,18 @@ start_score()
 bool
 too_much(void)
 {
-#if defined(MAXLOAD);
+#ifdef MAXLOAD
     double avec[3];
 #else
     int cnt;
 #endif
 
-#if defined(MAXLOAD)
+#ifdef MAXLOAD
     md_loadav(avec);
     if (avec[1] > (MAXLOAD / 10.0))
 	return TRUE;
 #endif
-#if defined(MAXUSERS)
+#ifdef MAXUSERS
     if (ucount() > MAXUSERS)
 	return TRUE;
 #endif
@@ -242,7 +268,7 @@ author(void)
 }
 #endif
 
-#if defined(CHECKTIME)
+#ifdef CHECKTIME
 /*
  * checkout:
  *	Check each CHECKTIME seconds to see if the load is too high
@@ -302,7 +328,7 @@ chmsg(char *fmt, int arg)
 }
 #endif
 
-#if defined(UCOUNT)
+#ifdef UCOUNT
 /*
  * ucount:
  *	Count number of users on the system

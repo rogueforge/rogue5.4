@@ -8,7 +8,9 @@
 #include <curses.h>
 #include "rogue.h"
 
+#ifdef MASTER
 int Total = 0;			/* total dynamic memory bytes */
+#endif
 
 /*
  * detach:

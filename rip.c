@@ -45,9 +45,9 @@ score(int amount, int flags, char monst)
     int i;
     SCORE *sc2;
     SCORE *top_ten, *endp;
-#ifdef MASTER
+# ifdef MASTER
     int prflags = 0;
-#endif
+# endif
     void (*fp)(int);
     unsigned int uid;
     static char *reason[] = {
@@ -165,11 +165,11 @@ score(int amount, int flags, char monst)
 	    if (scp->sc_flags == 0 || scp->sc_flags == 3)
 		printf(" by %s", killname((char) scp->sc_monster, TRUE));
 #ifdef MASTER
-	    if (prflags == 1))
+	    if (prflags == 1)
 	    {
 	    printf(" (%s)", md_getrealname(scp->sc_uid));
 	    }
-	    else if (prflags == 2))
+	    else if (prflags == 2)
 	    {
 		fflush(stdout);
 		fgets(Prbuf,10,stdin);

@@ -2075,7 +2075,11 @@ rs_save_file(FILE *savef)
     rs_write_boolean(savef, Terse);                 /* 25 */
     rs_write_boolean(savef, To_death);              /* 26 */
     rs_write_boolean(savef, Tombstone);             /* 27 */
+#ifdef MASTER
     rs_write_int(savef, Wizard);                    /* 28 */
+#else
+    rs_write_int(savef, 0);                         /* 28 */
+#endif
     rs_write_booleans(savef, Pack_used, 26);        /* 29 */
     rs_write_char(savef, Dir_ch);
     rs_write_chars(savef, File_name, MAXSTR);
@@ -2151,7 +2155,11 @@ rs_save_file(FILE *savef)
     rs_write_obj_info(savef, Ws_info, MAXSTICKS);      
     
     rs_write_daemons(savef, &d_list[0], 20);            /* 5.4-daemon.c */
+#ifdef MASTER
     rs_write_int(savef,Total);                          /* 5.4-list.c   */
+#else
+    rs_write_int(savef, 0);
+#endif
     rs_write_int(savef,Between);                        /* 5.4-daemons.c*/
     rs_write_coord(savef, nh);                          /* 5.4-move.c    */
     rs_write_int(savef, Group);                         /* 5.4-weapons.c */
@@ -2163,7 +2171,9 @@ rs_save_file(FILE *savef)
 
 int
 rs_restore_file(FILE *inf)
-{ 
+{
+    int dummyint;
+
     if (read_error || format_error)
         return(READSTAT);
 
@@ -2194,7 +2204,11 @@ rs_restore_file(FILE *inf)
     rs_read_boolean(inf, &Terse);               /* 25 */
     rs_read_boolean(inf, &To_death);            /* 26 */
     rs_read_boolean(inf, &Tombstone);           /* 27 */
+#ifdef MASTER
     rs_read_int(inf, &Wizard);              	/* 28 */
+#else
+    rs_read_int(inf, &dummyint);              	/* 28 */
+#endif
     rs_read_booleans(inf, Pack_used, 26);       /* 29 */
     rs_read_char(inf, &Dir_ch);
     rs_read_chars(inf, File_name, MAXSTR);
@@ -2272,7 +2286,7 @@ rs_restore_file(FILE *inf)
     rs_read_obj_info(inf, Ws_info, MAXSTICKS);       
 
     rs_read_daemons(inf, d_list, 20);                   /* 5.4-daemon.c     */
-    rs_read_int(inf,&Total);                            /* 5.4-list.c    */
+    rs_read_int(inf,&dummyint);  /* total */            /* 5.4-list.c    */
     rs_read_int(inf,&Between);                          /* 5.4-daemons.c    */
     rs_read_coord(inf, &nh);                            /* 5.4-move.c       */
     rs_read_int(inf,&Group);                            /* 5.4-weapons.c    */

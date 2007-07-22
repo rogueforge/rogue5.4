@@ -114,16 +114,13 @@ void
 auto_save(int sig)
 {
     FILE *savef;
-
     NOOP(sig);
 
     md_ignoreallsignals();
-
     if (File_name[0] != '\0' && ((savef = fopen(File_name, "w")) != NULL ||
 	(md_unlink_open_file(File_name, savef) >= 0 && (savef = fopen(File_name, "w")) != NULL)))
 	    save_file(savef);
-    
-	exit(0);
+    exit(0);
 }
 
 /*
@@ -139,10 +136,6 @@ save_file(FILE *savef)
     endwin();
     resetltchars();
     md_chmod(File_name, 0400);
-    /*
-     * DO NOT DELETE.  This forces stdio to allocate the output buffer
-     * so that malloc doesn't get confused on restart
-     */
     encwrite(version, strlen(version)+1, savef);
     sprintf(buf,"%d x %d\n", LINES, COLS);
     encwrite(buf,80,savef);
@@ -178,7 +171,7 @@ restore(char *file, char **envp)
 	return FALSE;
     }
     stat(file, &sbuf2);
-    syml = md_issymlink(file);
+    syml = is_symlink(file);
 
     fflush(stdout);
     encread(buf, (unsigned) strlen(version) + 1, inf);
@@ -219,7 +212,7 @@ restore(char *file, char **envp)
 
     if (
 #ifdef MASTER
-        !Wizard &&
+	!Wizard &&
 #endif
         md_unlink_open_file(file, inf) < 0)
     {
