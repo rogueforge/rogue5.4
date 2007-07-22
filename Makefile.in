@@ -16,7 +16,7 @@
 # This section could be manually configured if autoconf/configure fails
 ###############################################################################
 
-DISTNAME=rogue5.4.2
+DISTNAME=@PACKAGE_TARNAME@@PACKAGE_VERSION@
 
 PROGRAM=@PROGRAM@
 
@@ -60,6 +60,9 @@ GROUPOWNER = games
 
 #CPPFLAGS=-DHAVE_CONFIG_H
 CPPFLAGS =@DEFS@ @CPPFLAGS@
+
+#DISTFILE = $(PROGRAM)
+DISTFILE = $(DISTNAME)-@TARGET@
 
 INSTALL=./install-sh
 
@@ -106,7 +109,9 @@ CFILES=	vers.c extern.c armor.c chase.c command.c daemon.c \
 MISC_C=	findpw.c scedit.c scmisc.c
 DOCSRC= rogue.me rogue.6
 DOCS  = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat readme54.html
-MISC  =	Makefile $(MISC_C) LICENSE.TXT $(PROGRAM).sln $(PROGRAM).vcproj $(DOCS)\
+AUTOCONF_SRC = configure.ac install-sh config.sub config.guess
+AUTOGEN_SRC = config.h.in configure
+MISC  =	Makefile $(MISC_C) LICENSE.TXT rogue54.sln rogue54.vcproj $(DOCS)\
         $(DOCSRC)
 
 .SUFFIXES: .obj
@@ -163,8 +168,8 @@ $(PROGRAM).cat: rogue.6
 	fi
 
 dist: clean $(PROGRAM)
-	tar cf $(DISTNAME)-`uname`.tar $(PROGRAM) LICENSE.TXT $(DOCS)
-	gzip -f $(DISTNAME)-`uname`.tar
+	tar cf $(DISTFILE).tar $(PROGRAM) LICENSE.TXT $(DOCS)
+	gzip -f $(DISTFILE).tar
 
 install: $(PROGRAM)
 	-$(TOUCH) test
@@ -182,4 +187,4 @@ uninstall:
 	-$(RM) $(LOCKFILE)
 	-$(RMDIR) $(DESTDIR)$(docdir)$(PROGRAM)
     
-reinstall: uninstall install
+reinstall: uninstall instal
