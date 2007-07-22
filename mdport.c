@@ -18,9 +18,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <curses.h>
-#include "extern.h"
-
 
 #if defined(_WIN32)
 #include <Windows.h>
@@ -34,9 +31,8 @@
 #undef MOUSE_MOVED
 #endif
 
-#if defined(HAVE_STDLIB_H)
-#include <stdlib.h>
-#endif
+#include <curses.h>
+#include "extern.h"
 
 #if defined(HAVE_SYS_TYPES)
 #include <sys/types.h>

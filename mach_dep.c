@@ -45,8 +45,6 @@
 
 #define NOOP(x) (x += 0)
 
-#ifdef SCOREFILE
-
 # ifndef NUMSCORES
 #	define	NUMSCORES	10
 #	define	NUMNAME		"Ten"
@@ -60,8 +58,6 @@ bool Allscore = TRUE;
 # else  /* ALLSCORES */
 bool Allscore = FALSE;
 # endif /* ALLSCORES */
-
-#endif /* SCOREFILE */
 
 #ifdef CHECKTIME
 static int Num_checks;		/* times we've gone over in checkout() */
