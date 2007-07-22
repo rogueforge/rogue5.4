@@ -9,53 +9,51 @@
 # See the file LICENSE.TXT for full copyright and licensing information.
 #
 
-DISTNAME=rogue5.4.2
-PROGRAM=rogue54
-
-O=o
-
-HDRS=	rogue.h extern.h score.h
-
-OBJS1 =	vers.$(O) extern.$(O) armor.$(O) chase.$(O) command.$(O) daemon.$(O) \
-	daemons.$(O) fight.$(O) init.$(O) io.$(O) list.$(O) mach_dep.$(O) \
-	main.$(O) mdport.$(O) misc.$(O) monsters.$(O) move.$(O) new_level.$(O)
-OBJS2 = options.$(O) pack.$(O) passages.$(O) potions.$(O) rings.$(O) rip.$(O) \
-        rooms.$(O) save.$(O) scrolls.$(O) state.$(O) sticks.$(O) things.$(O) \
-        weapons.$(O) wizard.$(O) xcrypt.$(O)
-OBJS  =	$(OBJS1) $(OBJS2)
-
-CFILES=	vers.c extern.c armor.c chase.c command.c daemon.c \
-	daemons.c fight.c init.c io.c list.c mach_dep.c \
-	main.c  mdport.c misc.c monsters.c move.c new_level.c \
-	options.c pack.c passages.c potions.c rings.c rip.c \
-	rooms.c save.c scrolls.c state.c sticks.c things.c \
-	weapons.c wizard.c xcrypt.c
-MISC_C=	findpw.c scedit.c scmisc.c
-DOCSRC= rogue.me rogue.6
-DOCS  = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat readme54.html
-MISC  =	Makefile $(MISC_C) LICENSE.TXT $(PROGRAM).sln $(PROGRAM).vcproj $(DOCS)\
-        $(DOCSRC)
-
-CC    = gcc
-ROPTS = -DALLSCORES -DSCOREFILE=\"rogue.scr\" -DLOCKFILE=\"rogue.lck\"
-COPTS = -O3
-CFLAGS= $(COPTS) $(ROPTS) 
-LIBS =	-lcurses
-RM    = rm -f
-
-MAKEFILE=-f Makefile.std
-
+DISTNAME = rogue5.4.2
+PROGRAM  = rogue54
+O        = o
+HDRS     = rogue.h extern.h score.h
+OBJS1    = vers.$(O) extern.$(O) armor.$(O) chase.$(O) command.$(O) \
+           daemon.$(O) daemons.$(O) fight.$(O) init.$(O) io.$(O) list.$(O) \
+	   mach_dep.$(O) main.$(O) mdport.$(O) misc.$(O) monsters.$(O) \
+	   move.$(O) new_level.$(O)
+OBJS2    = options.$(O) pack.$(O) passages.$(O) potions.$(O) rings.$(O) \
+           rip.$(O) rooms.$(O) save.$(O) scrolls.$(O) state.$(O) sticks.$(O) \
+	   things.$(O) weapons.$(O) wizard.$(O) xcrypt.$(O)
+OBJS     = $(OBJS1) $(OBJS2)
+CFILES   = vers.c extern.c armor.c chase.c command.c daemon.c \
+	   daemons.c fight.c init.c io.c list.c mach_dep.c \
+	   main.c  mdport.c misc.c monsters.c move.c new_level.c \
+	   options.c pack.c passages.c potions.c rings.c rip.c \
+	   rooms.c save.c scrolls.c state.c sticks.c things.c \
+	   weapons.c wizard.c xcrypt.c
+MISC_C   = findpw.c scedit.c scmisc.c
+DOCSRC   = rogue.me.in rogue.6.in rogue.doc.in rogue.html.in rogue.cat.in
+DOCS     = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat $(PROGRAM).me \
+           $(PROGRAM).6
+AFILES   = Makefile.in configure.ac config.h.in config.sub config.guess \
+           install-sh
+MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj 
+CC       = gcc
+CPPFLAGS = -DALLSCORES -DSCOREFILE=\"$(PROGRAM).scr\" -DLOCKFILE=\"$(PROGRAM).lck\"
+CFLAGS   = -O3
+LDFLAGS  =
+LIBS     = -lcurses
+RM       = rm -f
+MAKEFILE = -f Makefile.std
+SCOREFILE= $(PROGRAM).scr
+LOCKFILE = $(PROGRAM).lck
 .SUFFIXES: .obj
 
 .c.obj:
-	$(CC) $(CFLAGS) /c $*.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) /c $*.c
     
-$(PROGRAM): $(HDRS) $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $*.c
+    
+$(PROGRAM): $(HDRS) $(OBJS) fixdocs
+	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
  
-test:
-	echo $(MAKE)
-
 clean:
 	$(RM) $(OBJS1)
 	$(RM) $(OBJS2)
@@ -86,21 +84,21 @@ doc.groff:
 
 
 fixdocs:
-	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.6.in > rogue.6
-	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.me.in > rogue.me
-	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.html.in > rogue,html
-	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.doc.in > rogue.doc
-	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.cat.in > rogue.cat
+	sed -e 's/@PROGRAM@/$(PROGRAM)/' -e 's/@SCOREFILE@/$(SCOREFILE)/' rogue.6.in > $(PROGRAM).6
+	sed -e 's/@PROGRAM@/$(PROGRAM)/' -e 's/@SCOREFILE@/$(SCOREFILE)/' rogue.me.in > $(PROGRAM).me
+	sed -e 's/@PROGRAM@/$(PROGRAM)/' -e 's/@SCOREFILE@/$(SCOREFILE)/' rogue.html.in > $(PROGRAM).html
+	sed -e 's/@PROGRAM@/$(PROGRAM)/' -e 's/@SCOREFILE@/$(SCOREFILE)/' rogue.doc.in > $(PROGRAM).doc
+	sed -e 's/@PROGRAM@/$(PROGRAM)/' -e 's/@SCOREFILE@/$(SCOREFILE)/' rogue.cat.in > $(PROGRAM).cat
 
 dist.irix:
 	$(MAKE) $(MAKEFILE) clean
-	$(MAKE) $(MAKEFILE)  CC=cc COPTS="-woff 1116 -O3" $(PROGRAM)
+	$(MAKE) $(MAKEFILE)  CC=cc $(PROGRAM)
 	tar cf $(DISTNAME)-irix.tar $(PROGRAM) LICENSE.TXT $(DOCS)
 	gzip -f $(DISTNAME)-irix.tar
 
 dist.aix:
 	$(MAKE) $(MAKEFILE) clean
-	$(MAKE) $(MAKEFILE) CC=xlc COPTS="-qmaxmem=16768 -O3 -qstrict" $(PROGRAM)
+	$(MAKE) $(MAKEFILE) CC=xlc CFLAGS="-qmaxmem=16768 -O3 -qstrict" $(PROGRAM)
 	tar cf $(DISTNAME)-aix.tar $(PROGRAM) LICENSE.TXT $(DOCS)
 	gzip -f $(DISTNAME)-aix.tar
 
@@ -112,13 +110,13 @@ dist.linux:
 	
 dist.interix:
 	@$(MAKE) $(MAKEFILE) clean
-	@$(MAKE) $(MAKEFILE) COPTS="-ansi" $(PROGRAM)
+	@$(MAKE) $(MAKEFILE) CFLAGS="-ansi" $(PROGRAM)
 	tar cf $(DISTNAME)-interix.tar $(PROGRAM) LICENSE.TXT $(DOCS)
 	gzip -f $(DISTNAME)-interix.tar
 	
 dist.cygwin:
 	@$(MAKE) $(MAKEFILE) --no-print-directory clean
-	@$(MAKE) $(MAKEFILE) COPTS="-I/usr/include/ncurses" --no-print-directory $(PROGRAM)
+	@$(MAKE) $(MAKEFILE) CPPFLAGS="-I/usr/include/ncurses" --no-print-directory $(PROGRAM)
 	tar cf $(DISTNAME)-cygwin.tar $(PROGRAM).exe LICENSE.TXT $(DOCS)
 	gzip -f $(DISTNAME)-cygwin.tar
 
@@ -127,7 +125,7 @@ dist.cygwin:
 #
 dist.mingw32:
 	@$(MAKE) $(MAKEFILE) --no-print-directory RM="cmd /c del" clean
-	@$(MAKE) $(MAKEFILE) --no-print-directory COPTS="-I../pdcurses" LIBS="../pdcurses/pdcurses.a" $(PROGRAM)
+	@$(MAKE) $(MAKEFILE) --no-print-directory CPPFLAGS="-I../pdcurses" LIBS="../pdcurses/pdcurses.a" $(PROGRAM)
 	cmd /c del $(DISTNAME)-mingw32.zip
 	zip $(DISTNAME)-mingw32.zip $(PROGRAM).exe LICENSE.TXT $(DOCS)
 	
@@ -145,7 +143,7 @@ dist.win32:
 	@$(MAKE) $(MAKEFILE) /NOLOGO O="obj" RM="-del" clean
 	@$(MAKE) $(MAKEFILE) /NOLOGO O="obj" CC="CL" \
 	    LIBS="..\pdcurses\pdcurses.lib shell32.lib user32.lib Advapi32.lib" \
-	    COPTS="-nologo -I..\pdcurses \
-	    -Ox -wd4033 -wd4716" $(PROGRAM)
+	    CPPFLAGS="-I..\pdcurses" \
+	    CFLAGS="-nologo -Ox -wd4033 -wd4716" $(PROGRAM)
 	-del $(DISTNAME)-win32.zip
 	zip $(DISTNAME)-win32.zip $(PROGRAM).exe LICENSE.TXT $(DOCS)
