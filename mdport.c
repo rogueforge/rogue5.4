@@ -16,23 +16,11 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifdef HAVE_CONFIG_H
-#ifdef PDCURSES
-#undef HAVE_UNISTD_H
-#undef HAVE_LIMITS_H
-#undef HAVE_MEMORY_H
-#undef HAVE_STRING_H
-#endif
-#include "config.h"
-#elif defined(_WIN32)
-#define HAVE_TERM_H
-#define HAVE__SPAWNL
-#define HAVE_SYS_TYPES_H
-#define HAVE_PROCESS_H
-#endif
-
 #include <stdlib.h>
 #include <string.h>
+#include <curses.h>
+#include "extern.h"
+
 
 #if defined(_WIN32)
 #include <Windows.h>
