@@ -797,7 +797,7 @@ fruit [slime-mold]
 A Guide to the Dungeons of Doom                    USD:33-13
 
 
-file [~/rogue.sav]
+file [~/rogue.save]
      The default file name for saving  the  game.   If  your
      phone  is hung up by accident, rogue will automatically
      save the game in this file.  The file  name  may  start

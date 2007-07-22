@@ -44,8 +44,8 @@ AUTHORS
        Michael C. Toy, Kenneth C. R. C. Arnold, Glenn Wichman
 
 FILES
-       @SCOREFILE@	Score file
-       ~/rogue.sav	Default save file
+       @SCOREFILE@		Score file
+       ~/rogue.save                Default save file
 
 SEE ALSO
        Michael C. Toy and Kenneth C. R. C. Arnold, A guide to the Dungeons  of

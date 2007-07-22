@@ -861,7 +861,7 @@ If you just want to see what the current top players/games list is,
 you can type
 .ti +1i
 .nf
-% rogue \-s
+% @PROGRAM@ \-s
 .br
 .sh 1 Acknowledgements
 .pp
