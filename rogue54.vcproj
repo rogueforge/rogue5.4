@@ -390,30 +390,6 @@
 			RelativePath="LICENSE.TXT"
 			>
 		</File>
-		<File
-			RelativePath="Makefile"
-			>
-		</File>
-		<File
-			RelativePath="rogue.6"
-			>
-		</File>
-		<File
-			RelativePath="rogue.me"
-			>
-		</File>
-		<File
-			RelativePath="rogue54.cat"
-			>
-		</File>
-		<File
-			RelativePath="rogue54.doc"
-			>
-		</File>
-		<File
-			RelativePath="rogue54.html"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
