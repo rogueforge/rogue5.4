@@ -35,7 +35,7 @@ AFILES   = Makefile.in configure.ac config.h.in config.sub config.guess \
            install-sh
 MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj 
 CC       = gcc
-FEATURES = -DALLSCORES -DSCOREFILE='"$(SCOREFILE)"' -DLOCKFILE='"$(LOCKFILE)"'
+FEATURES = -DALLSCORES -DSCOREFILE=\"$(SCOREFILE)\" -DLOCKFILE=\"$(LOCKFILE)\"
 CPPFLAGS =
 CFLAGS   = -O3
 LDFLAGS  =
