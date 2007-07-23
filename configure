@@ -681,8 +681,10 @@ COLCRT
 TBL
 SED
 PROGRAM
+GROUPOWNER
 SCOREFILE
 LOCKFILE
+TARGET
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1269,13 +1271,15 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-setgid=NAME    install executable as setgid with group ownership of
+                          NAME [default=no]]
   --enable-scorefile=SCOREFILE
                           enable scoreboard with given filename
   --enable-lockfile=LOCKFILE
                           enable scoreboard lockfile with given filename
   --enable-wizardmode     enable availability of wizard mode [default=no]
   --enable-allscores      enable scoreboard to show top scores, not just top
-                          players [default=no]
+                          players [default=yes]
   --enable-checktime      enable checktime [default=no]
   --enable-maxload        enable maxload [default=no]
   --enable-maxusers       enable maxuser [default=no]
@@ -1293,7 +1297,8 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-ncurses          Force the use of ncurses over curses
-  --with-program-name     alternate executable name
+  --with-program-name=NAME
+                          alternate executable name
 
 Some influential environment variables:
   CC          C compiler command
@@ -1739,7 +1744,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile rogue.6 rogue.me rogue.cat rogue.doc"
+ac_config_files="$ac_config_files Makefile rogue.6 rogue.cat rogue.doc rogue.html rogue.me"
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
@@ -5976,6 +5981,38 @@ fi
 PROGRAM=$progname
 
 
+# Check whether --enable-setgid was given.
+if test "${enable_setgid+set}" = set; then
+  enableval=$enable_setgid;
+fi
+
+{ echo "$as_me:$LINENO: checking if using setgid execute bit" >&5
+echo $ECHO_N "checking if using setgid execute bit... $ECHO_C" >&6; }
+if test "x$enable_setgid" = "xno" ; then
+GROUPOWNER=
+elif test "x$enable_setgid" = "xyes" ; then
+GROUPOWNER=games
+elif test "x$enable_setgid" = "x" ; then
+GROUPOWNER=
+else
+GROUPOWNER=$enable_setgid
+fi
+
+if test "x$GROUPOWNER" != "x" ; then
+
+cat >>confdefs.h <<_ACEOF
+#define GROUPOWNER $GROUPOWNER
+_ACEOF
+
+{ echo "$as_me:$LINENO: result: $GROUPOWNER" >&5
+echo "${ECHO_T}$GROUPOWNER" >&6; }
+else
+{ echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+
 # Check whether --enable-scorefile was given.
 if test "${enable_scorefile+set}" = set; then
   enableval=$enable_scorefile;
@@ -6073,6 +6110,8 @@ fi
 # Check whether --enable-allscores was given.
 if test "${enable_allscores+set}" = set; then
   enableval=$enable_allscores;
+else
+  enable_allscores=yes
 fi
 
 { echo "$as_me:$LINENO: checking if allscores is enabled" >&5
@@ -6335,6 +6374,8 @@ _ACEOF
 { echo "$as_me:$LINENO: result: $enable_ucount" >&5
 echo "${ECHO_T}$enable_ucount" >&6; }
 fi
+
+TARGET=$target
 
 
 cat >confcache <<\_ACEOF
@@ -6892,9 +6933,10 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "rogue.6") CONFIG_FILES="$CONFIG_FILES rogue.6" ;;
-    "rogue.me") CONFIG_FILES="$CONFIG_FILES rogue.me" ;;
     "rogue.cat") CONFIG_FILES="$CONFIG_FILES rogue.cat" ;;
     "rogue.doc") CONFIG_FILES="$CONFIG_FILES rogue.doc" ;;
+    "rogue.html") CONFIG_FILES="$CONFIG_FILES rogue.html" ;;
+    "rogue.me") CONFIG_FILES="$CONFIG_FILES rogue.me" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -7022,12 +7064,14 @@ COLCRT!$COLCRT$ac_delim
 TBL!$TBL$ac_delim
 SED!$SED$ac_delim
 PROGRAM!$PROGRAM$ac_delim
+GROUPOWNER!$GROUPOWNER$ac_delim
 SCOREFILE!$SCOREFILE$ac_delim
 LOCKFILE!$LOCKFILE$ac_delim
+TARGET!$TARGET$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 69; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 71; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

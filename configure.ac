@@ -40,9 +40,30 @@ AC_CHECK_PROG([COLCRT], [colcrt], [colcrt],)
 AC_CHECK_PROG([TBL], [tbl], [tbl],)
 AC_CHECK_PROG([SED], [sed], [sed],)
 
-AC_ARG_WITH(program-name, AC_HELP_STRING([--with-program-name],[alternate executable name]),[progname="$withval" ], [progname="rogue"] )
+AC_ARG_WITH(program-name, AC_HELP_STRING([--with-program-name=NAME],[alternate executable name]),[progname="$withval" ], [progname="rogue"] )
 PROGRAM=$progname
 AC_SUBST(PROGRAM)
+
+AC_ARG_ENABLE(setgid, AC_HELP_STRING([--enable-setgid=NAME],[install executable as setgid with group ownership of NAME @<:@default=no@:>@])],[],[])
+AC_MSG_CHECKING([if using setgid execute bit])
+if test "x$enable_setgid" = "xno" ; then
+GROUPOWNER=
+elif test "x$enable_setgid" = "xyes" ; then
+GROUPOWNER=games
+elif test "x$enable_setgid" = "x" ; then
+GROUPOWNER=
+else
+GROUPOWNER=$enable_setgid
+fi
+
+if test "x$GROUPOWNER" != "x" ; then
+AC_DEFINE_UNQUOTED([GROUPOWNER],[$GROUPOWNER], [Define to group owner of setgid executable])
+AC_MSG_RESULT([$GROUPOWNER])
+else
+AC_MSG_RESULT([no])
+fi
+
+AC_SUBST(GROUPOWNER)
 
 AC_ARG_ENABLE([scorefile],[AC_HELP_STRING([--enable-scorefile=SCOREFILE], [enable scoreboard with given filename])],[],[])
 AC_MSG_CHECKING([for scoreboard file])
@@ -100,7 +121,7 @@ fi
 AC_MSG_RESULT([yes])
 fi
 
-AC_ARG_ENABLE([allscores],[AC_HELP_STRING([--enable-allscores], [enable scoreboard to show top scores, not just top players @<:@default=no@:>@])],[],[])
+AC_ARG_ENABLE([allscores],[AC_HELP_STRING([--enable-allscores], [enable scoreboard to show top scores, not just top players @<:@default=yes@:>@])],[],[enable_allscores=yes])
 AC_MSG_CHECKING([if allscores is enabled])
 if test "x$enable_allscores" = "xyes" ; then
 AC_DEFINE([ALLSCORES], [1], [Define if scorefile is top scores, not top players])

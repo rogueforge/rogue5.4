@@ -6,6 +6,9 @@
 /* Define if checktime feature should be enabled */
 #undef CHECKTIME
 
+/* Define to group owner of setgid executable */
+#undef GROUPOWNER
+
 /* Define to 1 if you have the `alarm' function. */
 #undef HAVE_ALARM
 

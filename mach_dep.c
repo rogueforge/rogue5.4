@@ -108,7 +108,10 @@ open_score()
     scoreboard = fopen(Scorefile, "r+");
 
     if ((scoreboard == NULL) && (errno == ENOENT))
+    {
     	scoreboard = fopen(Scorefile, "w+");
+        md_chmod(Scorefile,0464);
+    }
 
     if (scoreboard == NULL) { 
          fprintf(stderr, "Could not open %s for writing: %s\n", Scorefile, strerror(errno)); 

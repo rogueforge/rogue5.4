@@ -56,7 +56,7 @@ SCOREFILE = @SCOREFILE@
 LOCKFILE = @LOCKFILE@
 
 #GROUPOWNER=games
-GROUPOWNER = games
+GROUPOWNER = @GROUPOWNER@
 
 #CPPFLAGS=-DHAVE_CONFIG_H
 CPPFLAGS =@DEFS@ @CPPFLAGS@
@@ -66,6 +66,11 @@ DISTFILE = $(DISTNAME)-@TARGET@
 
 INSTALL=./install-sh
 
+#INSTGROUP=-g games
+INSTGROUP=
+#INSTOWNER=-u root
+INSTOWNER=
+
 CHGRP=chgrp
 
 MKDIR=mkdir
@@ -73,6 +78,8 @@ MKDIR=mkdir
 TOUCH=touch
 
 RMDIR=rmdir
+
+CHMOD=chmod
 
 DESTDIR=
 
@@ -180,11 +187,22 @@ dist: clean $(PROGRAM)
 
 install: $(PROGRAM)
 	-$(TOUCH) test
-	-$(INSTALL) -g $(GROUPOWNER) -m 02755 $(PROGRAM) $(DESTDIR)$(bindir)/$(PROGRAM)
-	-$(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(man6dir)/$(PROGRAM).6
-	-$(INSTALL) -m 0644 rogue.doc $(DESTDIR)$(docdir)$(PROGRAM)/$(PROGRAM).doc
-	-if test ! -f $(SCOREFILE) ; then $(INSTALL) -g $(GROUPOWNER) -m 0664 test $(SCOREFILE) ; fi
-	-if test ! -f $(LOCKFILE) ; then $(INSTALL) -m 0666 test $(LOCKFILE) ; $(RM) $(LOCKFILE) ; fi
+	-if test ! -f $(SCOREFILE) ; then $(INSTALL) -m 0664 test $(SCOREFILE) ; fi
+	-$(INSTALL) -m 0755 $(PROGRAM) $(DESTDIR)$(bindir)/$(PROGRAM)
+	-if test "x$(GROUPOWNER)" != "x" ; then \
+	    $(CHGRP) $(GROUPOWNER) $(SCOREFILE) ; \
+	    $(CHGRP) $(GROUPOWNER) $(DESTDIR)$(bindir)/$(PROGRAM) ; \
+	    $(CHMOD) 02755 $(DESTDIR)$(bindir)/$(PROGRAM) ; \
+	    $(CHMOD) 0464 $(SCOREFILE) ; \
+         fi
+	-if test -d $(man6dir) ; then $(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(man6dir)/$(PROGRAM).6 ; fi
+	-if test ! -d $(man6dir) ; then $(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(mandir)/$(PROGRAM).6 ; fi
+	-$(INSTALL) -m 0644 rogue.doc $(DESTDIR)$(docdir)/$(PROGRAM).doc
+	-$(INSTALL) -m 0644 rogue.html $(DESTDIR)$(docdir)/$(PROGRAM).html
+	-$(INSTALL) -m 0644 rogue.cat $(DESTDIR)$(docdir)/$(PROGRAM).cat
+	-$(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(docdir)/$(PROGRAM).6
+	-$(INSTALL) -m 0644 rogue.me $(DESTDIR)$(docdir)/$(PROGRAM).me
+	-if test ! -f $(LOCKFILE)  ; then $(INSTALL) -m 0666 test $(LOCKFILE)  ; $(RM) $(LOCKFILE) ; fi
 	-$(RM) test
 
 uninstall:	
