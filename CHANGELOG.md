@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [5.4.3] - 2007-07-23
+### Added
+- Autoconf based build system
+
+### Fixed
+- Bugs related wield/wearing items
+- Fedora packaging issues
+
 ## [5.4.2] - 2006-01-30
 ### Added
 - Keypad/cursor key support
