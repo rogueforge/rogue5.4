@@ -405,7 +405,7 @@ md_getusername()
     mybuffer = buffer;
     GetUserName(mybuffer,&size);
     l = mybuffer;
-#elif defined(HAVE_GETPWUID)
+#elif defined(HAVE_GETPWUID)&& !defined(__DJGPP__)
     struct passwd *pw;
 
     pw = getpwuid(getuid());

@@ -24,7 +24,6 @@
 #define HAVE_SETUID 1
 #define HAVE_GETUID 1
 #define HAVE_GETPASS 1
-#define HAVE_GETPWUID 1
 #define HAVE_SPAWNL 1
 #define HAVE_ALARM 1
 #elif defined(_WIN32)
@@ -81,8 +80,14 @@
 #undef HAVE_NLIST_H
 #undef HAVE_NLIST
 #undef HAVE_LOADAV
+#ifndef _AIX
 #define HAVE_GETLOADAVG 1
+#endif
 #define HAVE_ALARM 1
+#endif
+
+#ifdef __DJGPP__
+#undef HAVE_GETPWUID /* DJGPP's limited version doesn't even work as documented */
 #endif
 
 /*

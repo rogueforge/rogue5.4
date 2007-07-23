@@ -379,9 +379,11 @@ sumprobs(struct obj_info *info, int bound
 #endif
 )
 {
-    struct obj_info *endp, *start;
+#ifdef MASTER
+	struct obj_info *start = info;
+#endif
+    struct obj_info *endp;
 
-    start = info;
     endp = info + bound;
     while (++info < endp)
 	info->oi_prob += (info - 1)->oi_prob;
