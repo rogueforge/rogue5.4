@@ -65,7 +65,7 @@ clean:
 	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
     
 dist.src:
-	make clean
+	$(MAKE) $(MAKEFILE) clean
 	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC)
 	gzip -f $(DISTNAME)-src.tar
 
