@@ -216,8 +216,8 @@ over:
 		    }
 		    Delta.y += Hero.y;
 		    Delta.x += Hero.x;
-		    if (((mp = moat(Delta.y, Delta.x)) == NULL
-			|| (!see_monst(mp)) && !on(Player, SEEMONST)))
+		    if ( ((mp = moat(Delta.y, Delta.x)) == NULL)
+			|| ((!see_monst(mp)) && !on(Player, SEEMONST)))
 		    {
 			if (!Terse)
 			    addmsg("I see ");
@@ -605,25 +605,25 @@ identify()
     struct h_list *hp;
     char *str;
     static struct h_list ident_list[] = {
-	'|',		"wall of a room",		FALSE,
-	'-',		"wall of a room",		FALSE,
-	GOLD,		"gold",				FALSE,
-	STAIRS,		"a staircase",			FALSE,
-	DOOR,		"door",				FALSE,
-	FLOOR,		"room floor",			FALSE,
-	PLAYER,		"you",				FALSE,
-	PASSAGE,	"passage",			FALSE,
-	TRAP,		"trap",				FALSE,
-	POTION,		"potion",			FALSE,
-	SCROLL,		"scroll",			FALSE,
-	FOOD,		"food",				FALSE,
-	WEAPON,		"weapon",			FALSE,
-	' ',		"solid rock",			FALSE,
-	ARMOR,		"armor",			FALSE,
-	AMULET,		"the Amulet of Yendor",		FALSE,
-	RING,		"ring",				FALSE,
-	STICK,		"wand or staff",		FALSE,
-	'\0'
+	{'|',		"wall of a room",		FALSE},
+	{'-',		"wall of a room",		FALSE},
+	{GOLD,		"gold",				FALSE},
+	{STAIRS,	"a staircase",			FALSE},
+	{DOOR,		"door",				FALSE},
+	{FLOOR,		"room floor",			FALSE},
+	{PLAYER,	"you",				FALSE},
+	{PASSAGE,	"passage",			FALSE},
+	{TRAP,		"trap",				FALSE},
+	{POTION,	"potion",			FALSE},
+	{SCROLL,	"scroll",			FALSE},
+	{FOOD,		"food",				FALSE},
+	{WEAPON,	"weapon",			FALSE},
+	{' ',		"solid rock",			FALSE},
+	{ARMOR,		"armor",			FALSE},
+	{AMULET,	"the Amulet of Yendor",		FALSE},
+	{RING,		"ring",				FALSE},
+	{STICK,		"wand or staff",		FALSE},
+	{'\0'}
     };
 
     msg("what do you want identified? ");

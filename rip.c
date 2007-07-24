@@ -159,7 +159,7 @@ score(int amount, int flags, char monst)
 	if (scp->sc_score) {
 	    if (sc2 == scp)
             md_raw_standout();
-	    printf("%2d %5d %s: %s on level %d", scp - top_ten + 1,
+	    printf("%2d %5d %s: %s on level %d", (int) (scp - top_ten + 1),
 		scp->sc_score, scp->sc_name, reason[scp->sc_flags],
 		scp->sc_level);
 	    if (scp->sc_flags == 0 || scp->sc_flags == 3)
@@ -344,10 +344,12 @@ total_winner()
 		worth = op->oi_worth;
 		if (obj->o_which == R_ADDSTR || obj->o_which == R_ADDDAM ||
 		    obj->o_which == R_PROTECT || obj->o_which == R_ADDHIT)
+		{
 			if (obj->o_arm > 0)
 			    worth += obj->o_arm * 100;
 			else
 			    worth = 10;
+		}
 		if (!(obj->o_flags & ISKNOW))
 		    worth /= 2;
 		obj->o_flags |= ISKNOW;
@@ -385,12 +387,12 @@ killname(char monst, bool doart)
     char *sp;
     bool article;
     static struct h_list nlist[] = {
-	'a',	"arrow",		TRUE,
-	'b',	"bolt",			TRUE,
-	'd',	"dart",			TRUE,
-	'h',	"hypothermia",		FALSE,
-	's',	"starvation",		FALSE,
-	'\0'
+	{'a',	"arrow",		TRUE},
+	{'b',	"bolt",			TRUE},
+	{'d',	"dart",			TRUE},
+	{'h',	"hypothermia",		FALSE},
+	{'s',	"starvation",		FALSE},
+	{'\0'}
     };
 
     if (isupper(monst))

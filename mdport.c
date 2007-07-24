@@ -70,6 +70,11 @@
 #include <ncurses/term.h>
 #endif
 
+#if defined(HAVE_WORKING_FORK)
+#include <sys/wait.h>
+#endif
+
+#include <ctype.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <sys/stat.h>
@@ -453,7 +458,9 @@ md_gethomedir()
 #endif
 
     if ( (h == NULL) || (*h == '\0') )
+    {
         if ( (h = getenv("HOME")) == NULL )
+	{
             if ( (h = getenv("HOMEDRIVE")) == NULL)
                 h = "";
             else
@@ -464,6 +471,8 @@ md_gethomedir()
                 if ( (h = getenv("HOMEPATH")) == NULL)
                     h = "";
             }
+	}
+    }
 
 
     len = strlen(homedir);
@@ -536,7 +545,7 @@ md_shellescape()
          * Set back to original user, just in case
          */
         md_normaluser();
-        execl(sh == NULL ? "/bin/sh" : sh, "shell", "-i", 0);
+        execl(sh == NULL ? "/bin/sh" : sh, "shell", "-i", NULL);
         perror("No shelly");
         _exit(-1);
     }

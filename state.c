@@ -222,7 +222,7 @@ rs_read_ints(FILE *inf, int *i, int count)
 }
 
 int
-rs_write_boolean(FILE *savef, bool c)
+rs_write_boolean(FILE *savef, int c)
 {
     unsigned char buf = (c == 0) ? 0 : 1;
     

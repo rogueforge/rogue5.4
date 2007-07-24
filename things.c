@@ -504,10 +504,12 @@ add_line(char *fmt, char *arg)
 		 * if there are lines below, use 'em
 		 */
 		if (LINES > NUMLINES)
+		{
 		    if (NUMLINES + Line_cnt > LINES)
 			mvwin(tw, LINES - (Line_cnt + 1), COLS - maxlen - 3);
 		    else
 			mvwin(tw, NUMLINES, 0);
+		}
 		touchwin(tw);
 		wrefresh(tw);
 		wait_for(' ');
@@ -555,6 +557,7 @@ void
 end_line()
 {
     if (Inv_type != INV_SLOW)
+    {
 	if (Line_cnt == 1 && !Newpage)
 	{
 	    Mpos = 0;
@@ -562,6 +565,7 @@ end_line()
 	}
 	else
 	    add_line((char *) NULL, NULL);
+    }
     Line_cnt = 0;
     Newpage = FALSE;
 }

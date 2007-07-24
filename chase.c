@@ -236,11 +236,13 @@ set_oldch(THING *tp, coord *cp)
     sch = tp->t_oldch;
     tp->t_oldch = CCHAR( mvinch(cp->y,cp->x) );
     if (!on(Player, ISBLIND))
+    {
 	    if ((sch == FLOOR || tp->t_oldch == FLOOR) &&
 		(tp->t_room->r_flags & ISDARK))
 		    tp->t_oldch = ' ';
 	    else if (dist_cp(cp, &Hero) <= LAMPDIST && See_floor)
 		tp->t_oldch = chat(cp->y, cp->x);
+    }
 }
 
 /*

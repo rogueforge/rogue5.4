@@ -230,7 +230,7 @@ status()
 	move(STATLINE, 0);
                 
         printw("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%d  %s",
-	    level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
+	    Level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
 	    Max_stats.s_str, 10 - s_arm, Pstats.s_lvl, Pstats.s_exp,
 	    state_name[Hungry_state]);
     }

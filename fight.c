@@ -206,6 +206,7 @@ attack(THING *mp)
 		     * Rattlesnakes have poisonous bites
 		     */
 		    if (!save(VS_POISON))
+		    {
 			if (!ISWEARING(R_SUSTSTR))
 			{
 			    chg_str(-1);
@@ -215,10 +216,13 @@ attack(THING *mp)
 				msg("a bite has weakened you");
 			}
 			else if (!To_death)
+			{
 			    if (!Terse)
 				msg("a bite momentarily weakens you");
 			    else
 				msg("bite has no effect");
+			}
+		    }
 		when 'W':
 		case 'V':
 		    /*
@@ -413,6 +417,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	}
 	cp = weap->o_damage;
 	if (hurl)
+	{
 	    if ((weap->o_flags&ISMISL) && Cur_weapon != NULL &&
 	      Cur_weapon->o_which == weap->o_launch)
 	    {
@@ -422,6 +427,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
 	    }
 	    else if (weap->o_launch < 0)
 		cp = weap->o_hurldmg;
+	}
     }
     /*
      * If the creature being attacked is not running (alseep or held)

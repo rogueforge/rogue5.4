@@ -121,10 +121,12 @@ fall(THING *obj, bool pr)
 	pp->p_ch = (char) obj->o_type;
 	obj->o_pos = fpos;
 	if (cansee(fpos.y, fpos.x))
+	{
 	    if (pp->p_monst != NULL)
 		pp->p_monst->t_oldch = (char) obj->o_type;
 	    else
 		mvaddch(fpos.y, fpos.x, obj->o_type);
+	}
 	attach(Lvl_obj, obj);
 	return;
     }

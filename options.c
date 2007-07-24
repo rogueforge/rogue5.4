@@ -22,7 +22,7 @@
 struct optstruct {
     char	*o_name;	/* option name */
     char	*o_prompt;	/* prompt for interactive entry */
-    int		*o_opt;		/* pointer to thing to set */
+    void 	*o_opt;		/* pointer to thing to set */
 				/* function to print value */
     void 	(*o_putfunc)(void *opt);
 				/* function to get value interactively */
@@ -35,25 +35,25 @@ void	pr_optname(OPTION *op);
 
 OPTION	optlist[] = {
     {"terse",	 "Terse output",
-		 (int *) &Terse,	put_bool,	get_bool	},
+		 &Terse,	put_bool,	get_bool	},
     {"flush",	 "Flush typeahead during battle",
-		(int *) &Fight_flush,	put_bool,	get_bool	},
+		 &Fight_flush,	put_bool,	get_bool	},
     {"jump",	 "Show position only at end of run",
-		(int *) &Jump,		put_bool,	get_bool	},
+		 &Jump,		put_bool,	get_bool	},
     {"seefloor", "Show the lamp-illuminated floor",
-		(int *) &See_floor,	put_bool,	get_sf		},
+		 &See_floor,	put_bool,	get_sf		},
     {"passgo",	"Follow turnings in passageways",
-		(int *) &Passgo,	put_bool,	get_bool	},
+		 &Passgo,	put_bool,	get_bool	},
     {"tombstone", "Print out tombstone when killed",
-		(int *) &Tombstone,	put_bool,	get_bool	},
+		 &Tombstone,	put_bool,	get_bool	},
     {"inven",	"Inventory style",
-		(int *) &Inv_type,	put_inv_t,	get_inv_t	},
+		 &Inv_type,	put_inv_t,	get_inv_t	},
     {"name",	 "Name",
-		(int *) Whoami,		put_str,	get_str		},
+		 Whoami,	put_str,	get_str		},
     {"fruit",	 "Fruit",
-		(int *) Fruit,		put_str,	get_str		},
+		 Fruit,		put_str,	get_str		},
     {"file",	 "Save file",
-		(int *) File_name,	put_str,	get_str		}
+		 File_name,	put_str,	get_str		}
 };
 
 /*
@@ -84,7 +84,9 @@ option()
     for (op = optlist; op <= &optlist[NUM_OPTS-1]; op++)
     {
 	pr_optname(op);
-	if ((retval = (*op->o_getfunc)(op->o_opt, Hw)))
+	retval = (*op->o_getfunc)(op->o_opt, Hw);
+	if (retval)
+	{
 	    if (retval == QUIT)
 		break;
 	    else if (op > optlist) {	/* MINUS */
@@ -97,6 +99,7 @@ option()
 		wmove(Hw, 0, 0);
 		op--;
 	    }
+	}
     }
     /*
      * Switch back to original screen

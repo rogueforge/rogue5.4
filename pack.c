@@ -67,6 +67,7 @@ add_pack(THING *obj, bool silent)
 			op = next(op);
 		}
 		if (op->o_type == obj->o_type && op->o_which == obj->o_which)
+		{
 		    if (ISMULT(op->o_type))
 		    {
 			if (!pack_room(from_floor, obj))
@@ -104,12 +105,14 @@ dump_it:
 		    }
 		    else
 			lp = op;
+		}
 out:
 		break;
 	    }
 	}
 
 	if (lp != NULL)
+	{
 	    if (!pack_room(from_floor, obj))
 		return;
 	    else
@@ -121,6 +124,7 @@ out:
 		    prev(next(lp)) = obj;
 		next(lp) = obj;
 	    }
+	}
     }
 
     obj->o_flags |= ISFOUND;

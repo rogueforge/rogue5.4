@@ -98,10 +98,12 @@ look(bool wakeup)
 		    if (wakeup)
 			wake_monster(y, x);
 		    if (see_monst(tp))
+		    {
 			if (on(Player, ISHALU))
 			    ch = rnd(26) + 'A';
 			else
 			    ch = tp->t_disguise;
+		    }
 		}
 	    if (on(Player, ISBLIND) && (y != Hero.y || x != Hero.x))
 		continue;

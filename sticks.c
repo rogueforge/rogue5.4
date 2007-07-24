@@ -379,10 +379,12 @@ def:
 		    if (!save(VS_MAGIC))
 		    {
 			if ((Pstats.s_hpt -= roll(6, 6)) <= 0)
+			{
 			    if (start == &Hero)
 				death('b');
 			    else
 				death(moat(start->y, start->x)->t_type);
+			}
 			used = TRUE;
 			if (Terse)
 			    msg("the %s hits", name);

@@ -76,6 +76,7 @@ main(int argc, char **argv, char **envp)
 	md_normaluser(); /* we drop any setgid/setuid priveldges here */
 
     if (argc == 2)
+    {
 	if (strcmp(argv[1], "-s") == 0)
 	{
 	    Noscore = TRUE;
@@ -94,6 +95,7 @@ main(int argc, char **argv, char **envp)
 	    death(death_monst());
 	    exit(0);
 	}
+    }
 
     init_check();			/* check for legal startup */
     if (argc == 2)
@@ -144,6 +146,7 @@ main(int argc, char **argv, char **envp)
     fuse(swander, 0, WANDERTIME, AFTER);
     start_daemon(stomach, 0, AFTER);
     playit();
+    return(0);
 }
 
 /*

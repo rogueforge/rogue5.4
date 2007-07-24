@@ -119,6 +119,7 @@ read_scroll()
 		     * Or anything else nasty
 		     */
 		    else if (step_ok(ch = winat(y, x)))
+		    {
 			if (ch == SCROLL
 			    && find_obj(y, x)->o_which == S_SCARE)
 				continue;
@@ -127,6 +128,7 @@ read_scroll()
 			    mp.y = y;
 			    mp.x = x;
 			}
+		    }
 	    if (i == 0)
 		msg("you hear a faint cry of anguish in the distance");
 	    else
