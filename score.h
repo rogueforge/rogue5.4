@@ -11,7 +11,7 @@ struct sc_ent {
     unsigned short sc_monster;
     char sc_name[MAXSTR];
     int sc_level;
-    long sc_time;
+    int sc_time;
 };
 
 typedef struct sc_ent SCORE;

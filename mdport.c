@@ -762,40 +762,6 @@ md_setsuspchar(int c)
     return(0);
 }
 
-int md_endian = 0x01020304;
-
-unsigned long int
-md_ntohl(unsigned long int x)
-{
-#ifdef _WIN32
-    if ( *((char *)&md_endian) == 0x01 )
-        return(x);
-    else
-        return( ((x & 0x000000ffU) << 24) |
-                ((x & 0x0000ff00U) <<  8) |
-                ((x & 0x00ff0000U) >>  8) |
-                ((x & 0xff000000U) >> 24) );
-#else
-    return( ntohl(x) );
-#endif
-}
-
-unsigned long int
-md_htonl(unsigned long int x)
-{
-#ifdef _WIN32
-    if ( *((char *)&md_endian) == 0x01 )
-        return(x);
-    else
-        return( ((x & 0x000000ffU) << 24) |
-                ((x & 0x0000ff00U) <<  8) |
-                ((x & 0x00ff0000U) >>  8) |
-                ((x & 0xff000000U) >> 24) );
-#else
-    return( htonl(x) );
-#endif
-}
-
 /*
     Cursor/Keypad Support
 
@@ -1353,7 +1319,7 @@ bad:
 	return;
     }
 
-    lseek(kmem, (long) avenrun.n_value, 0);
+    lseek(kmem, avenrun.n_value, 0);
     read(kmem, (char *) avg, 3 * sizeof (double));
     close(kmem);
 }

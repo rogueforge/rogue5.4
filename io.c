@@ -178,7 +178,7 @@ status()
     static int s_hp = 0;
     static int s_arm = 0;
     static str_t s_str = 0;
-    static long s_exp = 0;
+    static int s_exp = 0;
     static char *state_name[] =
     {
 	"", "Hungry", "Weak", "Faint"
@@ -228,8 +228,9 @@ status()
     else
     {
 	move(STATLINE, 0);
-        printw("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%ld  %s",
-	    Level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
+                
+        printw("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%d  %s",
+	    level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
 	    Max_stats.s_str, 10 - s_arm, Pstats.s_lvl, Pstats.s_exp,
 	    state_name[Hungry_state]);
     }

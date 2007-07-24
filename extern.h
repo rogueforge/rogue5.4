@@ -192,8 +192,6 @@ int	md_setdsuspchar(int c);
 int	md_shellescape();
 void	md_sleep(int s);
 int	md_suspchar();
-unsigned long int md_ntohl(unsigned long int x);
-unsigned long int md_htonl(unsigned long int x);
 int	md_hasclreol();
 int	md_unlink(char *file);
 int	md_unlink_open_file(char *file, FILE *inf);

@@ -52,8 +52,31 @@
 #include <sys/types.h>
 #include <string.h>
 
-unsigned long int md_ntohl(unsigned long int x);
-unsigned long int md_htonl(unsigned long int x);
+unsigned int md_endian = 0x01020304;
+
+unsigned int
+xntohl(unsigned int x)
+{
+    if ( *((char *)&md_endian) == 0x01 )
+        return(x);
+    else
+        return( ((x & 0x000000ffU) << 24) |
+                ((x & 0x0000ff00U) <<  8) |
+                ((x & 0x00ff0000U) >>  8) |
+                ((x & 0xff000000U) >> 24) );
+}
+
+unsigned
+xhtonl(unsigned int x)
+{
+    if ( *((char *)&md_endian) == 0x01 )
+        return(x);
+    else
+        return( ((x & 0x000000ffU) << 24) |
+                ((x & 0x0000ff00U) <<  8) |
+                ((x & 0x00ff0000U) >>  8) |
+                ((x & 0xff000000U) >> 24) );
+}
 
 #define _PASSWORD_EFMT1 '_'
 
@@ -357,8 +380,8 @@ des_setkey(const char *key)
 	if (!des_initialised)
 		des_init();
 
-	rawkey0 = md_ntohl(*(unsigned int *) key);
-	rawkey1 = md_ntohl(*(unsigned int *) (key + 4));
+	rawkey0 = xntohl(*(unsigned int *) key);
+	rawkey1 = xntohl(*(unsigned int *) (key + 4));
 
 	if ((rawkey0 | rawkey1)
 	    && rawkey0 == old_rawkey0
@@ -558,12 +581,12 @@ des_cipher(const char *in, char *out, int salt, int count)
 	setup_salt(salt);
 
 	memcpy(x, in, sizeof x);
-	rawl = md_ntohl(x[0]);
-	rawr = md_ntohl(x[1]);
+	rawl = xntohl(x[0]);
+	rawr = xntohl(x[1]);
 	retval = do_des(rawl, rawr, &l_out, &r_out, count);
 
-	x[0] = md_htonl(l_out);
-	x[1] = md_htonl(r_out);
+	x[0] = xhtonl(l_out);
+	x[1] = xhtonl(r_out);
 	memcpy(out, x, sizeof x);
 	return(retval);
 }

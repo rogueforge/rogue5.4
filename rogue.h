@@ -353,8 +353,8 @@ struct room {
  */
 struct stats {
     str_t s_str;			/* Strength */
-    long s_exp;				/* Experience */
-    int s_lvl;				/* Level of mastery */
+    int s_exp;				/* Experience */
+    int s_lvl;				/* level of mastery */
     int s_arm;				/* Armor class */
     int s_hpt;			/* Hit points */
     char s_dmg[13];			/* String describing damage done */
@@ -473,7 +473,7 @@ extern int	A_class[], Count, Food_left, Hungry_state, Inpack,
 
 extern unsigned int	numscores;
 
-extern long	Dnum, E_levels[], Seed;
+extern int	Dnum, E_levels[], Seed;
 
 extern WINDOW	*Hw;
 

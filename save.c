@@ -342,7 +342,7 @@ rd_score(SCORE *top_ten)
     {
         encread(top_ten[i].sc_name, MAXSTR, scoreboard);
         encread(scoreline, 100, scoreboard);
-        sscanf(scoreline, " %u %u %u %hu %u %lx \n",
+        sscanf(scoreline, " %u %u %u %hu %u %x \n",
             &top_ten[i].sc_uid, &top_ten[i].sc_score,
             &top_ten[i].sc_flags, &top_ten[i].sc_monster,
             &top_ten[i].sc_level, &top_ten[i].sc_time);
@@ -369,7 +369,7 @@ wr_score(SCORE *top_ten)
     {
           memset(scoreline,0,100);
           encwrite(top_ten[i].sc_name, MAXSTR, scoreboard);
-          sprintf(scoreline, " %u %u %u %hu %u %lx \n",
+          sprintf(scoreline, " %u %u %u %hu %u %x \n",
               top_ten[i].sc_uid, top_ten[i].sc_score,
               top_ten[i].sc_flags, top_ten[i].sc_monster,
               top_ten[i].sc_level, top_ten[i].sc_time);

@@ -463,185 +463,6 @@ rs_read_uint(FILE *inf, unsigned int *i)
 }
 
 int
-rs_write_long(FILE *savef, long c)
-{
-    int c2;
-    unsigned char bytes[4];
-    unsigned char *buf = (unsigned char *)&c;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    c2 = c;
-    buf = (unsigned char *) &c2;
-
-    if (big_endian)
-    {
-        bytes[3] = buf[0];
-        bytes[2] = buf[1];
-        bytes[1] = buf[2];
-        bytes[0] = buf[3];
-        buf = bytes;
-    }
-    
-    rs_write(savef, buf, 4);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_long(FILE *inf, long *i)
-{
-    unsigned char bytes[4];
-    long input;
-    unsigned char *buf = (unsigned char *) &input;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, &input, 4);
-
-    if (big_endian)
-    {
-        bytes[3] = buf[0];
-        bytes[2] = buf[1];
-        bytes[1] = buf[2];
-        bytes[0] = buf[3];
-        buf = bytes;
-    }
-    
-    *i = *((long *) buf);
-
-    return(READSTAT);
-}
-
-int
-rs_write_longs(FILE *savef, long *c, int count)
-{
-    int n = 0;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    rs_write_int(savef,count);
-    
-    for(n = 0; n < count; n++)
-        rs_write_long(savef, c[n]);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_longs(FILE *inf, long *i, int count)
-{
-    int n = 0, value = 0;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read_int(inf,&value);
-
-    if (value != count)
-        format_error = TRUE;
-
-    for(n = 0; n < value; n++)
-        if (rs_read_long(inf, &i[n]) != 0)
-            break;
-    
-    return(READSTAT);
-}
-
-int
-rs_write_ulong(FILE *savef, unsigned long c)
-{
-    unsigned int c2;
-    unsigned char bytes[4];
-    unsigned char *buf = (unsigned char *)&c;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    c2 = c;
-    buf = (unsigned char *) &c2;
-
-    if (big_endian)
-    {
-        bytes[3] = buf[0];
-        bytes[2] = buf[1];
-        bytes[1] = buf[2];
-        bytes[0] = buf[3];
-        buf = bytes;
-    }
-    
-    rs_write(savef, buf, 4);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_ulong(FILE *inf, unsigned long *i)
-{
-    unsigned char bytes[4];
-    unsigned long input;
-    unsigned char *buf = (unsigned char *) &input;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, &input, 4);
-
-    if (big_endian)
-    {
-        bytes[3] = buf[0];
-        bytes[2] = buf[1];
-        bytes[1] = buf[2];
-        bytes[0] = buf[3];
-        buf = bytes;
-    }
-    
-    *i = *((unsigned long *) buf);
-
-    return(READSTAT);
-}
-
-int
-rs_write_ulongs(FILE *savef, unsigned long *c, int count)
-{
-    int n = 0;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    rs_write_int(savef,count);
-
-    for(n = 0; n < count; n++)
-        if (rs_write_ulong(savef,c[n]) != 0)
-            break;
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_ulongs(FILE *inf, unsigned long *i, int count)
-{
-    int n = 0, value = 0;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read_int(inf,&value);
-
-    if (value != count)
-        format_error = TRUE;
-
-    for(n = 0; n < count; n++)
-        if (rs_read_ulong(inf, &i[n]) != 0)
-            break;
-    
-    return(READSTAT);
-}
-
-int
 rs_write_marker(FILE *savef, int id)
 {
     if (write_error)
@@ -980,7 +801,7 @@ rs_write_stats(FILE *savef, struct stats *s)
 
     rs_write_marker(savef, RSID_STATS);
     rs_write_str_t(savef, s->s_str);
-    rs_write_long(savef, s->s_exp);
+    rs_write_int(savef, s->s_exp);
     rs_write_int(savef, s->s_lvl);
     rs_write_int(savef, s->s_arm);
     rs_write_int(savef, s->s_hpt);
@@ -998,7 +819,7 @@ rs_read_stats(FILE *inf, struct stats *s)
 
     rs_read_marker(inf, RSID_STATS);
     rs_read_str_t(inf,&s->s_str);
-    rs_read_long(inf,&s->s_exp);
+    rs_read_int(inf,&s->s_exp);
     rs_read_int(inf,&s->s_lvl);
     rs_read_int(inf,&s->s_arm);
     rs_read_int(inf,&s->s_hpt);
@@ -2120,9 +1941,9 @@ rs_save_file(FILE *savef)
     rs_write_int(savef, Purse);
     rs_write_int(savef, Quiet);
     rs_write_int(savef, Vf_hit);
-    rs_write_long(savef, Dnum);
-    rs_write_long(savef, Seed);
-    rs_write_longs(savef, E_levels, 21);
+    rs_write_int(savef, Dnum);
+    rs_write_int(savef, Seed);
+    rs_write_ints(savef, E_levels, 21);
     rs_write_coord(savef, Delta);
     rs_write_coord(savef, Oldpos);
     rs_write_coord(savef, Stairs);
@@ -2249,9 +2070,9 @@ rs_restore_file(FILE *inf)
     rs_read_int(inf, &Purse);
     rs_read_int(inf, &Quiet);
     rs_read_int(inf, &Vf_hit);
-    rs_read_long(inf, &Dnum);
-    rs_read_long(inf, &Seed);
-    rs_read_longs(inf, E_levels,21);
+    rs_read_int(inf, &Dnum);
+    rs_read_int(inf, &Seed);
+    rs_read_ints(inf, E_levels,21);
     rs_read_coord(inf, &Delta);
     rs_read_coord(inf, &Oldpos);
     rs_read_coord(inf, &Stairs);

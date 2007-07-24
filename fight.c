@@ -265,7 +265,7 @@ attack(THING *mp)
 		    /*
 		     * Leperachaun steals some gold
 		     */
-		    long lastpurse;
+		    register int lastpurse;
 
 		    lastpurse = Purse;
 		    Purse -= GOLDCALC;
