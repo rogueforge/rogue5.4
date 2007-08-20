@@ -13,5 +13,5 @@ main(void)
     fprintf(stderr, "Password: ");
     fgets(buf, 80, stdin);
     buf[strlen(buf) - 1] = '\0';
-    printf("%s\n", md_crypt(buf, "mT"));
+    printf("%s\n", xcrypt(buf, "mT"));
 }
