@@ -31,8 +31,8 @@ MISC_C   = findpw.c scedit.c scmisc.c
 DOCSRC   = rogue.me.in rogue.6.in rogue.doc.in rogue.html.in rogue.cat.in
 DOCS     = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat $(PROGRAM).me \
            $(PROGRAM).6
-AFILES   = Makefile.in configure.ac config.h.in config.sub config.guess \
-           install-sh
+AFILES   = configure Makefile.in configure.ac config.h.in config.sub config.guess \
+           install-sh rogue.6.in rogue.me.in rogue.html.in rogue.doc.in rogue.cat.in
 MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj 
 CC       = gcc
 FEATURES = -DALLSCORES -DSCOREFILE=\"$(SCOREFILE)\" -DLOCKFILE=\"$(LOCKFILE)\"
@@ -66,7 +66,7 @@ clean:
     
 dist.src:
 	$(MAKE) $(MAKEFILE) clean
-	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC)
+	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC) $(AFILES)
 	gzip -f $(DISTNAME)-src.tar
 
 findpw: findpw.c xcrypt.o mdport.o xcrypt.o
@@ -85,7 +85,6 @@ doc.nroff:
 doc.groff:
 	groff -P-c -t -me -Tascii rogue.me | sed -e 's/.\x08//g' > rogue.doc
 	groff -man rogue.6 | sed -e 's/.\x08//g' > rogue.cat
-
 
 fixdocs:
 	sed -e 's/@PROGRAM@/$(PROGRAM)/' -e 's/@SCOREFILE@/$(SCOREFILE)/' rogue.6.in > $(PROGRAM).6
