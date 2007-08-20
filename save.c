@@ -165,7 +165,7 @@ restore(char *file, char **envp)
 
 	md_tstphold();
 
-	if ((inf = fopen(file,"w+")) == NULL)
+	if ((inf = fopen(file,"r")) == NULL)
     {
 	perror(file);
 	return FALSE;
