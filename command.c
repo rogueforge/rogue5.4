@@ -759,7 +759,7 @@ norm:
 	msg("that has already been identified");
 	return;
     }
-    if (elsewise != NULL && elsewise == op->oi_guess)
+    if (elsewise != NULL && elsewise == *guess)
     {
 	if (!Terse)
 	    addmsg("Was ");
