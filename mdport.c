@@ -59,7 +59,13 @@
 #endif
 
 #if defined(HAVE_UNISTD_H)
+#ifndef __USE_GNU
+#define __USE_GNU
 #include <unistd.h>
+#undef __USE_GNU
+#else
+#include <unistd.h>
+#endif
 #endif
 
 #include <curses.h> /* AIX requires curses.h be included before term.h */
