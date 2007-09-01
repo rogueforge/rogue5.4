@@ -172,7 +172,7 @@ score(int amount, int flags, char monst)
 	    else if (prflags == 2)
 	    {
 		fflush(stdout);
-		fgets(Prbuf,10,stdin);
+		(void) fgets(Prbuf,10,stdin);
 		if (Prbuf[0] == 'd')
 		{
 		    for (sc2 = scp; sc2 < endp - 1; sc2++)
@@ -262,7 +262,7 @@ death(char monst)
     score(Purse, Amulet ? 3 : 0, monst);
     printf("[Press return to continue]");
     fflush(stdout);
-    fgets(Prbuf,10,stdin);
+    (void) fgets(Prbuf,10,stdin);
     my_exit(0);
 }
 

@@ -81,7 +81,7 @@ do_comm(void)
 	printf("\nCommand: ");
 	while (isspace(Buf[0] = getchar()) || Buf[0] == '\n')
 		continue;
-	fgets(&Buf[1], BUFSIZ, stdin);
+	(void) fgets(&Buf[1], BUFSIZ, stdin);
 	Buf[strlen(Buf) - 1] = '\0';
 	switch (Buf[0]) {
 	  case 'w':
@@ -159,7 +159,7 @@ add_score(void)
 	static SCORE	new;
 
 	printf("Name: ");
-	fgets(new.sc_name, MAXSTR, stdin);
+	(void) fgets(new.sc_name, MAXSTR, stdin);
 	new.sc_name[strlen(new.sc_name) - 1] = '\0';
 	do {
 		printf("Reason: ");
@@ -174,7 +174,7 @@ add_score(void)
 	new.sc_flags -= '0';
 	do {
 		printf("User Id: ");
-		fgets(Buf, BUFSIZ, stdin);
+		(void) fgets(Buf, BUFSIZ, stdin);
 		Buf[strlen(Buf) - 1] = '\0';
         id = atoi(Buf);
 	} while (id == -1);
@@ -273,7 +273,7 @@ del_score(void)
 
 	for (;;) {
 		printf("Which score? ");
-		fgets(Buf, BUFSIZ, stdin);
+		(void) fgets(Buf, BUFSIZ, stdin);
 		if (Buf[0] == '\n')
 			return;
 		sscanf(Buf, "%d", &num);
