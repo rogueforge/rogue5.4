@@ -63,11 +63,15 @@ clean:
 	$(RM) $(OBJS2)
 	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe $(PROGRAM).lck
 	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
+	$(RM) $(DISTNAME)/*
     
 dist.src:
 	$(MAKE) $(MAKEFILE) clean
-	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC) $(AFILES)
+	mkdir $(DISTNAME)
+	cp $(CFILES) $(HDRS) $(MISC) $(AFILES) $(DISTNAME)
+	tar cf $(DISTNAME)-src.tar $(DISTNAME)
 	gzip -f $(DISTNAME)-src.tar
+	rm -fr $(DISTNAME)
 
 findpw: findpw.c xcrypt.o mdport.o xcrypt.o
 	$(CC) -s -o findpw findpw.c xcrypt.o mdport.o -lcurses
