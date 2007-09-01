@@ -17,7 +17,7 @@
 ###############################################################################
 
 DISTNAME=@PACKAGE_TARNAME@@PACKAGE_VERSION@
-
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PROGRAM=@PROGRAM@
 
 O=o
