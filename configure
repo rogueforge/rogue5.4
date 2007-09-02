@@ -5690,7 +5690,9 @@ done
 
 
 
-for ac_func in alarm getpass memset setenv strchr nlist _spawnl spawnl getpwuid loadav getloadavg strerror setresgid setregid setgid setresuid setreuid setuid getuid getgid
+
+
+for ac_func in erasechar killchar alarm getpass memset setenv strchr nlist _spawnl spawnl getpwuid loadav getloadavg strerror setresgid setregid setgid setresuid setreuid setuid getuid getgid
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
