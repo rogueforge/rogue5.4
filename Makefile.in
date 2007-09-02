@@ -97,29 +97,28 @@ man6dir = $(mandir)/man6
 # It should not be necessary to change anything below this comment
 ############################################################################### 
 
-HDRS=	rogue.h extern.h score.h
-
-OBJS1 =	vers.$(O) extern.$(O) armor.$(O) chase.$(O) command.$(O) daemon.$(O) \
-	daemons.$(O) fight.$(O) init.$(O) io.$(O) list.$(O) mach_dep.$(O) \
-	main.$(O) mdport.$(O) misc.$(O) monsters.$(O) move.$(O) new_level.$(O)
-OBJS2 = options.$(O) pack.$(O) passages.$(O) potions.$(O) rings.$(O) rip.$(O) \
-        rooms.$(O) save.$(O) scrolls.$(O) state.$(O) sticks.$(O) things.$(O) \
-        weapons.$(O) wizard.$(O) xcrypt.$(O)
-OBJS  =	$(OBJS1) $(OBJS2)
-
-CFILES=	vers.c extern.c armor.c chase.c command.c daemon.c \
-	daemons.c fight.c init.c io.c list.c mach_dep.c \
-	main.c  mdport.c misc.c monsters.c move.c new_level.c \
-	options.c pack.c passages.c potions.c rings.c rip.c \
-	rooms.c save.c scrolls.c state.c sticks.c things.c \
-	weapons.c wizard.c xcrypt.c
-MISC_C=	findpw.c scedit.c scmisc.c
-DOCSRC= rogue.me rogue.6
-DOCS  = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat readme54.html
-AUTOCONF_SRC = configure.ac install-sh config.sub config.guess
-AUTOGEN_SRC = config.h.in configure
-MISC  =	Makefile $(MISC_C) LICENSE.TXT rogue54.sln rogue54.vcproj $(DOCS)\
-        $(DOCSRC)
+HDRS     = rogue.h extern.h score.h
+OBJS1    = vers.$(O) extern.$(O) armor.$(O) chase.$(O) command.$(O) \
+           daemon.$(O) daemons.$(O) fight.$(O) init.$(O) io.$(O) list.$(O) \
+           mach_dep.$(O) main.$(O) mdport.$(O) misc.$(O) monsters.$(O) \
+           move.$(O) new_level.$(O)
+OBJS2    = options.$(O) pack.$(O) passages.$(O) potions.$(O) rings.$(O) \
+           rip.$(O) rooms.$(O) save.$(O) scrolls.$(O) state.$(O) sticks.$(O) \
+           things.$(O) weapons.$(O) wizard.$(O) xcrypt.$(O)
+OBJS     = $(OBJS1) $(OBJS2)
+CFILES   = vers.c extern.c armor.c chase.c command.c daemon.c \
+           daemons.c fight.c init.c io.c list.c mach_dep.c \
+           main.c  mdport.c misc.c monsters.c move.c new_level.c \
+           options.c pack.c passages.c potions.c rings.c rip.c \
+           rooms.c save.c scrolls.c state.c sticks.c things.c \
+           weapons.c wizard.c xcrypt.c
+MISC_C   = findpw.c scedit.c scmisc.c
+DOCSRC   = rogue.me.in rogue.6.in rogue.doc.in rogue.html.in rogue.cat.in
+DOCS     = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat $(PROGRAM).me \
+           $(PROGRAM).6
+AFILES   = configure Makefile.in configure.ac config.h.in config.sub config.guess \
+           install-sh rogue.6.in rogue.me.in rogue.html.in rogue.doc.in rogue.cat.in
+MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj
 
 .SUFFIXES: .obj
 
@@ -137,6 +136,8 @@ clean:
 	$(RM) $(OBJS2)
 	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe
 	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
+	$(RM) $(DISTNAME)/*
+	-rmdir $(DISTNAME)
     
 maintainer-clean:
 	$(RM) config.h
@@ -154,9 +155,12 @@ stddocs:
 	sed -e 's/@PROGRAM@/rogue/' -e 's/@SCOREFILE@/rogue.scr/' rogue.cat.in > rogue.cat
 
 dist.src:
-	make clean
-	tar cf $(DISTNAME)-src.tar $(CFILES) $(HDRS) $(MISC)
+	$(MAKE) $(MAKEFILE) clean
+	mkdir $(DISTNAME)
+	cp $(CFILES) $(HDRS) $(MISC) $(AFILES) $(DISTNAME)
+	tar cf $(DISTNAME)-src.tar $(DISTNAME)
 	gzip -f $(DISTNAME)-src.tar
+	rm -fr $(DISTNAME)
 
 findpw: findpw.c xcrypt.o mdport.o xcrypt.o
 	$(CC) -s -o findpw findpw.c xcrypt.o mdport.o -lcurses

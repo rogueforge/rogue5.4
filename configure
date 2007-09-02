@@ -6380,6 +6380,18 @@ fi
 TARGET=$target
 
 
+{ echo "$as_me:$LINENO: checking whether to docdir is defined" >&5
+echo $ECHO_N "checking whether to docdir is defined... $ECHO_C" >&6; }
+if test "x$docdir" = "x" ; then
+{ echo "$as_me:$LINENO: result: docdir undefined" >&5
+echo "${ECHO_T}docdir undefined" >&6; }
+docdir=\${datadir}/doc/\${PACKAGE_TARNAME}
+
+else
+{ echo "$as_me:$LINENO: result: docdir defined" >&5
+echo "${ECHO_T}docdir defined" >&6; }
+fi
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
