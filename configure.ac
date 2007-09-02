@@ -234,4 +234,13 @@ fi
 TARGET=$target
 AC_SUBST(TARGET)
 
+AC_MSG_CHECKING([whether to docdir is defined])
+if test "x$docdir" = "x" ; then
+AC_MSG_RESULT([docdir undefined])
+docdir=\${datadir}/doc/${PACKAGE_TARNAME}
+AC_SUBST(docdir)
+else
+AC_MSG_RESULT([docdir defined])
+fi
+
 AC_OUTPUT
