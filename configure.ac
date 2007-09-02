@@ -32,7 +32,7 @@ AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([alarm getpass memset setenv strchr nlist _spawnl spawnl getpwuid loadav getloadavg strerror setresgid setregid setgid setresuid setreuid setuid getuid getgid])
+AC_CHECK_FUNCS([erasechar killchar alarm getpass memset setenv strchr nlist _spawnl spawnl getpwuid loadav getloadavg strerror setresgid setregid setgid setresuid setreuid setuid getuid getgid])
 
 AC_CHECK_PROG([NROFF], [nroff], [nroff],)
 AC_CHECK_PROG([GROFF], [groff], [groff],)
