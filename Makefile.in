@@ -17,7 +17,7 @@
 ###############################################################################
 
 DISTNAME=@PACKAGE_TARNAME@@PACKAGE_VERSION@
-PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_TARNAME = @PACKAGE_TARNAME@-@PACKAGE_VERSION@
 PROGRAM=@PROGRAM@
 
 O=o
@@ -187,13 +187,13 @@ dist: clean $(PROGRAM)
 
 install: $(PROGRAM)
 	-$(TOUCH) test
-	-if test ! -f $(SCOREFILE) ; then $(INSTALL) -m 0664 test $(SCOREFILE) ; fi
+	-if test ! -f $(DESTDIR)$(SCOREFILE) ; then $(INSTALL) -m 0664 test $(DESTDIR)$(SCOREFILE) ; fi
 	-$(INSTALL) -m 0755 $(PROGRAM) $(DESTDIR)$(bindir)/$(PROGRAM)
 	-if test "x$(GROUPOWNER)" != "x" ; then \
-	    $(CHGRP) $(GROUPOWNER) $(SCOREFILE) ; \
+	    $(CHGRP) $(GROUPOWNER) $(DESTDIR)$(SCOREFILE) ; \
 	    $(CHGRP) $(GROUPOWNER) $(DESTDIR)$(bindir)/$(PROGRAM) ; \
 	    $(CHMOD) 02755 $(DESTDIR)$(bindir)/$(PROGRAM) ; \
-	    $(CHMOD) 0464 $(SCOREFILE) ; \
+	    $(CHMOD) 0464 $(DESTDIR)$(SCOREFILE) ; \
          fi
 	-if test -d $(man6dir) ; then $(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(man6dir)/$(PROGRAM).6 ; fi
 	-if test ! -d $(man6dir) ; then $(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(mandir)/$(PROGRAM).6 ; fi
@@ -202,14 +202,14 @@ install: $(PROGRAM)
 	-$(INSTALL) -m 0644 rogue.cat $(DESTDIR)$(docdir)/$(PROGRAM).cat
 	-$(INSTALL) -m 0644 rogue.6 $(DESTDIR)$(docdir)/$(PROGRAM).6
 	-$(INSTALL) -m 0644 rogue.me $(DESTDIR)$(docdir)/$(PROGRAM).me
-	-if test ! -f $(LOCKFILE)  ; then $(INSTALL) -m 0666 test $(LOCKFILE)  ; $(RM) $(LOCKFILE) ; fi
+	-if test ! -f $(DESTDIR)$(LOCKFILE)  ; then $(INSTALL) -m 0666 test $(DESTDIR)$(LOCKFILE)  ; $(RM) $(DESTDIR)$(LOCKFILE) ; fi
 	-$(RM) test
 
 uninstall:	
 	-$(RM) $(DESTDIR)$(bindir)/$(PROGRAM)
 	-$(RM) $(DESTDIR)$(man6dir)/$(PROGRAM).6
 	-$(RM) $(DESTDIR)$(docdir)$(PROGRAM)/$(PROGRAM).doc
-	-$(RM) $(LOCKFILE)
+	-$(RM) $(DESTDIR)$(LOCKFILE)
 	-$(RMDIR) $(DESTDIR)$(docdir)$(PROGRAM)
     
-reinstall: uninstall instal
+reinstall: uninstall install
