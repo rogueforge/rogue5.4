@@ -33,7 +33,8 @@ DOCS     = $(PROGRAM).doc $(PROGRAM).html $(PROGRAM).cat $(PROGRAM).me \
            $(PROGRAM).6
 AFILES   = configure Makefile.in configure.ac config.h.in config.sub config.guess \
            install-sh rogue.6.in rogue.me.in rogue.html.in rogue.doc.in rogue.cat.in
-MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj 
+MISC     = Makefile.std LICENSE.TXT rogue54.sln rogue54.vcproj rogue.spec \
+           rogue.png rogue.desktop
 CC       = gcc
 FEATURES = -DALLSCORES -DSCOREFILE=\"$(SCOREFILE)\" -DLOCKFILE=\"$(LOCKFILE)\"
 CPPFLAGS =
