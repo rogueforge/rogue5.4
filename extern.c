@@ -4,6 +4,8 @@
  * @(#)extern.c	4.82 (Berkeley) 02/05/99
  */
 
+/* All global variables are defined here, or in vers.c or init.c */
+
 #include <curses.h>
 #include "rogue.h"
 
@@ -31,7 +33,7 @@ int  Running = FALSE;			/* True if player is running */
 int  Save_msg = TRUE;			/* Remember last msg */
 int  See_floor = TRUE;			/* Show the lamp illuminated floor */
 int  Stat_msg = FALSE;			/* Should status() print as a msg() */
-int  Terse = FALSE;			/* True if we should be short */
+int  Terse = FALSE;				/* True if we should be short */
 int  To_death = FALSE;			/* Fighting is to the death! */
 int  Tombstone = TRUE;			/* Print out tombstone at end */
 #ifdef MASTER
@@ -46,7 +48,7 @@ int  Pack_used[26] = {			/* Is the character used in the pack? */
 int  Dir_ch;				/* Direction from last get_dir() call */
 char File_name[MAXSTR];			/* Save file name */
 char Huh[MAXSTR];			/* The last message printed */
-const char *P_colors[MAXPOTIONS];	/* Colors of the potions */
+const char *P_colors[MAXPOTIONS];		/* Colors of the potions */
 char Prbuf[2*MAXSTR];			/* Buffer for sprintfs */
 const char *R_stones[MAXRINGS];		/* Stone settings of the rings */
 int  Runch;				/* Direction player is Running */
@@ -68,7 +70,7 @@ int L_last_comm = '\0';		/* Last Last_comm */
 int L_last_dir = '\0';			/* Last Last_dir */
 int Last_comm = '\0';			/* Last command typed */
 int Last_dir = '\0';			/* Last direction given */
-const char *Tr_name[] = {		/* Names of the traps */
+const char *Tr_name[] = {			/* Names of the traps */
 	"a trapdoor",
 	"an arrow trap",
 	"a sleeping gas trap",
@@ -90,7 +92,7 @@ int Max_hit;				/* Max damage done to her in To_death */
 int Max_level;				/* Deepest player has gone */
 int Mpos = 0;				/* Where cursor is on top line */
 int No_food = 0;			/* Number of levels without food */
-const int A_class[MAXARMORS] = {	/* Armor class for each armor type */
+const int A_class[MAXARMORS] = {		/* Armor class for each armor type */
 	8,	/* LEATHER */
 	7,	/* RING_MAIL */
 	7,	/* STUDDED_LEATHER */
@@ -315,7 +317,7 @@ struct obj_info Ws_info[MAXSTICKS] = {
     { "cancellation",		 5, 280, NULL, FALSE },
 };
 
-struct h_list Helpstr[] = {
+const struct h_list Helpstr[] = {
     {'?',	"	prints help",				TRUE},
     {'/',	"	identify object",			TRUE},
     {'h',	"	left",					TRUE},
@@ -383,4 +385,16 @@ struct h_list Helpstr[] = {
     {'v',	"	print version number",			TRUE},
     {0,		NULL }
 };
+int numscores;
+char *Numname;
+int Allscore;
+int Between;
 
+#define _X_ { EMPTY }
+
+struct delayed_action d_list[MAXDAEMONS] = {
+    _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_,
+    _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, _X_, 
+};
+
+int Group = 2;

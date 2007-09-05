@@ -8,15 +8,15 @@
 #include <ctype.h>
 #include "rogue.h"
 
-typedef struct
+typedef struct PACT
 {
-    int pa_flags;
-    void (*pa_daemon)();
-    int pa_time;
-    char *pa_high, *pa_straight;
+    const int pa_flags;
+    const void (*pa_daemon)();
+    const int pa_time;
+    const char *pa_high, *pa_straight;
 } PACT;
 
-static PACT P_actions[] =
+static const PACT P_actions[] =
 {
 	{ ISHUH,	unconfuse,	HUHDURATION,	/* P_CONFUSE */
 		"what a tripy feeling!",
@@ -49,7 +49,7 @@ static PACT P_actions[] =
  *	Quaff a potion from the pack
  */
 void
-quaff()
+quaff(void)
 {
     THING *obj, *tp, *mp;
     int discardit = FALSE;
@@ -222,7 +222,7 @@ quaff()
  *	Returns true if an object radiates magic
  */
 int
-is_magic(THING *obj)
+is_magic(const THING *obj)
 {
     switch (obj->o_type)
     {
@@ -245,7 +245,7 @@ is_magic(THING *obj)
  *	Turn on the ability to see invisible
  */
 void
-invis_on()
+invis_on(void)
 {
     THING *mp;
 
@@ -302,12 +302,12 @@ turn_see(int turn_off)
  *	Return TRUE if the player has seen the stairs
  */
 int
-seen_stairs()
+seen_stairs(void)
 {
     THING	*tp;
 
     move(Stairs.y, Stairs.x);
-    if (inch() == STAIRS)			/* it's on the map */
+    if (CCHAR( inch() ) == STAIRS)			/* it's on the map */
 	return TRUE;
     if (ce(Hero, Stairs))			/* It's under him */
 	return TRUE;
@@ -332,7 +332,7 @@ seen_stairs()
  *	The guy just magically went up a level.
  */
 void
-raise_level()
+raise_level(void)
 {
     Pstats.s_exp = E_levels[Pstats.s_lvl-1] + 1L;
     check_level();
@@ -346,7 +346,7 @@ raise_level()
 void
 do_pot(int type, int knowit)
 {
-    PACT *pp;
+    const PACT *pp;
     int t;
 
     pp = &P_actions[type];

@@ -12,7 +12,6 @@
  * Used to hold the new Hero position
  */
 
-coord nh;
 
 /*
  * do_run:
@@ -35,6 +34,7 @@ void
 do_move(int dy, int dx)
 {
     int ch, fl;
+    coord nh;
 
     Firstmove = FALSE;
     if (No_move)
@@ -48,7 +48,7 @@ do_move(int dy, int dx)
      */
     if (on(Player, ISHUH) && rnd(5) != 0)
     {
-	nh = *rndmove(&Player);
+	nh = rndmove(&Player);
 	if (ce(nh, Hero))
 	{
 	    After = FALSE;
@@ -212,7 +212,7 @@ turn_ok(int y, int x)
  */
 
 void
-turnref()
+turnref(void)
 {
     PLACE *pp;
 
@@ -235,7 +235,7 @@ turnref()
  *	that might move.
  */
 void
-door_open(struct room *rp)
+door_open(const struct room *rp)
 {
     int y, x;
 
@@ -251,7 +251,7 @@ door_open(struct room *rp)
  *	The guy stepped on a trap.... Make him pay.
  */
 int
-be_trapped(coord *tc)
+be_trapped(const coord *tc)
 {
     PLACE *pp;
     THING *arrow;
@@ -348,8 +348,8 @@ be_trapped(coord *tc)
  * rndmove:
  *	Move in a random direction if the monster/person is confused
  */
-coord *
-rndmove(THING *who)
+coord
+rndmove(const THING *who)
 {
     THING *obj;
     int x, y;
@@ -363,7 +363,7 @@ rndmove(THING *who)
      * (I.e., bump into the wall or whatever)
      */
     if (y == who->t_pos.y && x == who->t_pos.x)
-	return &ret;
+	return ret;
     if (!diag_ok(&who->t_pos, &ret))
 	goto bad;
     else
@@ -380,11 +380,11 @@ rndmove(THING *who)
 		goto bad;
 	}
     }
-    return &ret;
+    return ret;
 
 bad:
     ret = who->t_pos;
-    return &ret;
+    return ret;
 }
 
 /*

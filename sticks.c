@@ -37,7 +37,7 @@ fix_stick(THING *cur)
  *	Perform a zap with a wand
  */
 void
-do_zap()
+do_zap(void)
 {
     THING *obj, *tp;
     int y, x;
@@ -237,7 +237,7 @@ do_zap()
  *	Do drain hit points from player shtick
  */
 void
-drain()
+drain(void)
 {
     THING *mp;
     struct room *corp;
@@ -287,7 +287,7 @@ drain()
  *	Fire a bolt in a given direction from a specific starting place
  */
 void
-fire_bolt(coord *start, coord *dir, char *name)
+fire_bolt(const coord *start, coord *dir, const char *name)
 {
     coord *c1, *c2;
     THING *tp;
@@ -407,7 +407,7 @@ def:
  *	Return an appropriate string for a wand charge
  */
 char *
-charge_str(THING *obj)
+charge_str(const THING *obj)
 {
     static char buf[20];
 

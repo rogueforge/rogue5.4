@@ -71,9 +71,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib pdcurses.lib advapi32.lib shfolder.lib user32.lib"
+				AdditionalDependencies="../pdcurses/pdcurses.lib"
 				OutputFile="$(OutDir)/rogue54.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\pdcurses"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
@@ -226,18 +226,6 @@
 				>
 			</File>
 			<File
-				RelativePath="findpw.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="init.c"
 				>
 			</File>
@@ -308,30 +296,6 @@
 			<File
 				RelativePath="save.c"
 				>
-			</File>
-			<File
-				RelativePath="scedit.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="scmisc.c"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="scrolls.c"

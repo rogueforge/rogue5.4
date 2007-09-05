@@ -17,7 +17,7 @@ static coord Ch_ret;				/* Where chasing takes you */
  *	Make all the running monsters move.
  */
 void
-runners()
+runners(void)
 {
     THING *tp;
     THING *next;
@@ -73,7 +73,7 @@ move_monst(THING *tp)
  *	all the relevant state.
  */
 void
-relocate(THING *th, coord *new_loc)
+relocate(THING *th, const coord *new_loc)
 {
     struct room *oroom;
 
@@ -226,7 +226,7 @@ over:
  *	Set the oldch character for the monster
  */
 void
-set_oldch(THING *tp, coord *cp)
+set_oldch(THING *tp, const coord *cp)
 {
     int sch;
 
@@ -250,7 +250,7 @@ set_oldch(THING *tp, coord *cp)
  *	Return TRUE if the hero can see the monster
  */
 int
-see_monst(THING *mp)
+see_monst(const THING *mp)
 {
     int y, x;
 
@@ -277,7 +277,7 @@ see_monst(THING *mp)
  *	Set a monster running after the hero.
  */
 void
-runto(coord *runner)
+runto(const coord *runner)
 {
     THING *tp;
 
@@ -307,7 +307,7 @@ runto(coord *runner)
  *	FALSE if we reach the goal.
  */
 int
-chase(THING *tp, coord *ee)
+chase(THING *tp, const coord *ee)
 {
     THING *obj;
     int x, y;
@@ -328,7 +328,7 @@ chase(THING *tp, coord *ee)
 	/*
 	 * get a valid random move
 	 */
-	Ch_ret = *rndmove(tp);
+	Ch_ret = rndmove(tp);
 	curdist = dist_cp(&Ch_ret, ee);
 	/*
 	 * Small chance that it will become un-confused 
@@ -418,7 +418,7 @@ chase(THING *tp, coord *ee)
  *	in any room.
  */
 struct room *
-roomin(coord *cp)
+roomin(const coord *cp)
 {
     struct room *rp;
     int *fp;
@@ -446,7 +446,7 @@ roomin(coord *cp)
  *	Check to see if the move is legal if it is diagonal
  */
 int
-diag_ok(coord *sp, coord *ep)
+diag_ok(const coord *sp, const coord *ep)
 {
     if (ep->x < 0 || ep->x >= NUMCOLS || ep->y <= 0 || ep->y >= NUMLINES - 1)
 	return FALSE;
@@ -488,8 +488,8 @@ cansee(int y, int x)
  * find_dest:
  *	find the proper destination for the monster
  */
-coord *
-find_dest(THING *tp)
+const coord *
+find_dest(const THING *tp)
 {
     THING *obj;
     int prob;
@@ -530,7 +530,7 @@ dist(int y1, int x1, int y2, int x2)
  *	Call dist() with appropriate arguments for coord pointers
  */
 int
-dist_cp(coord *c1, coord *c2)
+dist_cp(const coord *c1, const coord *c2)
 {
     return dist(c1->y, c1->x, c2->y, c2->x);
 }

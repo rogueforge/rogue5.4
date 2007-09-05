@@ -9,7 +9,11 @@
 #undef lines 
 
 #define NOOP(x) (x += 0)
-#define CCHAR(x) ( (char) (x & A_CHARTEXT) )
+#define CCHAR(x) ( (x) & A_CHARTEXT )
+
+#define MAXDAEMONS 20
+#define EMPTY 0
+
 /*
  * Maximum number of different things
  */
@@ -310,25 +314,23 @@
  */
 struct h_list {
     int h_ch;
-    char *h_desc;
+    const char *h_desc;
     int h_print;
 };
 
 /*
  * Coordinate data type
  */
-typedef struct {
+typedef struct coord {
     int x;
     int y;
 } coord;
-
-typedef unsigned int str_t;
 
 /*
  * Stuff about objects
  */
 struct obj_info {
-    char *oi_name;
+    const char *oi_name;
     int oi_prob;
     int oi_worth;
     char *oi_guess;
@@ -352,7 +354,7 @@ struct room {
  * Structure describing a fighting being
  */
 struct stats {
-    str_t s_str;			/* Strength */
+    int s_str;			/* Strength */
     int s_exp;				/* Experience */
     int s_lvl;				/* level of mastery */
     int s_arm;				/* Armor class */
@@ -372,7 +374,7 @@ union thing {
 	int _t_type;			/* What it is */
 	int _t_disguise;		/* What mimic looks like */
 	int _t_oldch;			/* Character that was where it was */
-	coord *_t_dest;			/* Where it is running to */
+	const coord *_t_dest;		/* Where it is running to */
 	int _t_flags;			/* State word */
 	struct stats _t_stats;		/* Physical description */
 	struct room *_t_room;		/* Current room for thing */
@@ -435,7 +437,7 @@ typedef union thing THING;
 /*
  * describe a place on the level map
  */
-typedef struct {
+typedef struct PLACE {
     int p_ch;
     int p_flags;
     THING *p_monst;
@@ -445,306 +447,322 @@ typedef struct {
  * Array containing information on all the various types of monsters
  */
 struct monster {
-    char *m_name;			/* What to call the monster */
+    const char *m_name;			/* What to call the monster */
     int m_carry;			/* Probability of carrying something */
     int m_flags;			/* things about the monster */
     struct stats m_stats;		/* Initial stats */
 };
 
+struct delayed_action {
+    int d_type;
+    const void (*d_func)();
+    int d_arg;
+    int d_time;
+};
+
+struct STONE {
+    char	*st_name;
+    int		st_value;
+};
+
+typedef struct STONE STONE;
+
 /*
  * External variables
  */
 
-extern int	After, Again, Allscore, Door_stop, Fight_flush,
-		Firstmove, Has_hit, Inv_describe, Jump, Kamikaze,
-		Lower_msg, Move_on, Msg_esc, Pack_used[],
-		Passgo, Playing, Q_comm, Running, Save_msg, See_floor,
-		Seenstairs, Stat_msg, Terse, To_death, Tombstone;
+extern int After, Again, Allscore, Door_stop, Fight_flush,
+	   Firstmove, Has_hit, Inv_describe, Jump, Kamikaze,
+	   Lower_msg, Move_on, Msg_esc, Pack_used[],
+	   Passgo, Playing, Q_comm, Running, Save_msg, See_floor,
+	   Seenstairs, Stat_msg, Terse, To_death, Tombstone,
+           Amulet, Count, Dir_ch, Food_left, Hungry_state, Inpack,
+	   Inv_type, Lastscore, Level, Max_hit, Max_level, Mpos, Take,
+	   N_objs, No_command, No_food, No_move, Noscore, Ntraps, Purse,
+	   Quiet, Vf_hit, Runch, Last_comm, L_last_comm, Last_dir, L_last_dir,
+	   numscores, Total, Between, Group, cNWOOD, cNMETAL, cNSTONES,
+	   cNCOLORS;
 
-extern char	File_name[], Home[], Huh[], 
-		*Numname, Outbuf[],
-		*S_names[], *Ws_type[];
-
-extern int	Amulet, Count, Dir_ch, Food_left, Hungry_state, Inpack,
-		Inv_type, Lastscore, Level, Max_hit, Max_level, Mpos, Take,
-		N_objs, No_command, No_food, No_move, Noscore, Ntraps, Purse,
-		Quiet, Vf_hit, Runch, Last_comm, L_last_comm, Last_dir, L_last_dir;
+extern char File_name[], Home[], Huh[], *Numname, Outbuf[], 
+	    *Ws_type[], *S_names[];
 
 extern const char *Ws_made[], *Inv_t_name[], *P_colors[], *R_stones[], 
                   *Release, *Tr_name[], *Rainbow[], *Wood[], *Metal[],
 		  encstr[], statlist[], version[];
 
-extern unsigned int	numscores;
-
 extern const int A_class[], E_levels[];
 
-extern unsigned int	Dnum, Seed;
+extern unsigned int Dnum, Seed;
 
-extern WINDOW	*Hw;
+extern WINDOW *Hw;
 
-extern coord	Delta, Oldpos, Stairs;
+extern coord Delta, Oldpos, Stairs;
 
-extern PLACE	Places[];
+extern PLACE Places[];
 
-extern THING	*Cur_armor, *Cur_ring[], *Cur_weapon, *L_last_pick,
-		*Last_pick, *Lvl_obj, *Mlist, Player;
+extern THING *Cur_armor, *Cur_ring[], *Cur_weapon, *L_last_pick,
+	     *Last_pick, *Lvl_obj, *Mlist, Player;
 
-extern struct h_list	Helpstr[];
+extern const struct h_list Helpstr[];
 
-extern struct room	*Oldrp, Passages[], Rooms[];
+extern struct room *Oldrp, Passages[], Rooms[];
 
-extern struct stats	Max_stats;
+extern struct stats Max_stats;
 
-extern struct monster	Monsters[];
+extern struct monster Monsters[];
 
-extern struct obj_info	Arm_info[], Pot_info[], Ring_info[],
+extern struct obj_info Arm_info[], Pot_info[], Ring_info[],
 			Scr_info[], Things[], Ws_info[], Weap_info[];
+
+extern struct delayed_action d_list[MAXDAEMONS];
+
+extern const STONE    Stones[];
 
 /*
  * Function types
  */
 
 void	_attach(THING **list, THING *item);
-void	_detach(THING **list, THING *item);
+void	_detach(const THING **list, THING *item);
 void	_free_list(THING **ptr);
-void	addmsg(char *fmt, ...);
+void	addmsg(const char *fmt, ...);
 int 	add_haste(int potion);
+int	add_line(const char *fmt, const char *arg);
 void	add_pack(THING *obj, int silent);
-void	add_pass();
-void	add_str(str_t *sp, int amt);
+void	add_pass(void);
+void	add_str(int *sp, int amt);
 void	accnt_maze(int y, int x, int ny, int nx);
-void	aggravate();
-int		attack(THING *mp);
-void	badcheck(char *name, struct obj_info *info, int bound);
-void	bounce(THING *weap, char *mname, int noend);
+void	aggravate(void);
+int	attack(THING *mp);
+void    auto_save(int);
+void	badcheck(const char *name, const struct obj_info *info, int bound);
+int 	be_trapped(const coord *tc);
+void	bounce(const THING *weap, const char *mname, int noend);
 void	call(void);
 void	call_it(struct obj_info *info);
 int 	cansee(int y, int x);
-int		center(char *str);
+int	center(const char *str);
+int	chase(THING *tp, const coord *ee);
+int	checkout(void);
+char    *charge_str(const THING *obj);
 void	chg_str(int amt);
-void	check_level();
+void	check_level(void);
+const char *choose_str(const char *ts, const char *ns);
 void	conn(int r1, int r2);
+void	come_down(void);
 void	command(void);
 void	create_obj(void);
-void	current(THING *cur, char *how, char *where);
+void	current(const THING *cur, const char *how, const char *where);
 void	d_level(void);
 void	death(int monst);
 int 	death_monst(void);
+int	diag_ok(const coord *sp, const coord *ep);
 void	dig(int y, int x);
 void	discard(THING *item);
 void	discovered(void);
-int		dist(int y1, int x1, int y2, int x2);
-int		dist_cp(coord *c1, coord *c2);
-int		do_chase(THING *th);
+int	dist(int y1, int x1, int y2, int x2);
+int	dist_cp(const coord *c1, const coord *c2);
+int	do_chase(THING *th);
 void	do_daemons(int flag);
 void	do_fuses(int flag);
-void	do_maze(struct room *rp);
+void	do_maze(const struct room *rp);
 void	do_motion(THING *obj, int ydelta, int xdelta);
 void	do_move(int dy, int dx);
-void	do_passages();
+void	do_passages(void);
 void	do_pot(int type, int knowit);
 void	do_rooms(void);
 void	do_run(int ch);
 void	do_zap(void);
-void	doadd(char *fmt, va_list args);
-void	door(struct room *rm, coord *cp);
-void	door_open(struct room *rp);
+void	doadd(const char *fmt, va_list args);
+void	doctor(void);
+void	door(struct room *rm, const coord *cp);
+void	door_open(const struct room *rp);
 void	drain(void);
-void	draw_room(struct room *rp);
+void	draw_room(const struct room *rp);
 void	drop(void);
+int 	dropcheck(const THING *obj);
 void	eat(void);
 size_t  encread(char *start, size_t size, FILE *inf);
-size_t	encwrite(char *start, size_t size, FILE *outf);
-int	endmsg();
-void	enter_room(coord *cp);
-void	erase_lamp(coord *pos, struct room *rp);
-int	exp_add(THING *tp);
-void	extinguish(void (*func)());
+size_t	encwrite(const char *start, size_t size, FILE *outf);
+void    end_line(void);
+void    endit(int sig);
+int	endmsg(void);
+void	enter_room(const coord *cp);
+void	erase_lamp(const coord *pos, const struct room *rp);
+int	exp_add(const THING *tp);
+void	extinguish(const void (*func)());
 void	fall(THING *obj, int pr);
-void	fire_bolt(coord *start, coord *dir, char *name);
-int 	floor_at();
-void	flush_type();
-int		fight(coord *mp, THING *weap, int thrown);
+int	fallpos(const coord *pos, coord *newpos);
+void	fatal(const char *s);
+void	fire_bolt(const coord *start, coord *dir, const char *name);
+int 	floor_at(void);
+int	floor_ch(void);
+void	flush_type(void);
+const coord *find_dest(const THING *tp);
+int 	find_floor(const struct room *rp, coord *cp, int limit, int monst);
+THING   *find_obj(int y, int x);
+int	fight(const coord *mp, const THING *weap, int thrown);
 void	fix_stick(THING *cur);
-void	fuse(void (*func)(), int arg, int time, int type);
-int		get_dir();
-int		gethand();
+void	fuse(const void (*func)(), int arg, int time, int type);
+int	get_bool(const void *vp, WINDOW *win);
+int	get_dir(void);
+int	get_inv_t(const void *vp, WINDOW *win);
+THING   *get_item(const char *purpose, int type);
+int	get_num(const void *vp, WINDOW *win);
+int	get_sf(const void *vp, WINDOW *win);
+int	get_str(const void *vopt, WINDOW *win);
+int	gethand(void);
+void	getltchars(void);
 void	give_pack(THING *tp);
-void	help();
-void	hit(char *er, char *ee, int noend);
-void	horiz(struct room *rp, int starty);
-void	leave_room(coord *cp);
-void	lengthen(void (*func)(), int xtime);
+void	help(void);
+void	hit(const char *er, const char *ee, int noend);
+void	horiz(const struct room *rp, int starty);
+void	leave_room(const coord *cp);
+void	lengthen(const void (*func)(), int xtime);
 void	look(int wakeup);
-int		hit_monster(int y, int x, THING *obj);
-void	identify();
+int	hit_monster(int y, int x, const THING *obj);
+void	identify(void);
 void	illcom(int ch);
-void	init_check();
-void	init_colors();
-void	init_materials();
-void	init_names();
-void	init_player();
-void	init_probs();
-void	init_stones();
+void	init_check(void);
+void	init_colors(void);
+void	init_materials(void);
+void	init_names(void);
+void	init_player(void);
+void	init_probs(void);
+void	init_stones(void);
 void	init_weapon(THING *weap, int which);
-int		inventory(THING *list, int type);
-void	invis_on();
+char	*inv_name(const THING *obj, int drop);
+int	inventory(const THING *list, int type);
+void	invis_on(void);
+int	is_current(const THING *obj);
+int 	is_magic(const THING *obj);
+int     is_symlink(const char *sp); 
+void	kill_daemon(const void (*func)());
 void	killed(THING *tp, int pr);
-void	kill_daemon(void (*func)());
-int		lock_sc();
-void	miss(char *er, char *ee, int noend);
+const char *killname(int monst, int doart);
+void	land(void);
+void    leave(int);
+THING   *leave_pack(THING *obj, int newobj, int all);
+int 	levit_check(void);
+int	lock_sc(void);
+void	miss(const char *er, const char *ee, int noend);
 void	missile(int ydelta, int xdelta);
 void	money(int value);
-int		move_monst(THING *tp);
-void	move_msg(THING *obj);
-int		msg(char *fmt, ...);
-void	nameit(THING *obj, char *type, char *which, struct obj_info *op, char *(*prfunc)(THING *));
+int	move_monst(THING *tp);
+void	move_msg(const THING *obj);
+int	msg(const char *fmt, ...);
+void	my_exit(int sig);
+void	nameit(const THING *obj, const char *type, const char *which, const struct obj_info *op, const char *(*prfunc)(const THING *));
+THING   *new_item(void);
 void	new_level(void);
-void	new_monster(THING *tp, int type, coord *cp);
+void	new_monster(THING *tp, int type, const coord *cp);
+THING   *new_thing(void);
+void	nohaste(void);
+const char *nothing(int type);
+const char *nullstr(const THING *ignored);
+const char *num(int n1, int n2, int type);
 void	numpass(int y, int x);
 void	option(void);
 void	open_score(void);
+int	pack_char(void);
+int	pack_room(int from_floor, THING *obj);
 void	parse_opts(char *str);
 void 	passnum(void);
-const char	*pick_color(char *col);
-int		pick_one(struct obj_info *info, int nitems);
+int	passwd(void);
+const char *pick_color(const char *col);
+int	pick_one(const struct obj_info *info, int nitems);
 void	pick_up(int ch);
 void	picky_inven(void);
-void	pr_spec(struct obj_info *info, int nitems);
+void	playit(void);
+void    playltchars(void);
+void	pr_spec(const struct obj_info *info, int nitems);
 void	pr_list(void);
+void	print_disc(int);
 void	put_bool(void *b);
 void	put_inv_t(void *ip);
-void	put_str(void *str);
-void	put_things();
-void	putpass(coord *cp);
+void	put_str(const void *str);
+void	put_things(void);
+void	putpass(const coord *cp);
 void	quaff(void);
+void    quit(int);
 void	raise_level(void);
 int 	randmonster(int wander);
 void	read_scroll(void);
-void    relocate(THING *th, coord *new_loc);
-void	remove_mon(coord *mp, THING *tp, int waskill);
-void	reset_last();
-int     restore(char *file, char **envp);
-int	    ring_eat(int hand);
-void	ring_on();
-void	ring_off();
-int	    rnd(int range);
-int	    rnd_room();
-int	    roll(int number, int sides);
-int	    rs_save_file(FILE *savef);
-int	    rs_restore_file(FILE *inf);
-void	runto(coord *runner);
+int	readchar(void);
+void    relocate(THING *th, const coord *new_loc);
+void	remove_mon(const coord *mp, THING *tp, int waskill);
+void	reset_last(void);
+void    resetltchars(void);
+int     restore(const char *file, char **envp);
+int	ring_eat(int hand);
+void	ring_on(void);
+void	ring_off(void);
+const char *ring_num(const THING *obj);
+int	rnd(int range);
+int	rnd_room(void);
+int	rnd_thing(void);
+coord	rndmove(const THING *who);
+int	roll(int number, int sides);
+int	roll_em(const THING *thatt, THING *thdef, const THING *weap, int hurl);
+void	rollwand(void);
+struct room *roomin(const coord *cp);
+int	rs_save_file(FILE *savef);
+int	rs_restore_file(FILE *inf);
+void	runners(void);
+void	runto(const coord *runner);
 void	rust_armor(THING *arm);
-int	    save(int which);
+int	save(int which);
 void	save_file(FILE *savef);
-void	save_game();
-int	    save_throw(int which, THING *tp);
+void	save_game(void);
+int	save_throw(int which, const THING *tp);
 void	score(int amount, int flags, int monst);
-void	search();
+void	search(void);
+int	see_monst(const THING *mp);
+int	seen_stairs(void);
 void	set_know(THING *obj, struct obj_info *info);
-void	set_oldch(THING *tp, coord *cp);
-void	setup();
-void	shell();
-int 	show_floor();
-void	show_map();
-void	show_win(char *message);
-int		sign(int nm);
-int		spread(int nm);
-void	start_daemon(void (*func)(), int arg, int type);
-void	start_score();
-void	status();
-int		step_ok(int ch);
-void	strucpy(char *s1, char *s2, int len);
-int		swing(int at_lvl, int op_arm, int wplus);
-void	take_off();
-void	teleport();
-void	total_winner();
-void	thunk(THING *weap, char *mname, int noend);
-void	treas_room();
-void	turnref();
-void	u_level();
-void	uncurse(THING *obj);
-void	unlock_sc();
-void	vert(struct room *rp, int startx);
-void	wait_for(WINDOW *win, int ch);
-THING  *wake_monster(int y, int x);
-void	wanderer();
-void	waste_time();
-void	wear();
-void	whatis(int insist, int type);
-void	wield();
-int		chase(THING *tp, coord *ee);
-int		diag_ok(coord *sp, coord *ep);
-int 	dropcheck(THING *obj);
-int		fallpos(coord *pos, coord *newpos);
-int 	find_floor(struct room *rp, coord *cp, int limit, int monst);
-int 	is_magic(THING *obj);
-int     is_symlink(char *sp); 
-int 	levit_check();
-int		pack_room(int from_floor, THING *obj);
-int		roll_em(THING *thatt, THING *thdef, THING *weap, int hurl);
-int		see_monst(THING *mp);
-int		seen_stairs();
-int     turn_ok(int y, int x);
-int		turn_see(int turn_off);
-int		is_current(THING *obj);
-int		passwd();
-
-int 	be_trapped(coord *tc);
-int		floor_ch();
-int		pack_char();
-int		wreadchar(WINDOW *win);
-int		readchar(void);
-int		rnd_thing();
-
-char	*charge_str(THING *obj);
-char	*choose_str(char *ts, char *ns);
-char	*inv_name(THING *obj, int drop);
-char	*nullstr(THING *ignored);
-char	*num(int n1, int n2, int type);
-char	*ring_num(THING *obj);
-char	*set_mname(THING *tp);
-char	*vowelstr(char *str);
-
-int	get_bool(void *vp, WINDOW *win);
-int	get_inv_t(void *vp, WINDOW *win);
-int	get_num(void *vp, WINDOW *win);
-int	get_sf(void *vp, WINDOW *win);
-int	get_str(void *vopt, WINDOW *win);
+const char *set_mname(const THING *tp);
+void	set_oldch(THING *tp, const coord *cp);
+void    set_order(int *order, int numthings);
+void	setup(void);
+void	shell(void);
+int 	show_floor(void);
+void	show_map(void);
+void	show_win(const char *message);
+void	sight(void);
+int	sign(int nm);
+int	spread(int nm);
+void	start_daemon(const void (*func)(), int arg, int type);
+void	start_score(void);
+void	status(void);
+int	step_ok(int ch);
+void	stomach(void);
+void	strucpy(char *s1, const char *s2, size_t len);
+void	swander(void);
+int	swing(int at_lvl, int op_arm, int wplus);
+void	take_off(void);
+void	teleport(void);
+void	total_winner(void);
+void	thunk(const THING *weap, const char *mname, int noend);
+void	treas_room(void);
 int	trip_ch(int y, int x, int ch);
-
-coord	*find_dest(THING *tp);
-coord	*rndmove(THING *who);
-
-THING	*find_obj(int y, int x);
-THING	*get_item(char *purpose, int type);
-THING	*leave_pack(THING *obj, int newobj, int all);
-THING	*new_item();
-THING	*new_thing();
-
-struct room	*roomin(coord *cp);
-
-#define MAXDAEMONS 20
-
-extern struct delayed_action {
-    int d_type;
-    void (*d_func)();
-    int d_arg;
-    int d_time;
-} d_list[MAXDAEMONS];
-
-typedef struct {
-    char	*st_name;
-    int		st_value;
-} STONE;
-
-extern int      Total;
-extern int      Between;
-extern int      Group;
-extern coord    nh;
-extern int      cNCOLORS;
-extern STONE    Stones[];
-extern int      cNSTONES;
-extern int      cNWOOD;
-extern int      cNMETAL;
-
+void	tstp(int ignored);
+int     turn_ok(int y, int x);
+int	turn_see(int turn_off);
+void	turnref(void);
+const char *type_name(int type);
+void	u_level(void);
+void	unconfuse(void);
+void	uncurse(THING *obj);
+void	unlock_sc(void);
+void	unsee(void);
+void	vert(const struct room *rp, int startx);
+void	visuals(void);
+char	*vowelstr(const char *str);
+void	wait_for(WINDOW *win, int ch);
+const THING *wake_monster(int y, int x);
+void	wanderer(void);
+void	waste_time(void);
+void	wear(void);
+void	whatis(int insist, int type);
+void	wield(void);
+int	wreadchar(WINDOW *win);

@@ -12,7 +12,7 @@
 
 #define	EQSTR(a, b)	(strcmp(a, b) == 0)
 
-char *H_names[] = {		/* strings for hitting */
+const char *H_names[] = {		/* strings for hitting */
 	" scored an excellent hit on ",
 	" hit ",
 	" have injured ",
@@ -23,7 +23,7 @@ char *H_names[] = {		/* strings for hitting */
 	" swings and hits "
 };
 
-char *M_names[] = {		/* strings for missing */
+const char *M_names[] = {		/* strings for missing */
 	" miss",
 	" swing and miss",
 	" barely miss",
@@ -55,11 +55,11 @@ static int Add_dam[] = {
  *	The player attacks the monster.
  */
 int
-fight(coord *mp, THING *weap, int thrown)
+fight(const coord *mp, const THING *weap, int thrown)
 {
-    register THING *tp;
-    register int did_hit = TRUE;
-    register char *mname;
+    THING *tp;
+    int did_hit = TRUE;
+    const char *mname;
 	int ch;
 
     /*
@@ -135,7 +135,7 @@ fight(coord *mp, THING *weap, int thrown)
 int
 attack(THING *mp)
 {
-    char *mname;
+    const char *mname;
     int oldhp;
 
     /*
@@ -158,7 +158,7 @@ attack(THING *mp)
     }
     mname = set_mname(mp);
     oldhp = Pstats.s_hpt;
-    if (roll_em(mp, &Player, (THING *) NULL, FALSE))
+    if (roll_em(mp, &Player, NULL, FALSE))
     {
 	if (mp->t_type != 'I')
 	{
@@ -271,7 +271,7 @@ attack(THING *mp)
 		    /*
 		     * Leperachaun steals some gold
 		     */
-		    register int lastpurse;
+		    int lastpurse;
 
 		    lastpurse = Purse;
 		    Purse -= GOLDCALC;
@@ -341,11 +341,11 @@ attack(THING *mp)
  * set_mname:
  *	return the monster name for the given monster
  */
-char *
-set_mname(THING *tp)
+const char *
+set_mname(const THING *tp)
 {
     int ch;
-    char *mname;
+    const char *mname;
     static char tbuf[MAXSTR] = { 't', 'h', 'e', ' ' };
 
     if (!see_monst(tp) && !on(Player, SEEMONST))
@@ -353,7 +353,7 @@ set_mname(THING *tp)
     else if (on(Player, ISHALU))
     {
 	move(tp->t_pos.y, tp->t_pos.x);
-	ch = toascii(inch());
+	ch = toascii(CCHAR(inch()));
 	if (!isupper(ch))
 	    ch = rnd(26);
 	else
@@ -384,15 +384,16 @@ swing(int at_lvl, int op_arm, int wplus)
  *	Roll several attacks
  */
 int
-roll_em(THING *thatt, THING *thdef, THING *weap, int hurl)
+roll_em(const THING *thatt, THING *thdef, const THING *weap, int hurl)
 {
-    register struct stats *att, *def;
-    register char *cp;
-    register int ndice, nsides, def_arm;
-    register int did_hit = FALSE;
-    register int hplus;
-    register int dplus;
-    register int damage;
+    const struct stats *att;
+    struct stats *def;
+    const char *cp;
+    int ndice, nsides, def_arm;
+    int did_hit = FALSE;
+    int hplus;
+    int dplus;
+    int damage;
 
     att = &thatt->t_stats;
     def = &thdef->t_stats;
@@ -478,7 +479,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, int hurl)
  *	The print name of a combatant
  */
 char *
-prname(char *mname, int upper)
+prname(const char *mname, int upper)
 {
     static char tbuf[MAXSTR];
 
@@ -497,7 +498,7 @@ prname(char *mname, int upper)
  *	A missile hits a monster
  */
 void
-thunk(THING *weap, char *mname, int noend)
+thunk(const THING *weap, const char *mname, int noend)
 {
     if (To_death)
 	return;
@@ -515,11 +516,10 @@ thunk(THING *weap, char *mname, int noend)
  *	Print a message to indicate a succesful hit
  */
 void
-hit(char *er, char *ee, int noend)
+hit(const char *er, const char *ee, int noend)
 {
     int i;
-    char *s;
-    extern char *H_names[];
+    const char *s;
 
     if (To_death)
 	return;
@@ -545,10 +545,9 @@ hit(char *er, char *ee, int noend)
  *	Print a message to indicate a poor swing
  */
 void
-miss(char *er, char *ee, int noend)
+miss(const char *er, const char *ee, int noend)
 {
     int i;
-    extern char *M_names[];
 
     if (To_death)
 	return;
@@ -571,7 +570,7 @@ miss(char *er, char *ee, int noend)
  *	A missile misses a monster
  */
 void
-bounce(THING *weap, char *mname, int noend)
+bounce(const THING *weap, const char *mname, int noend)
 {
     if (To_death)
 	return;
@@ -589,7 +588,7 @@ bounce(THING *weap, char *mname, int noend)
  *	Remove a monster from the screen
  */
 void
-remove_mon(coord *mp, THING *tp, int waskill)
+remove_mon(const coord *mp, THING *tp, int waskill)
 {
     THING *obj, *nexti;
 
@@ -623,7 +622,7 @@ remove_mon(coord *mp, THING *tp, int waskill)
 void
 killed(THING *tp, int pr)
 {
-    char *mname;
+    const char *mname;
 
     Pstats.s_exp += tp->t_stats.s_exp;
 

@@ -49,7 +49,7 @@ score(int amount, int flags, int monst)
     int prflags = 0;
 # endif
     void (*fp)(int);
-    unsigned int uid;
+    uid_t uid;
     static char *reason[] = {
 	"killed",
 	"quit",
@@ -80,7 +80,7 @@ score(int amount, int flags, int monst)
 	    delwin(Hw);
     }
 
-    top_ten = (SCORE *) malloc(numscores * sizeof (SCORE));
+    top_ten = malloc(numscores * sizeof (SCORE));
 
 	if (top_ten == NULL)
 		return;
@@ -90,10 +90,10 @@ score(int amount, int flags, int monst)
     {
 	scp->sc_score = 0;
 	for (i = 0; i < MAXSTR; i++)
-	    scp->sc_name[i] = (unsigned char) rnd(255);
+	    scp->sc_name[i] = (char) rnd(255);
 	scp->sc_flags = RN;
 	scp->sc_level = RN;
-	scp->sc_monster = (unsigned short) RN;
+	scp->sc_monster = RN;
 	scp->sc_uid = RN;
     }
 
@@ -146,7 +146,7 @@ score(int amount, int flags, int monst)
 		scp->sc_level = Max_level;
 	    else
 		scp->sc_level = Level;
-	    scp->sc_monster = (unsigned short) monst;
+	    scp->sc_monster = monst;
 	    scp->sc_uid = uid;
 	    sc2 = scp;
 	}
@@ -187,7 +187,7 @@ score(int amount, int flags, int monst)
 			sc2->sc_name[i] = (char) rnd(255);
 		    sc2->sc_flags = RN;
 		    sc2->sc_level = RN;
-		    sc2->sc_monster = (unsigned short) RN;
+		    sc2->sc_monster = RN;
 		    scp--;
 		}
 	    }
@@ -223,10 +223,10 @@ score(int amount, int flags, int monst)
 void
 death(int monst)
 {
-    char **dp, *killer;
+    char **dp;
+    const char *killer;
     struct tm *lt;
     static time_t date;
-    struct tm *localtime();
 
     signal(SIGINT, SIG_IGN);
     Purse -= Purse / 10;
@@ -275,7 +275,7 @@ death(int monst)
  *	Return the index to center the given string
  */
 int
-center(char *str)
+center(const char *str)
 {
     return 28 - (((int)strlen(str) + 1) / 2);
 }
@@ -285,7 +285,7 @@ center(char *str)
  *	Code for a winner
  */
 void
-total_winner()
+total_winner(void)
 {
     THING *obj;
     struct obj_info *op;
@@ -384,11 +384,11 @@ total_winner()
  * killname:
  *	Convert a code to a monster name
  */
-char *
+const char *
 killname(int monst, int doart)
 {
     struct h_list *hp;
-    char *sp;
+    const char *sp;
     int article;
     static struct h_list nlist[] = {
 	{'a',	"arrow",		TRUE},

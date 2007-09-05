@@ -50,17 +50,8 @@
 #	define	NUMNAME		"Ten"
 # endif
 
-unsigned int numscores = NUMSCORES;
-char *Numname = NUMNAME;
-
-# ifdef ALLSCORES
-int Allscore = TRUE;
-# else  /* ALLSCORES */
-int Allscore = FALSE;
-# endif /* ALLSCORES */
-
 #ifdef CHECKTIME
-static int Num_checks;		/* times we've gone over in checkout() */
+static int Num_checks = 0;		/* times we've gone over in checkout() */
 #endif /* CHECKTIME */
 
 /*
@@ -69,7 +60,7 @@ static int Num_checks;		/* times we've gone over in checkout() */
  */
 
 void
-init_check()
+init_check(void)
 {
 #if defined(MAXLOAD) || defined(MAXUSERS)
     if (too_much())
@@ -91,7 +82,7 @@ init_check()
  */
 
 void
-open_score()
+open_score(void)
 {
 #ifdef SCOREFILE
     char *Scorefile = SCOREFILE;
@@ -123,16 +114,34 @@ open_score()
 }
 
 /*
+ * getltchars:
+ *	Get the local tty chars for later use
+ */
+
+void
+getltchars(void)
+{
+    Got_ltc = TRUE;
+    Orig_dsusp = md_dsuspchar();
+    md_setdsuspchar( md_suspchar() );
+}
+
+/*
  * setup:
  *	Get starting setup for all games
  */
 
 void
-setup()
+setup(void)
 {
-#ifdef CHECKTIME
-    int  checkout();
-#endif
+    numscores = NUMSCORES;
+    Numname = NUMNAME;
+
+#ifdef ALLSCORES
+    Allscore = TRUE;
+#else  /* ALLSCORES */
+    Allscore = FALSE;
+#endif /* ALLSCORES */
 
 #ifdef DUMP
     md_onsignal_autosave();
@@ -149,19 +158,6 @@ setup()
     noecho();				/* Echo off */
     keypad(stdscr,1);
     getltchars();			/* get the local tty chars */
-}
-
-/*
- * getltchars:
- *	Get the local tty chars for later use
- */
-
-void
-getltchars()
-{
-    Got_ltc = TRUE;
-    Orig_dsusp = md_dsuspchar();
-    md_setdsuspchar( md_suspchar() );
 }
 
 /* 
@@ -194,7 +190,7 @@ playltchars(void)
  */
 
 void
-start_score()
+start_score(void)
 {
 #ifdef CHECKTIME
     md_stop_checkout_timer();
@@ -227,7 +223,7 @@ is_symlink(char *sp)
  *	See if the system is being used too much for this game
  */
 int
-too_much()
+too_much(void)
 {
 #ifdef MAXLOAD
     double avec[3];
@@ -252,7 +248,7 @@ too_much()
  *	See if a user is an author of the program
  */
 int
-author()
+author(void)
 {
 #ifdef MASTER
     if (Wizard)
@@ -273,10 +269,10 @@ author()
  * checkout:
  *	Check each CHECKTIME seconds to see if the load is too high
  */
-void
+
 checkout(int sig)
 {
-    static char *msgs[] = {
+    char *msgs[] = {
 	"The load is too high to be playing.  Please leave in %0.1f minutes",
 	"Please save your game.  You have %0.1f minutes",
 	"Last warning.  You have %0.1f minutes to leave",
@@ -314,7 +310,7 @@ checkout(int sig)
  *	shell, do a printf instead of a msg to avoid the refresh.
  */
 /* VARARGS1 */
-void
+
 chmsg(char *fmt, int arg)
 {
     if (!In_shell)
@@ -365,7 +361,7 @@ ucount(void)
  */
 static FILE *lfd = NULL;
 int
-lock_sc()
+lock_sc(void)
 {
 #if defined(SCOREFILE) && defined(LOCKFILE)
     int cnt;
@@ -429,7 +425,7 @@ over:
  */
 
 void
-unlock_sc()
+unlock_sc(void)
 {
 #if defined(SCOREFILE) && defined(LOCKFILE)
     if (lfd != NULL)
@@ -445,7 +441,7 @@ unlock_sc()
  */
 
 void
-flush_type()
+flush_type(void)
 {
     flushinp();
 }

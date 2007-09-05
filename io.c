@@ -21,7 +21,7 @@ static int Newpos = 0;
 
 /* VARARGS1 */
 int
-msg(char *fmt, ...)
+msg(const char *fmt, ...)
 {
     va_list args;
 
@@ -50,7 +50,7 @@ msg(char *fmt, ...)
  */
 /* VARARGS1 */
 void
-addmsg(char *fmt, ...)
+addmsg(const char *fmt, ...)
 {
     va_list args;
 
@@ -65,7 +65,7 @@ addmsg(char *fmt, ...)
  *	if it is up there with the --More--)
  */
 int
-endmsg()
+endmsg(void)
 {
     int ch;
 
@@ -111,7 +111,7 @@ endmsg()
  *	Perform an add onto the message buffer
  */
 void
-doadd(char *fmt, va_list args)
+doadd(const char *fmt, va_list args)
 {
     static char buf[MAXSTR];
 
@@ -149,7 +149,7 @@ step_ok(int ch)
  */
 
 int
-readchar()
+readchar(void)
 {
     int ch;
 
@@ -186,16 +186,16 @@ wreadchar(WINDOW *win)
  *	Display the important stats line.  Keep the cursor where it was.
  */
 void
-status()
+status(void)
 {
-    register int oy, ox, temp;
+    int oy, ox, temp;
     static int hpwidth = 0;
     static int s_hungry = 0;
     static int s_lvl = 0;
     static int s_pur = -1;
     static int s_hp = 0;
     static int s_arm = 0;
-    static str_t s_str = 0;
+    static int s_str = 0;
     static int s_exp = 0;
     static char *state_name[] =
     {
@@ -237,11 +237,11 @@ status()
 
     if (Stat_msg)
     {
-	move(0, 0);
+        move(0, 0);
         msg("Level: %d  Gold: %-5d  Hp: %*d(%*d)  Str: %2d(%d)  Arm: %-2d  Exp: %d/%ld  %s",
-	    Level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
-	    Max_stats.s_str, 10 - s_arm, Pstats.s_lvl, Pstats.s_exp,
-	    state_name[Hungry_state]);
+        Level, Purse, hpwidth, Pstats.s_hpt, hpwidth, Max_hp, Pstats.s_str,
+        Max_stats.s_str, 10 - s_arm, Pstats.s_lvl, Pstats.s_exp,
+        state_name[Hungry_state]);
     }
     else
     {
@@ -264,7 +264,7 @@ status()
 void
 wait_for(WINDOW *win, int ch)
 {
-    register int c;
+    int c;
 
     if (ch == '\n')
         while ((c = wreadchar(win)) != '\n' && c != '\r')
@@ -279,7 +279,7 @@ wait_for(WINDOW *win, int ch)
  *	Function used to display a window and wait before returning
  */
 void
-show_win(char *message)
+show_win(const char *message)
 {
     WINDOW *win;
 

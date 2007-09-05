@@ -21,8 +21,6 @@ typedef struct {
 
 char	*s_vowelstr();
 
-extern char	encstr[];
-
 char *lockfile = "/tmp/.fredlock";
 
 char Prbuf[MAXSTR];			/* Buffer for sprintfs */
@@ -42,11 +40,10 @@ MONST	Monsters[] = {
  *	they care to wait.  Return TRUE if the lock is successful.
  */
 int
-s_lock_sc()
+s_lock_sc(void)
 {
     int cnt;
     static struct stat sbuf;
-    time_t time();
 
 over:
     close(8);	/* just in case there are no files left */
@@ -112,11 +109,10 @@ s_unlock_sc(void)
  *	Perform an encrypted write
  */
 void
-s_encwrite(char *start, unsigned int size, FILE *outf)
+s_encwrite(char *start, size_t size, FILE *outf)
 {
     char *e1, *e2, fb;
     int temp;
-    extern char statlist[];
 
     e1 = encstr;
     e2 = statlist;
@@ -138,13 +134,12 @@ s_encwrite(char *start, unsigned int size, FILE *outf)
  * s_encread:
  *	Perform an encrypted read
  */
-void
-s_encread(char *start, unsigned int size, int inf)
+
+s_encread(char *start, size_t size, int inf)
 {
     char *e1, *e2, fb;
     int temp;
     int read_size;
-    extern char statlist[];
 
     fb = 0;
 
@@ -171,7 +166,7 @@ s_encread(char *start, unsigned int size, int inf)
  *	Convert a code to a monster name
  */
 char *
-s_killname(char monst, int doart)
+s_killname(int monst, int doart)
 {
     char *sp;
     int article;

@@ -12,7 +12,7 @@
  *	Put a ring on a hand
  */
 void
-ring_on()
+ring_on(void)
 {
     THING *obj;
     int ring;
@@ -83,7 +83,7 @@ ring_on()
  *	Take off a ring
  */
 void
-ring_off()
+ring_off(void)
 {
     int ring;
     THING *obj;
@@ -175,8 +175,8 @@ ring_eat(int hand)
  * ring_num:
  *	Print ring bonuses
  */
-char *
-ring_num(THING *obj)
+const char *
+ring_num(const THING *obj)
 {
     static char buf[10];
 

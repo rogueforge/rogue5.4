@@ -13,7 +13,7 @@
  *	Draw all the passages on a level.
  */
 void
-do_passages()
+do_passages(void)
 {
     struct rdes *r1, *r2 = NULL;
     int i, j;
@@ -262,7 +262,7 @@ conn(int r1, int r2)
  *	add a passage character or secret passage here
  */
 void
-putpass(coord *cp)
+putpass(const coord *cp)
 {
     PLACE *pp;
 
@@ -280,7 +280,7 @@ putpass(coord *cp)
  *	the exits array of the room.
  */
 void
-door(struct room *rm, coord *cp)
+door(struct room *rm, const coord *cp)
 {
     PLACE *pp;
 
@@ -309,7 +309,7 @@ door(struct room *rm, coord *cp)
  */
 
 void
-add_pass()
+add_pass(void)
 {
     PLACE *pp;
     int y, x;
@@ -350,7 +350,7 @@ static int Pnum;
 static int Newpnum;
 
 void
-passnum()
+passnum(void)
 {
     struct room *rp;
     int i;

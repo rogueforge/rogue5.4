@@ -11,12 +11,10 @@
 
 #define NO_WEAPON -1
 
-int Group = 2;
-
-static struct init_weaps {
+static const struct init_weaps {
     char *iw_dam;	/* Damage when wielded */
     char *iw_hrl;	/* Damage when thrown */
-    char iw_launch;	/* Launching weapon */
+    int iw_launch;	/* Launching weapon */
     int iw_flags;	/* Miscellaneous flags */
 } Init_dam[MAXWEAPONS] = {
     { "2x4",	"1x3",	NO_WEAPON,	0,		},	/* Mace */
@@ -150,7 +148,7 @@ fall(THING *obj, int pr)
 void
 init_weapon(THING *weap, int which)
 {
-    struct init_weaps *iwp;
+    const struct init_weaps *iwp;
 
     weap->o_type = WEAPON;
     weap->o_which = which;
@@ -183,7 +181,7 @@ init_weapon(THING *weap, int which)
  *	Does the missile hit the monster?
  */
 int
-hit_monster(int y, int x, THING *obj)
+hit_monster(int y, int x, const THING *obj)
 {
     static coord mp;
 
@@ -196,7 +194,7 @@ hit_monster(int y, int x, THING *obj)
  * num:
  *	Figure out the plus number for armor/weapons
  */
-char *
+const char *
 num(int n1, int n2, int type)
 {
     static char numbuf[10];
@@ -212,7 +210,7 @@ num(int n1, int n2, int type)
  *	Pull out a certain weapon
  */
 void
-wield()
+wield(void)
 {
     THING *obj, *oweapon;
     char *sp;
@@ -251,7 +249,7 @@ bad:
  *	Pick a random position around the give (y, x) coordinates
  */
 int
-fallpos(coord *pos, coord *newpos)
+fallpos(const coord *pos, coord *newpos)
 {
     int y, x, cnt, ch;
 

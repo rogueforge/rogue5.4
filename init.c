@@ -15,7 +15,7 @@
  *	Roll her up
  */
 void
-init_player()
+init_player(void)
 {
     THING *obj;
 
@@ -103,9 +103,8 @@ const char *Rainbow[] = {
 };
 
 #define NCOLORS (sizeof Rainbow / sizeof (char *))
-int cNCOLORS = NCOLORS;
 
-static char *Sylls[] = {
+static const char *Sylls[] = {
     "a", "ab", "ag", "aks", "ala", "an", "app", "arg", "arze", "ash",
     "bek", "bie", "bit", "bjor", "blu", "bot", "bu", "byt", "comp",
     "con", "cos", "cre", "dalf", "dan", "den", "do", "e", "eep", "el",
@@ -124,7 +123,7 @@ static char *Sylls[] = {
     "zok", "zon", "zum",
 };
 
-STONE Stones[] = {
+const STONE Stones[] = {
     { "agate",		 25},
     { "alexandrite",	 40},
     { "amethyst",	 50},
@@ -154,7 +153,6 @@ STONE Stones[] = {
 };
 
 #define NSTONES (sizeof Stones / sizeof (STONE))
-int cNSTONES = NSTONES;
 
 const char *Wood[] = {
     "avocado wood",
@@ -193,7 +191,6 @@ const char *Wood[] = {
 };
 
 #define NWOOD (sizeof Wood / sizeof (char *))
-int cNWOOD = NWOOD;
 
 const char *Metal[] = {
     "aluminum",
@@ -221,29 +218,30 @@ const char *Metal[] = {
 };
 
 #define NMETAL (sizeof Metal / sizeof (char *))
+
+int cNWOOD = NWOOD;
 int cNMETAL = NMETAL;
-
-#define MAX3(a,b,c)	(a > b ? (a > c ? a : c) : (b > c ? b : c))
-
-static int Used[MAX3(NCOLORS, NSTONES, NWOOD)];
+int cNSTONES = NSTONES;
+int cNCOLORS = NCOLORS;
 
 /*
  * init_colors:
  *	Initialize the potion color scheme for this time
  */
 void
-init_colors()
+init_colors(void)
 {
     int i, j;
+    int used[NCOLORS];
 
     for (i = 0; i < NCOLORS; i++)
-	Used[i] = FALSE;
+	used[i] = FALSE;
     for (i = 0; i < MAXPOTIONS; i++)
     {
 	do
 	    j = rnd(NCOLORS);
-	until (!Used[j]);
-	Used[j] = TRUE;
+	until (!used[j]);
+	used[j] = TRUE;
 	P_colors[i] = Rainbow[j];
     }
 }
@@ -255,10 +253,11 @@ init_colors()
 #define MAXNAME	40	/* Max number of characters in a name */
 
 void
-init_names()
+init_names(void)
 {
     int nsyl;
-    char *cp, *sp;
+    const char *sp;
+    char *cp;
     int i, nwords;
 
     for (i = 0; i < MAXSCROLLS; i++)
@@ -279,7 +278,7 @@ init_names()
 	    *cp++ = ' ';
 	}
 	*--cp = '\0';
-	S_names[i] = (char *) malloc((unsigned) strlen(Prbuf)+1);
+	S_names[i] = malloc(strlen(Prbuf)+1);
 	if (S_names[i] != NULL)
 		strcpy(S_names[i], Prbuf);
     }
@@ -290,18 +289,19 @@ init_names()
  *	Initialize the ring stone setting scheme for this time
  */
 void
-init_stones()
+init_stones(void)
 {
+    int used[NSTONES];
     int i, j;
 
     for (i = 0; i < NSTONES; i++)
-	Used[i] = FALSE;
+	used[i] = FALSE;
     for (i = 0; i < MAXRINGS; i++)
     {
 	do
 	    j = rnd(NSTONES);
-	until (!Used[j]);
-	Used[j] = TRUE;
+	until (!used[j]);
+	used[j] = TRUE;
 	R_stones[i] = Stones[j].st_name;
 	Ring_info[i].oi_worth += Stones[j].st_value;
     }
@@ -312,14 +312,15 @@ init_stones()
  *	Initialize the construction materials for wands and staffs
  */
 void
-init_materials()
+init_materials(void)
 {
-    register int i, j;
-    register const char *str;
+    int i, j;
+    const char *str;
     static int metused[NMETAL];
+    int used[NWOOD];
 
     for (i = 0; i < NWOOD; i++)
-	Used[i] = FALSE;
+	used[i] = FALSE;
     for (i = 0; i < NMETAL; i++)
 	metused[i] = FALSE;
     for (i = 0; i < MAXSTICKS; i++)
@@ -339,11 +340,11 @@ init_materials()
 	    else
 	    {
 		j = rnd(NWOOD);
-		if (!Used[j])
+		if (!used[j])
 		{
 		    Ws_type[i] = "staff";
 		    str = Wood[j];
-		    Used[j] = TRUE;
+		    used[j] = TRUE;
 		    break;
 		}
 	    }
@@ -398,7 +399,7 @@ sumprobs(struct obj_info *info, int bound
  *	Initialize the probabilities for the various items
  */
 void
-init_probs()
+init_probs(void)
 {
     sumprobs(Things, NT);
     sumprobs(Pot_info, MP);
@@ -415,9 +416,9 @@ init_probs()
  *	Check to see if a series of probabilities sums to 100
  */
 void
-badcheck(char *name, struct obj_info *info, int bound)
+badcheck(const char *name, const struct obj_info *info, int bound)
 {
-    struct obj_info *end;
+    const struct obj_info *end;
 
     if (info[bound - 1].oi_prob == 100)
 	return;
@@ -437,7 +438,7 @@ badcheck(char *name, struct obj_info *info, int bound)
  *	otherwise return the given color.
  */
 const char *
-pick_color(char *col)
+pick_color(const char *col)
 {
     return (on(Player, ISHALU) ? Rainbow[rnd(NCOLORS)] : col);
 }

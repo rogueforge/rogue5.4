@@ -14,23 +14,17 @@
 #include "rogue.h"
 #include "score.h"
 
-typedef struct stat STAT;
-
-extern const char version[], encstr[];
-
-static STAT Sbuf;
-
 /*
  * save_game:
  *	Implement the "save game" command
  */
 void
-save_game()
+save_game(void)
 {
     FILE *savef;
     int c;
     auto char buf[MAXSTR];
-
+    struct stat sbuf;
     /*
      * get file name
      */
@@ -78,7 +72,7 @@ gotfile:
 	/*
 	 * test to see if the file exists
 	 */
-	if (stat(buf, &Sbuf) >= 0)
+	if (stat(buf, &sbuf) >= 0)
 	{
 	    for (;;)
 	    {
@@ -100,7 +94,7 @@ gotfile:
 	if ((savef = fopen(File_name, "w")) == NULL)
 	    msg(strerror(errno));
     } while (savef == NULL);
-
+    msg("");
     save_file(savef);
     /* NOTREACHED */
 }
@@ -151,13 +145,12 @@ save_file(FILE *savef)
  *	integrity from cheaters
  */
 int
-restore(char *file, char **envp)
+restore(const char *file, char **envp)
 {
     FILE *inf;
     int syml;
-    extern char **environ;
     auto char buf[MAXSTR];
-    auto STAT sbuf2;
+    auto struct stat sbuf2;
     int lines, cols;
 
     if (strcmp(file, "-r") == 0)
@@ -174,7 +167,7 @@ restore(char *file, char **envp)
     syml = is_symlink(file);
 
     fflush(stdout);
-    encread(buf, (unsigned) strlen(version) + 1, inf);
+    encread(buf, strlen(version) + 1, inf);
     if (strcmp(buf, version) != 0)
     {
 	printf("Sorry, saved game is out of date.\n");
@@ -247,7 +240,6 @@ restore(char *file, char **envp)
 
 	md_tstpresume();
 
-    environ = envp;
     strcpy(File_name, file);
     clearok(curscr, TRUE);
     srand(md_getpid());
@@ -262,12 +254,11 @@ restore(char *file, char **envp)
  *	Perform an encrypted write
  */
 size_t
-encwrite(char *start, size_t size, FILE *outf)
+encwrite(const char *start, size_t size, FILE *outf)
 {
-    char fb;
     const char *e1, *e2;
+    char fb;
     int temp;
-    extern const char statlist[];
     size_t o_size = size;
     e1 = encstr;
     e2 = statlist;
@@ -297,11 +288,10 @@ encwrite(char *start, size_t size, FILE *outf)
 size_t
 encread(char *start, size_t size, FILE *inf)
 {
-    char fb;
     const char *e1, *e2;
+    char fb;
     int temp;
     size_t read_size;
-    extern const char statlist[];
 
     fb = 0;
 
@@ -325,7 +315,6 @@ encread(char *start, size_t size, FILE *inf)
     return(read_size);
 }
 
-static char scoreline[100];
 /*
  * read_scrore
  *	Read in the score file
@@ -333,24 +322,25 @@ static char scoreline[100];
 void
 rd_score(SCORE *top_ten)
 {
-    unsigned int i;
+    char scoreline[100];
+    int i;
 
-	if (scoreboard == NULL)
-		return;
+    if (scoreboard == NULL)
+	return;
 
-	rewind(scoreboard); 
+    rewind(scoreboard);
 
-	for(i = 0; i < numscores; i++)
+    for(i = 0; i < numscores; i++)
     {
         encread(top_ten[i].sc_name, MAXSTR, scoreboard);
         encread(scoreline, 100, scoreboard);
-        (void) sscanf(scoreline, " %u %d %u %hu %d %x \n",
+        (void) sscanf(scoreline, " %u %d %u %u %d %x \n",
             &top_ten[i].sc_uid, &top_ten[i].sc_score,
             &top_ten[i].sc_flags, &top_ten[i].sc_monster,
             &top_ten[i].sc_level, &top_ten[i].sc_time);
     }
 
-	rewind(scoreboard); 
+    rewind(scoreboard);
 }
 
 /*
@@ -360,23 +350,24 @@ rd_score(SCORE *top_ten)
 void
 wr_score(SCORE *top_ten)
 {
-    unsigned int i;
+    char scoreline[100];
+    int i;
 
-	if (scoreboard == NULL)
-		return;
+    if (scoreboard == NULL)
+	return;
 
-	rewind(scoreboard);
+    rewind(scoreboard);
 
     for(i = 0; i < numscores; i++)
     {
           memset(scoreline,0,100);
           encwrite(top_ten[i].sc_name, MAXSTR, scoreboard);
-          sprintf(scoreline, " %u %d %u %hu %d %x \n",
+          sprintf(scoreline, " %u %d %u %u %d %x \n",
               top_ten[i].sc_uid, top_ten[i].sc_score,
               top_ten[i].sc_flags, top_ten[i].sc_monster,
               top_ten[i].sc_level, top_ten[i].sc_time);
           encwrite(scoreline,100,scoreboard);
     }
 
-	rewind(scoreboard); 
+    rewind(scoreboard);
 }

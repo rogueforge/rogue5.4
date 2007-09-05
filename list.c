@@ -17,7 +17,7 @@ int Total = 0;			/* total dynamic memory bytes */
  *	Takes an item out of whatever linked list it might be in
  */
 void
-_detach(THING **list, THING *item)
+_detach(const THING **list, THING *item)
 {
     if (*list == item)
 	*list = next(item);
@@ -77,7 +77,7 @@ discard(THING *item)
 #ifdef MASTER
     Total--;
 #endif
-    free((char *) item);
+    free(item);
 }
 
 /*

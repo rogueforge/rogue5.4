@@ -238,7 +238,7 @@ pack_char(void)
  *	the given type.
  */
 int
-inventory(THING *list, int type)
+inventory(const THING *list, int type)
 {
     static char inv_temp[MAXSTR];
 
@@ -317,7 +317,7 @@ pick_up(int ch)
 	    case AMULET:
 	    case RING:
 	    case STICK:
-		add_pack((THING *) NULL, FALSE);
+		add_pack(NULL, FALSE);
 		break;
 	}
 }
@@ -327,7 +327,7 @@ pick_up(int ch)
  *	Print out the message if you are just moving onto an object
  */
 void
-move_msg(THING *obj)
+move_msg(const THING *obj)
 {
     if (!Terse)
 	addmsg("you ");
@@ -339,7 +339,7 @@ move_msg(THING *obj)
  *	Allow player to inventory a single item
  */
 void
-picky_inven()
+picky_inven(void)
 {
     THING *obj;
     int mch;
@@ -372,7 +372,7 @@ picky_inven()
  *	Pick something out of a pack for a purpose
  */
 THING *
-get_item(char *purpose, int type)
+get_item(const char *purpose, int type)
 {
     THING *obj;
     int ch;
@@ -485,7 +485,7 @@ floor_at(void)
  *	Reset the last command when the current one is aborted
  */
 void
-reset_last()
+reset_last(void)
 {
     Last_comm = L_last_comm;
     Last_dir = L_last_dir;

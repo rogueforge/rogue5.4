@@ -21,7 +21,7 @@ int
 main(int argc, char **argv, char **envp)
 {
     char *env;
-    int lowtime;
+    time_t lowtime;
 
     md_init();
 
@@ -43,7 +43,6 @@ main(int argc, char **argv, char **envp)
     /*
      * get Home and options from environment
      */
-    strncpy(Home, md_gethomedir(), MAXSTR);
 
     strcpy(Home, md_gethomedir());
 
@@ -56,14 +55,14 @@ main(int argc, char **argv, char **envp)
     if ((env = getenv("ROGUEOPTS")) != NULL)
 	parse_opts(env);
     if (env == NULL || Whoami[0] == '\0')
-        strucpy(Whoami, md_getusername(), (int) strlen(md_getusername()));
-    lowtime = (int) time(NULL);
+        strucpy(Whoami, md_getusername(), strlen(md_getusername()));
+    lowtime = time(NULL);
 #ifdef MASTER
     if (Wizard && getenv("SEED") != NULL)
 	Dnum = atoi(getenv("SEED"));
     else
 #endif
-	Dnum = lowtime + md_getpid();
+	Dnum = (unsigned int) lowtime + md_getpid();
     Seed = Dnum;
 
     open_score();
@@ -170,7 +169,7 @@ endit(int sig)
  *	Exit the program, printing a message.
  */
 void
-fatal(char *s)
+fatal(const char *s)
 {
     mvaddstr(LINES - 2, 0, s);
     refresh();
@@ -249,7 +248,7 @@ tstp(int ignored)
  */
 
 void
-playit()
+playit(void)
 {
     char *opts;
 
@@ -351,7 +350,7 @@ leave(int sig)
  */
 
 void
-shell()
+shell(void)
 {
     /*
      * Set the terminal back to original mode

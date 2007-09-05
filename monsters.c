@@ -12,12 +12,12 @@
 /*
  * List of monsters in rough order of vorpalness
  */
-static int Lvl_mons[] =  {
+static const int Lvl_mons[] =  {
     'K', 'E', 'B', 'S', 'H', 'I', 'R', 'O', 'Z', 'L', 'C', 'Q', 'A',
     'N', 'Y', 'F', 'T', 'W', 'P', 'X', 'U', 'M', 'V', 'G', 'J', 'D'
 };
 
-static int Wand_mons[] = {
+static const int Wand_mons[] = {
     'K', 'E', 'B', 'S', 'H',   0, 'R', 'O', 'Z',   0, 'C', 'Q', 'A',
       0, 'Y',   0, 'T', 'W', 'P',   0, 'U', 'M', 'V', 'G', 'J',   0
 };
@@ -31,7 +31,7 @@ int
 randmonster(int wander)
 {
     int d;
-    int *mons;
+    const int *mons;
 
     mons = (wander ? Wand_mons : Lvl_mons);
     do
@@ -50,7 +50,7 @@ randmonster(int wander)
  *	Pick a new monster and add it to the list
  */
 void
-new_monster(THING *tp, int type, coord *cp)
+new_monster(THING *tp, int type, const coord *cp)
 {
     struct monster *mp;
     int lev_add;
@@ -88,7 +88,7 @@ new_monster(THING *tp, int type, coord *cp)
  *	Experience to add for this monster's level/hit points
  */
 int
-exp_add(THING *tp)
+exp_add(const THING *tp)
 {
     int mod;
 
@@ -108,7 +108,7 @@ exp_add(THING *tp)
  *	Create a new wandering monster and aim it at the player
  */
 void
-wanderer()
+wanderer(void)
 {
     THING *tp;
     static coord cp;
@@ -116,7 +116,7 @@ wanderer()
     tp = new_item();
     do
     {
-	find_floor((struct room *) NULL, &cp, FALSE, TRUE);
+	find_floor(NULL, &cp, FALSE, TRUE);
     } while (roomin(&cp) == Proom);
     new_monster(tp, randmonster(TRUE), &cp);
     if (on(Player, SEEMONST))
@@ -139,13 +139,13 @@ wanderer()
  * wake_monster:
  *	What to do when the hero steps next to a monster
  */
-THING *
+const THING *
 wake_monster(int y, int x)
 {
     THING *tp;
     struct room *rp;
 	int ch;
-    char *mname;
+    const char *mname;
 
 	if ((tp = moat(y, x)) == NULL) {
 #ifdef MASTER
@@ -217,7 +217,7 @@ give_pack(THING *tp)
  *	See if a creature save against something
  */
 int
-save_throw(int which, THING *tp)
+save_throw(int which, const THING *tp)
 {
     int need;
 

@@ -17,11 +17,11 @@
  *	inventory.
  */
 char *
-inv_name(THING *obj, int drop)
+inv_name(const THING *obj, int drop)
 {
     char *pb;
     struct obj_info *op;
-    char *sp;
+    const char *sp;
     int which;
 
     pb = Prbuf;
@@ -133,7 +133,7 @@ inv_name(THING *obj, int drop)
  *	Put something down
  */
 void
-drop()
+drop(void)
 {
     int ch;
     THING *obj;
@@ -167,7 +167,7 @@ drop()
  *	Do special checks for dropping or unweilding|unwearing|unringing
  */
 int
-dropcheck(THING *obj)
+dropcheck(const THING *obj)
 {
     if (obj == NULL)
 	return TRUE;
@@ -297,10 +297,10 @@ new_thing(void)
  *	Pick an item out of a list of nitems possible objects
  */
 int
-pick_one(struct obj_info *info, int nitems)
+pick_one(const struct obj_info *info, int nitems)
 {
-    struct obj_info *end;
-    struct obj_info *start;
+    const struct obj_info *end;
+    const struct obj_info *start;
     int i;
 
     start = info;
@@ -330,10 +330,10 @@ static int Line_cnt = 0;
 
 static int Newpage = FALSE;
 
-static char *Lastfmt, *Lastarg;
+static const char *Lastfmt, *Lastarg;
 
 void
-discovered()
+discovered(void)
 {
     int ch;
     int disc_list;
@@ -462,7 +462,7 @@ set_order(int *order, int numthings)
  */
 /* VARARGS1 */
 int
-add_line(char *fmt, char *arg)
+add_line(const char *fmt, const char *arg)
 {
     WINDOW *tw, *sw;
     int x, y;
@@ -556,7 +556,7 @@ add_line(char *fmt, char *arg)
  *	End the list of lines
  */
 void
-end_line()
+end_line(void)
 {
     if (Inv_type != INV_SLOW)
     {
@@ -576,7 +576,7 @@ end_line()
  * nothing:
  *	Set up Prbuf so that message for "nothing found" is there
  */
-char *
+const char *
 nothing(int type)
 {
     char *sp, *tystr = NULL;
@@ -605,8 +605,8 @@ nothing(int type)
  *	Give the proper name to a potion, stick, or ring
  */
 void
-nameit(THING *obj, char *type, char *which, struct obj_info *op,
-    char *(*prfunc)(THING *))
+nameit(const THING *obj, const char *type, const char *which, const struct obj_info *op,
+    const char *(*prfunc)(const THING *))
 {
     char *pb;
 
@@ -632,8 +632,8 @@ nameit(THING *obj, char *type, char *which, struct obj_info *op,
  * nullstr:
  *	Return a pointer to a null-length string
  */
-char *
-nullstr(THING *ignored)
+const char *
+nullstr(const THING *ignored)
 {
     NOOP(ignored);
     return "";
@@ -646,7 +646,7 @@ nullstr(THING *ignored)
  */
 
 void
-pr_list()
+pr_list(void)
 {
     int ch;
 
@@ -657,6 +657,7 @@ pr_list()
 	addmsg(" of object do you want a list");
     msg("? ");
     ch = readchar();
+	msg("");
     switch (ch)
     {
 	case POTION:
@@ -682,9 +683,9 @@ pr_list()
  */
 
 void
-pr_spec(struct obj_info *info, int nitems)
+pr_spec(const struct obj_info *info, int nitems)
 {
-    struct obj_info *endp;
+    const struct obj_info *endp;
     int i, lastprob;
 
     endp = &info[nitems];

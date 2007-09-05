@@ -66,7 +66,7 @@ xntohl(unsigned int x)
                 ((x & 0xff000000U) >> 24) );
 }
 
-unsigned
+unsigned int
 xhtonl(unsigned int x)
 {
     if ( *((char *)&md_endian) == 0x01 )
@@ -204,7 +204,7 @@ static unsigned char	ascii64[] =
 /*	  0123456789012345678901234567890123456789012345678901234567890123 */
 
 static __inline int
-ascii_to_bin(char ch)
+ascii_to_bin(int ch)
 {
 	if (ch > 'z')
 		return(0);
@@ -222,7 +222,7 @@ ascii_to_bin(char ch)
 }
 
 static void
-des_init()
+des_init(void)
 {
 	int	i, j, b, k, inbit, obit;
 	unsigned int	*p, *il, *ir, *fl, *fr;

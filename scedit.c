@@ -37,9 +37,7 @@ int do_comm();
 int pr_score(SCORE *, int);
 
 int
-main(ac, av)
-int	ac;
-char	**av;
+main(int ac, char *av[])
 {
 	char	*scorefile;
 	FILE	*outf;
@@ -67,7 +65,7 @@ char	**av;
  *	Get and execute a command
  */
 int
-do_comm()
+do_comm(void)
 {
 	char		*sp;
 	SCORE		*scp;
@@ -151,7 +149,7 @@ void
 add_score(void)
 {
 	SCORE		*scp;
-    int id = -1;
+	uid_t id = 0;
 	int		i;
 	static SCORE	new;
 
@@ -228,7 +226,8 @@ void
 insert_score(SCORE *new)
 {
 	SCORE	*scp, *sc2;
-	int	flags, uid, amount;
+	int	flags, amount;
+	uid_t uid;
 
 	flags = new->sc_flags;
 	uid = new->sc_uid;

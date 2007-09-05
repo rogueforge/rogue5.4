@@ -21,7 +21,7 @@ typedef struct spot {		/* position matrix for maze positions */
  *	Create rooms and corridors with a connectivity graph
  */
 void
-do_rooms()
+do_rooms(void)
 {
     int i;
     struct room *rp;
@@ -142,7 +142,7 @@ do_rooms()
  *	rooms; for maze rooms, draw maze.
  */
 void
-draw_room(struct room *rp)
+draw_room(const struct room *rp)
 {
     int y, x;
 
@@ -169,7 +169,7 @@ draw_room(struct room *rp)
  *	Draw a vertical line
  */
 void
-vert(struct room *rp, int startx)
+vert(const struct room *rp, int startx)
 {
     int y;
 
@@ -182,7 +182,7 @@ vert(struct room *rp, int startx)
  *	Draw a horizontal line
  */
 void
-horiz(struct room *rp, int starty)
+horiz(const struct room *rp, int starty)
 {
     int x;
 
@@ -200,7 +200,7 @@ static int	Maxy, Maxx, Starty, Startx;
 static SPOT	Maze[NUMLINES/3+1][NUMCOLS/3+1];
 
 void
-do_maze(struct room *rp)
+do_maze(const struct room *rp)
 {
     SPOT *sp;
     int starty, startx;
@@ -306,7 +306,7 @@ accnt_maze(int y, int x, int ny, int nx)
  *	Pick a random spot in a room
  */
 void
-rnd_pos(struct room *rp, coord *cp)
+rnd_pos(const struct room *rp, coord *cp)
 {
     cp->x = rp->r_pos.x + rnd(rp->r_max.x - 2) + 1;
     cp->y = rp->r_pos.y + rnd(rp->r_max.y - 2) + 1;
@@ -318,7 +318,7 @@ rnd_pos(struct room *rp, coord *cp)
  *	pick a new room each time around the loop.
  */
 int
-find_floor(struct room *rp, coord *cp, int limit, int monst)
+find_floor(const struct room *rp, coord *cp, int limit, int monst)
 {
     PLACE *pp;
     int cnt;
@@ -356,12 +356,12 @@ find_floor(struct room *rp, coord *cp, int limit, int monst)
  *	Code that is executed whenver you appear in a room
  */
 void
-enter_room(coord *cp)
+enter_room(const coord *cp)
 {
     struct room *rp;
     THING *tp;
     int y, x;
-    int ch;
+    chtype ch;
 
     rp = Proom = roomin(cp);
     door_open(rp);
@@ -402,7 +402,7 @@ enter_room(coord *cp)
  *	Code for when we exit a room
  */
 void
-leave_room(coord *cp)
+leave_room(const coord *cp)
 {
     PLACE *pp;
     struct room *rp;

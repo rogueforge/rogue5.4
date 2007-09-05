@@ -35,6 +35,12 @@
 #define HAVE_PROCESS_H
 #define HAVE_ERASECHAR 1
 #define HAVE_KILLCHAR 1
+#ifndef uid_t
+typedef unsigned int uid_t;
+#endif
+#ifndef pid_t
+typedef unsigned int pid_t;
+#endif
 #elif defined(__CYGWIN__)
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_PWD_H 1
@@ -115,77 +121,44 @@ extern int	Wizard;
 extern char	Fruit[], Prbuf[], Whoami[];
 extern int Orig_dsusp;
 extern FILE	*scoreboard;
+extern int numscores;
+extern char *Numname;
+extern int Allscore;
 
 /*
  * Function types
  */
 
-void    auto_save(int);
-void	come_down();
-void	doctor();
-void	end_line();
-void    endit(int sig);
-void	fatal();
-void	getltchars();
-void	land();
-void    leave(int);
-void	my_exit();
-void	nohaste();
-void	playit();
-void    playltchars(void);
-void	print_disc(int);
-void    quit(int);
-void    resetltchars(void);
-void	rollwand();
-void	runners();
-void	set_order();
-void	sight();
-void	stomach();
-void	swander();
-void	tstp(int ignored);
-void	unconfuse();
-void	unsee();
-void	visuals();
-
-int		add_line(char *fmt, char *arg);
-
-char	*killname(int monst, int doart);
-char	*nothing(int type);
-char	*type_name(int type);
-
-#ifdef CHECKTIME
-int	checkout();
-#endif
-
-int	md_chmod(char *filename, int mode);
-char	*md_crypt(char *key, char *salt);
-int	md_dsuspchar();
-int	md_erasechar();
-char	*md_gethomedir();
-char	*md_getusername();
-int	md_getuid();
+int	md_chmod(const char *filename, int mode);
+char	*md_crypt(const char *key, const char *salt);
+int	md_dsuspchar(void);
+int	md_erasechar(void);
+char	*md_gethomedir(void);
+char	*md_getusername(void);
+uid_t	md_getuid(void);
 char	*md_getpass(char *prompt);
-int	md_getpid();
-char	*md_getrealname(int uid);
-void	md_init();
-int	md_killchar();
-void	md_normaluser();
-void	md_raw_standout();
-void	md_raw_standend();
+pid_t	md_getpid(void);
+char	*md_getrealname(uid_t uid);
+void	md_init(void);
+int	md_killchar(void);
+void	md_normaluser(void);
+void	md_raw_standout(void);
+void	md_raw_standend(void);
 int	md_readchar(WINDOW *win);
 int	md_setdsuspchar(int c);
-int	md_shellescape();
+int	md_shellescape(void);
 void	md_sleep(int s);
-int	md_suspchar();
-int	md_hasclreol();
+int	md_suspchar(void);
+int	md_hasclreol(void);
 int	md_unlink(char *file);
-int	md_unlink_open_file(char *file, FILE *inf);
-void md_tstpsignal();
-void md_tstphold();
-void md_tstpresume();
-void md_ignoreallsignals();
-void md_onsignal_autosave();
-void md_onsignal_exit();
-void md_onsignal_default();
+int	md_unlink_open_file(const char *file, FILE *inf);
+void md_tstpsignal(void);
+void md_tstphold(void);
+void md_tstpresume(void);
+void md_ignoreallsignals(void);
+void md_onsignal_autosave(void);
+void md_onsignal_exit(void);
+void md_onsignal_default(void);
 int md_issymlink(char *sp);
+extern char *xcrypt(const char *key, const char *setting);
 

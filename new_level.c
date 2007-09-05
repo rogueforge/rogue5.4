@@ -13,7 +13,7 @@
  * @(#)new_level.c	4.38 (Berkeley) 02/05/99
  */
 void
-new_level()
+new_level(void)
 {
     THING *tp;
     PLACE *pp;
@@ -66,7 +66,7 @@ new_level()
 	     */
 	    do
 	    {
-		find_floor((struct room *) NULL, &Stairs, FALSE, FALSE);
+		find_floor(NULL, &Stairs, FALSE, FALSE);
 	    } while (chat(Stairs.y, Stairs.x) != FLOOR);
 	    sp = &flat(Stairs.y, Stairs.x);
 	    *sp &= ~F_REAL;
@@ -76,14 +76,14 @@ new_level()
     /*
      * Place the staircase down.
      */
-    find_floor((struct room *) NULL, &Stairs, FALSE, FALSE);
+    find_floor(NULL, &Stairs, FALSE, FALSE);
     chat(Stairs.y, Stairs.x) = STAIRS;
     Seenstairs = FALSE;
 
     for (tp = Mlist; tp != NULL; tp = next(tp))
 	tp->t_room = roomin(&tp->t_pos);
 
-    find_floor((struct room *) NULL, &Hero, FALSE, TRUE);
+    find_floor(NULL, &Hero, FALSE, TRUE);
     enter_room(&Hero);
     mvaddch(Hero.y, Hero.x, PLAYER);
     if (on(Player, SEEMONST))
@@ -114,7 +114,7 @@ rnd_room(void)
  */
 
 void
-put_things()
+put_things(void)
 {
     int i;
     THING *obj;
@@ -144,7 +144,7 @@ put_things()
 	    /*
 	     * Put it somewhere
 	     */
-	    find_floor((struct room *) NULL, &obj->o_pos, FALSE, FALSE);
+	    find_floor(NULL, &obj->o_pos, FALSE, FALSE);
 	    chat(obj->o_pos.y, obj->o_pos.x) = obj->o_type;
 	}
     /*
@@ -164,7 +164,7 @@ put_things()
 	/*
 	 * Put it somewhere
 	 */
-	find_floor((struct room *) NULL, &obj->o_pos, FALSE, FALSE);
+	find_floor(NULL, &obj->o_pos, FALSE, FALSE);
 	chat(obj->o_pos.y, obj->o_pos.x) = AMULET;
     }
 }
@@ -176,7 +176,7 @@ put_things()
 #define MAXTRIES 10	/* max number of tries to put down a monster */
 
 void
-treas_room()
+treas_room(void)
 {
     int nm;
     THING *tp;

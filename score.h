@@ -5,10 +5,10 @@
  */
 
 struct sc_ent {
-    unsigned int sc_uid;
+    uid_t sc_uid;
     int sc_score;
     unsigned int sc_flags;
-    unsigned short sc_monster;
+    int sc_monster;
     char sc_name[MAXSTR];
     int sc_level;
     unsigned int sc_time;

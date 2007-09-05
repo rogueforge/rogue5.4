@@ -13,7 +13,7 @@
  *	Read a scroll from the pack and do the appropriate thing
  */
 void
-read_scroll()
+read_scroll(void)
 {
     THING *obj;
     PLACE *pp;

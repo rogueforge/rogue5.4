@@ -21,7 +21,7 @@ void
 look(int wakeup)
 {
     int x, y;
-    int ch;
+    chtype ch;
     THING *tp;
     PLACE *pp;
     struct room *rp;
@@ -207,7 +207,7 @@ trip_ch(int y, int x, int ch)
  *	Erase the area shown by a lamp in a dark room.
  */
 void
-erase_lamp(coord *pos, struct room *rp)
+erase_lamp(const coord *pos, const struct room *rp)
 {
     int y, x, ey, sy, ex;
 
@@ -224,7 +224,7 @@ erase_lamp(coord *pos, struct room *rp)
 	    if (y == Hero.y && x == Hero.x)
 		continue;
 	    move(y, x);
-	    if (inch() == FLOOR)
+	    if (CCHAR( inch() ) == FLOOR)
 		addch(' ');
 	}
 }
@@ -234,7 +234,7 @@ erase_lamp(coord *pos, struct room *rp)
  *	Should we show the floor in her room at this time?
  */
 int
-show_floor()
+show_floor(void)
 {
     if ((Proom->r_flags & (ISGONE|ISDARK)) == ISDARK && !on(Player, ISBLIND))
 	return See_floor;
@@ -272,7 +272,7 @@ find_obj(int y, int x)
  */
 
 void
-eat()
+eat(void)
 {
     THING *obj;
 
@@ -313,7 +313,7 @@ eat()
  */
 
 void
-check_level()
+check_level(void)
 {
     int i, add, olevel;
 
@@ -340,7 +340,7 @@ check_level()
 void
 chg_str(int amt)
 {
-    auto str_t comp;
+    auto int comp;
 
     if (amt == 0)
 	return;
@@ -359,7 +359,7 @@ chg_str(int amt)
  *	Perform the actual add, checking upper and lower bound limits
  */
 void
-add_str(str_t *sp, int amt)
+add_str(int *sp, int amt)
 {
     if ((*sp += amt) < 3)
 	*sp = 3;
@@ -397,7 +397,7 @@ add_haste(int potion)
  */
 
 void
-aggravate()
+aggravate(void)
 {
     THING *mp;
 
@@ -411,7 +411,7 @@ aggravate()
  *	"an".
  */
 char *
-vowelstr(char *str)
+vowelstr(const char *str)
 {
     switch (*str)
     {
@@ -431,7 +431,7 @@ vowelstr(char *str)
  *	See if the object is one of the currently used items
  */
 int
-is_current(THING *obj)
+is_current(const THING *obj)
 {
     if (obj == NULL)
 	return FALSE;
@@ -452,7 +452,7 @@ is_current(THING *obj)
  *	commands
  */
 int
-get_dir()
+get_dir(void)
 {
     char *prompt;
     int gotit;
@@ -552,7 +552,7 @@ call_it(struct obj_info *info)
 	{
 	    if (info->oi_guess != NULL)
 		free(info->oi_guess);
-	    info->oi_guess = malloc((unsigned int) strlen(Prbuf) + 1);
+	    info->oi_guess = malloc(strlen(Prbuf) + 1);
 		if (info->oi_guess != NULL)
 			strcpy(info->oi_guess, Prbuf);
 	}
@@ -584,8 +584,8 @@ rnd_thing(void)
  *	Choose the first or second string depending on whether it the
  *	player is tripping
  */
-char *
-choose_str(char *ts, char *ns)
+const char *
+choose_str(const char *ts, const char *ns)
 {
 	return (on(Player, ISHALU) ? ts : ns);
 }

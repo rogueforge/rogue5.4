@@ -88,7 +88,7 @@ set_know(THING *obj, struct obj_info *info)
  * type_name:
  *	Return a pointer to the name of the type
  */
-char *
+const char *
 type_name(int type)
 {
     struct h_list *hp;
@@ -117,7 +117,7 @@ type_name(int type)
  */
 
 void
-create_obj()
+create_obj(void)
 {
     THING *obj;
     int ch, bless;
@@ -189,12 +189,12 @@ create_obj()
  */
 
 void
-teleport()
+teleport(void)
 {
     static coord c;
 
     mvaddch(Hero.y, Hero.x, floor_at());
-    find_floor((struct room *) NULL, &c, FALSE, TRUE);
+    find_floor(NULL, &c, FALSE, TRUE);
     if (roomin(&c) != Proom)
     {
 	leave_room(&Hero);
@@ -228,10 +228,10 @@ teleport()
  *	See if user knows password
  */
 int
-passwd()
+passwd(void)
 {
     char *sp;
-	int c;
+    int c;
     static char buf[MAXSTR];
 
     msg("wizard's Password:");
@@ -256,7 +256,7 @@ passwd()
  */
 
 void
-show_map()
+show_map(void)
 {
     int y, x, real;
 
@@ -269,7 +269,7 @@ show_map()
 		wstandout(Hw);
 	    wmove(Hw, y, x);
 	    waddch(Hw, chat(y, x));
-	    if (!real)
+	    if (!real & F_REAL)
 		wstandend(Hw);
 	}
     show_win("---More (level map)---");

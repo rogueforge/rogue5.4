@@ -31,9 +31,9 @@ struct optstruct {
 
 typedef struct optstruct	OPTION;
 
-void	pr_optname(OPTION *op);
+void	pr_optname(const OPTION *op);
 
-OPTION	optlist[] = {
+static const OPTION	optlist[] = {
     {"terse",	 "Terse output",
 		 &Terse,	put_bool,	get_bool	},
     {"flush",	 "Flush typeahead during battle",
@@ -62,9 +62,9 @@ OPTION	optlist[] = {
  */
 
 void
-option()
+option(void)
 {
-    OPTION	*op;
+    const OPTION *op;
     int		retval;
 
     wclear(Hw);
@@ -119,7 +119,7 @@ option()
  */
 
 void
-pr_optname(OPTION *op)
+pr_optname(const OPTION *op)
 {
     wprintw(Hw, "%s (\"%s\"): ", op->o_prompt, op->o_name);
 }
@@ -139,7 +139,7 @@ put_bool(void *b)
  *	Put out a string
  */
 void
-put_str(void *str)
+put_str(const void *str)
 {
     waddstr(Hw, (char *) str);
 }
@@ -159,7 +159,7 @@ put_inv_t(void *ip)
  *	Allow changing a boolean option and print it out
  */
 int
-get_bool(void *vp, WINDOW *win)
+get_bool(const void *vp, WINDOW *win)
 {
     int *bp = (int *) vp;
     int oy, ox;
@@ -209,7 +209,7 @@ get_bool(void *vp, WINDOW *win)
  *	!See_floor.
  */
 int
-get_sf(void *vp, WINDOW *win)
+get_sf(const void *vp, WINDOW *win)
 {
     int	*bp = (int *) vp;
     int	was_sf;
@@ -238,12 +238,12 @@ get_sf(void *vp, WINDOW *win)
 #define MAXINP	50	/* max string to read from terminal or environment */
 
 int
-get_str(void *vopt, WINDOW *win)
+get_str(const void *vopt, WINDOW *win)
 {
     char *opt = (char *) vopt;
     char *sp;
     int oy, ox;
-    int i;
+    size_t i;
     int c;
     static char buf[MAXSTR];
 
@@ -262,7 +262,7 @@ get_str(void *vopt, WINDOW *win)
 	    if (sp > buf)
 	    {
 		sp--;
-		for (i = (int) strlen(unctrl(*sp)); i; i--)
+		for (i = strlen(unctrl(*sp)); i; i--)
 		    waddch(win, '\b');
 	    }
 	    continue;
@@ -295,7 +295,7 @@ get_str(void *vopt, WINDOW *win)
     }
     *sp = '\0';
     if (sp > buf)	/* only change option if something has been typed */
-	strucpy(opt, buf, (int) strlen(buf));
+	strucpy(opt, buf, strlen(buf));
     mvwprintw(win, oy, ox, "%s\n", opt);
     wrefresh(win);
     if (win == stdscr)
@@ -313,7 +313,7 @@ get_str(void *vopt, WINDOW *win)
  *	Get an inventory type name
  */
 int
-get_inv_t(void *vp, WINDOW *win)
+get_inv_t(const void *vp, WINDOW *win)
 {
     int *ip = (int *) vp;
     int oy, ox;
@@ -367,7 +367,7 @@ get_inv_t(void *vp, WINDOW *win)
  *	Get a numeric option
  */
 int
-get_num(void *vp, WINDOW *win)
+get_num(const void *vp, WINDOW *win)
 {
     int *opt = (int *) vp;
     int i;
@@ -391,7 +391,7 @@ void
 parse_opts(char *str)
 {
     char *sp;
-    OPTION *op;
+    const OPTION *op;
     int len;
     const char **i;
     char *start;
@@ -448,7 +448,7 @@ parse_opts(char *str)
 			    }
 		    }
 		    else
-			strucpy(start, str, (int)(sp - str));
+			strucpy(start, str, (size_t)(sp - str));
 		}
 		break;
 	    }
@@ -476,7 +476,7 @@ parse_opts(char *str)
  *	Copy string using unctrl for things
  */
 void
-strucpy(char *s1, char *s2, int len)
+strucpy(char *s1, const char *s2, size_t len)
 {
     if (len > MAXINP)
 	len = MAXINP;

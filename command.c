@@ -15,10 +15,10 @@
  *	Process the user commands
  */
 void
-command()
+command(void)
 {
-    register int ch;
-    register int ntimes = 1;			/* Number of player moves */
+    int ch;
+    int ntimes = 1;			/* Number of player moves */
     int *fp;
     THING *mp;
     static int countch, direction, newcount = FALSE;
@@ -465,11 +465,11 @@ illcom(int ch)
  *	Player gropes about him to find hidden things.
  */
 void
-search()
+search(void)
 {
-    register int y, x;
-    register int *fp;
-    register int ey, ex;
+    int y, x;
+    int *fp;
+    int ey, ex;
     int probinc;
     int found;
 
@@ -529,11 +529,11 @@ foundone:
  *	Give single character help, or the whole mess if he wants it
  */
 void
-help()
+help(void)
 {
-    register struct h_list *strp;
-    register int helpch;
-    register int numprint, cnt;
+    const struct h_list *strp;
+    int helpch;
+    int numprint, cnt;
     msg("character you want help for (* for all): ");
     helpch = readchar();
     Mpos = 0;
@@ -599,12 +599,12 @@ help()
  *	Tell the player what a certain thing is.
  */
 void
-identify()
+identify(void)
 {
     int ch;
-    struct h_list *hp;
-    char *str;
-    static struct h_list ident_list[] = {
+    const struct h_list *hp;
+    const char *str;
+    static const struct h_list ident_list[] = {
 	{'|',		"wall of a room",		FALSE},
 	{'-',		"wall of a room",		FALSE},
 	{GOLD,		"gold",				FALSE},
@@ -654,7 +654,7 @@ identify()
  *	He wants to go down a level
  */
 void
-d_level()
+d_level(void)
 {
     if (levit_check())
 	return;
@@ -673,7 +673,7 @@ d_level()
  *	He wants to go up a level
  */
 void
-u_level()
+u_level(void)
 {
     if (levit_check())
 	return;
@@ -698,7 +698,7 @@ u_level()
  *	appropriate message.
  */
 int
-levit_check()
+levit_check(void)
 {
     if (!on(Player, ISLEVIT))
 	return FALSE;
@@ -711,12 +711,13 @@ levit_check()
  *	Allow a user to call a potion, scroll, or ring something
  */
 void
-call()
+call(void)
 {
-    register THING *obj;
-    register struct obj_info *op = NULL;
-    register char **guess, *elsewise = NULL;
-    register int *know;
+    THING *obj;
+    struct obj_info *op = NULL;
+    char **guess;
+    const char *elsewise = NULL;
+    int *know;
 
     obj = get_item("call", CALLABLE);
     /*
@@ -778,7 +779,7 @@ norm:
     {
 	if (*guess != NULL)
 	    free(*guess);
-	*guess = malloc((unsigned int) strlen(Prbuf) + 1);
+	*guess = malloc(strlen(Prbuf) + 1);
 	if (*guess != NULL)
 		strcpy(*guess, Prbuf);
     }
@@ -791,7 +792,7 @@ norm:
  *	Print the current weapon/armor
  */
 void
-current(THING *cur, char *how, char *where)
+current(const THING *cur, const char *how, const char *where)
 {
     After = FALSE;
     if (cur != NULL)

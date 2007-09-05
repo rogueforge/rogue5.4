@@ -5,8 +5,7 @@
  */
 #include <stdio.h>
 
-int
-main(void)
+main(int argc, char *argv[])
 {
     static char buf[80];
 
