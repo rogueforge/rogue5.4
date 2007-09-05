@@ -113,7 +113,7 @@ md_init()
     _fmode = _O_BINARY;
 #endif
 
-#if defined(HAVE_ESCDELAY)
+#if defined(HAVE_ESCDELAY) || defined(NCURSES_VERSION)
     ESCDELAY=64;
 #endif
 
