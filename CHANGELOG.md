@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [5.4.4] - 2007-09-05
+### Added
+- Port to Mac OS/X
+- RPM spec file and desktop integration files contributed by Wart
+
+### Changed
+- Include autoconf related files in source tarball
+- Clean up autoconf for pacakage maintainers
+
+### Fixed
+- Save/restore functionality
+- Coredump when c)alling a weapon
+
 ## [5.4.3] - 2007-07-23
 ### Added
 - Autoconf based build system
