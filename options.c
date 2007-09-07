@@ -107,7 +107,7 @@ option()
     wmove(Hw, LINES - 1, 0);
     waddstr(Hw, "--Press space to continue--");
     wrefresh(Hw);
-    wait_for(' ');
+    wait_for(Hw, ' ');
     clearok(curscr, TRUE);
     touchwin(stdscr);
     After = FALSE;
@@ -172,7 +172,7 @@ get_bool(void *vp, WINDOW *win)
     {
 	wmove(win, oy, ox);
 	wrefresh(win);
-	switch (readchar())
+	switch (wreadchar(win))
 	{
 	    case 't':
 	    case 'T':
@@ -252,7 +252,7 @@ get_str(void *vopt, WINDOW *win)
     /*
      * loop reading in the string, and put it in a temporary buffer
      */
-    for (sp = buf; (c = readchar()) != '\n' && c != '\r' && c != ESCAPE;
+    for (sp = buf; (c = wreadchar(win)) != '\n' && c != '\r' && c != ESCAPE;
 	wclrtoeol(win), wrefresh(win))
     {
 	if (c == -1)
@@ -326,7 +326,7 @@ get_inv_t(void *vp, WINDOW *win)
     {
 	wmove(win, oy, ox);
 	wrefresh(win);
-	switch (readchar())
+	switch (wreadchar(win))
 	{
 	    case 'o':
 	    case 'O':

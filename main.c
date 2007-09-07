@@ -371,7 +371,7 @@ shell()
     keypad(stdscr,1);
     playltchars();
     In_shell = FALSE;
-    wait_for('\n');
+    wait_for(stdscr, '\n');
     clearok(stdscr, TRUE);
 }
 

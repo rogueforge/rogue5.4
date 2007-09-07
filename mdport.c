@@ -1064,7 +1064,7 @@ md_setsuspchar(int c)
 #define M_TRAIL  3
 
 int
-md_readchar()
+md_readchar(WINDOW *win)
 {
     int ch = 0;
     int lastch = 0;
@@ -1073,7 +1073,7 @@ md_readchar()
 
     for(;;)
     {
-	ch = getch();
+	ch = wgetch(win);
 
 	if (ch == ERR)	    /* timed out waiting for valid sequence */
 	{		    /* flush input so far and start over    */

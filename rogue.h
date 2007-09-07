@@ -661,7 +661,7 @@ void	u_level();
 void	uncurse(THING *obj);
 void	unlock_sc();
 void	vert(struct room *rp, int startx);
-void	wait_for(int ch);
+void	wait_for(WINDOW *win, int ch);
 THING  *wake_monster(int y, int x);
 void	wanderer();
 void	waste_time();
@@ -689,7 +689,8 @@ int	passwd();
 char	be_trapped(coord *tc);
 char	floor_ch();
 char	pack_char();
-char	readchar();
+char	wreadchar(WINDOW *win);
+char	readchar(void);
 char	rnd_thing();
 
 char	*charge_str(THING *obj);

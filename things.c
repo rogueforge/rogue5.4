@@ -285,7 +285,7 @@ new_thing(void)
 #ifdef MASTER
 	otherwise:
 	    debug("Picked a bad kind of object");
-	    wait_for(' ');
+	    wait_for(stdscr, ' ');
 #endif
     }
     return cur;
@@ -512,7 +512,7 @@ add_line(char *fmt, char *arg)
 		}
 		touchwin(tw);
 		wrefresh(tw);
-		wait_for(' ');
+		wait_for(tw, ' ');
                 if (md_hasclreol())
 		{
 		    werase(tw);
@@ -527,7 +527,7 @@ add_line(char *fmt, char *arg)
 		wmove(Hw, LINES - 1, 0);
 		waddstr(Hw, prompt);
 		wrefresh(Hw);
-		wait_for(' ');
+		wait_for(Hw, ' ');
 		clearok(curscr, TRUE);
 		wclear(Hw);
 		touchwin(stdscr);

@@ -172,7 +172,7 @@ int	md_killchar();
 void	md_normaluser();
 void	md_raw_standout();
 void	md_raw_standend();
-int	md_readchar();
+int	md_readchar(WINDOW *win);
 int	md_setdsuspchar(int c);
 int	md_shellescape();
 void	md_sleep(int s);

@@ -584,7 +584,7 @@ help()
     wmove(Hw, LINES - 1, 0);
     waddstr(Hw, "--Press space to continue--");
     wrefresh(Hw);
-    wait_for(' ');
+    wait_for(Hw, ' ');
     clearok(stdscr, TRUE);
 /*
     refresh();

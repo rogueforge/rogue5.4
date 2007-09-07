@@ -77,7 +77,7 @@ endmsg()
 	mvaddstr(0, Mpos, "--More--");
 	refresh();
 	if (!Msg_esc)
-	    wait_for(' ');
+	    wait_for(stdscr, ' ');
 	else
 	{
 	    while ((ch = readchar()) != ' ')
@@ -147,12 +147,13 @@ step_ok(int ch)
  * readchar:
  *	Reads and returns a character, checking for gross input errors
  */
+
 char
 readchar()
 {
     char ch;
 
-    ch = (char) md_readchar();
+    ch = (char) md_readchar(stdscr);
 
     if (ch == 3)
     {
@@ -162,6 +163,23 @@ readchar()
 
     return(ch);
 }
+
+char
+wreadchar(WINDOW *win)
+{
+    char ch;
+
+    ch = (char) md_readchar(win);
+
+    if (ch == 3)
+    {
+	quit(0);
+        return(27);
+    }
+
+    return(ch);
+}
+
 
 /*
  * status:
@@ -244,15 +262,15 @@ status()
  *	Sit around until the guy types the right key
  */
 void
-wait_for(int ch)
+wait_for(WINDOW *win, int ch)
 {
     char c;
 
     if (ch == '\n')
-        while ((c = readchar()) != '\n' && c != '\r')
+        while ((c = wreadchar(win)) != '\n' && c != '\r')
 	    continue;
     else
-        while (readchar() != ch)
+        while (wreadchar(win) != ch)
 	    continue;
 }
 
@@ -271,7 +289,7 @@ show_win(char *message)
     touchwin(win);
     wmove(win, Hero.y, Hero.x);
     wrefresh(win);
-    wait_for(' ');
+    wait_for(win, ' ');
     clearok(curscr, TRUE);
     touchwin(stdscr);
 }
