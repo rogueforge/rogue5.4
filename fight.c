@@ -301,7 +301,7 @@ attack(THING *mp)
 		    {
 			remove_mon(&mp->t_pos, moat(mp->t_pos.y, mp->t_pos.x), FALSE);
                         mp=NULL;
-			leave_pack(steal, FALSE, FALSE);
+			steal = leave_pack(steal, TRUE, FALSE);
 			msg("she stole %s!", inv_name(steal, TRUE));
 			discard(steal);
 		    }
