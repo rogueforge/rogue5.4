@@ -16,7 +16,7 @@
  *	What a certin object is
  */
 void
-whatis(bool insist, int type)
+whatis(int insist, int type)
 {
     THING *obj;
 
@@ -120,7 +120,7 @@ void
 create_obj()
 {
     THING *obj;
-    char ch, bless;
+    int ch, bless;
 
     obj = new_item();
     msg("type of item: ");
@@ -230,7 +230,8 @@ teleport()
 int
 passwd()
 {
-    char *sp, c;
+    char *sp;
+	int c;
     static char buf[MAXSTR];
 
     msg("wizard's Password:");
@@ -242,7 +243,7 @@ passwd()
 	else if (c == md_erasechar() && sp > buf)
 	    sp--;
 	else
-	    *sp++ = c;
+	    *sp++ = (char) c;
     if (sp == buf)
 	return FALSE;
     *sp = '\0';

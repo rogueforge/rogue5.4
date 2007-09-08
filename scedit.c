@@ -13,9 +13,6 @@
 # define	TRUE	1
 #endif
 # define	FALSE	0
-#ifndef bool
-# define	bool	char
-#endif
 # define	RN	(((seed = seed*11109+13849) >> 16) & 0xffff)
 
 # define	MAXSTR	80
@@ -36,9 +33,9 @@ int	Seed;
 FILE	*Inf;
 
 struct passwd	*getpwnam();
-bool do_comm();
-int pr_score(SCORE *, bool);
- 
+int do_comm();
+int pr_score(SCORE *, int);
+
 int
 main(ac, av)
 int	ac;
@@ -69,14 +66,14 @@ char	**av;
  * do_comm:
  *	Get and execute a command
  */
-bool
-do_comm(void)
+int
+do_comm()
 {
 	char		*sp;
 	SCORE		*scp;
 	struct passwd	*pp;
 	static FILE	*outf = NULL;
-	static bool	written = TRUE;
+	static int written = TRUE;
 
 	printf("\nCommand: ");
 	while (isspace(Buf[0] = getchar()) || Buf[0] == '\n')
@@ -207,8 +204,7 @@ add_score(void)
  * pr_score:
  *	Print out a score entry.  Return FALSE if last entry.
  */
-int
-pr_score(SCORE *scp, bool num)
+pr_score(SCORE *scp, int num)
 {
 	if (scp->sc_score) {
 		if (num)
@@ -216,7 +212,7 @@ pr_score(SCORE *scp, bool num)
 		printf("\t%d\t%s: %s on level %d", scp->sc_score, scp->sc_name,
 		    Reason[scp->sc_flags], scp->sc_level);
 		if (scp->sc_flags == 0)
-		    printf(" by %s", s_killname((char) scp->sc_monster, TRUE));
+		    printf(" by %s", s_killname(scp->sc_monster, TRUE));
 		
         printf(" (%s)", md_getrealname(scp->sc_uid));
 		putchar('\n');

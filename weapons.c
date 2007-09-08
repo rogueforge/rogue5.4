@@ -110,7 +110,7 @@ do_motion(THING *obj, int ydelta, int xdelta)
  *	Drop an item someplace around here.
  */
 void
-fall(THING *obj, bool pr)
+fall(THING *obj, int pr)
 {
     PLACE *pp;
     static coord fpos;
@@ -118,12 +118,12 @@ fall(THING *obj, bool pr)
     if (fallpos(&obj->o_pos, &fpos))
     {
 	pp = INDEX(fpos.y, fpos.x);
-	pp->p_ch = (char) obj->o_type;
+	pp->p_ch = obj->o_type;
 	obj->o_pos = fpos;
 	if (cansee(fpos.y, fpos.x))
 	{
 	    if (pp->p_monst != NULL)
-		pp->p_monst->t_oldch = (char) obj->o_type;
+		pp->p_monst->t_oldch = obj->o_type;
 	    else
 		mvaddch(fpos.y, fpos.x, obj->o_type);
 	}
@@ -197,7 +197,7 @@ hit_monster(int y, int x, THING *obj)
  *	Figure out the plus number for armor/weapons
  */
 char *
-num(int n1, int n2, char type)
+num(int n1, int n2, int type)
 {
     static char numbuf[10];
 
@@ -250,7 +250,7 @@ bad:
  * fallpos:
  *	Pick a random position around the give (y, x) coordinates
  */
-bool
+int
 fallpos(coord *pos, coord *newpos)
 {
     int y, x, cnt, ch;
@@ -273,5 +273,5 @@ fallpos(coord *pos, coord *newpos)
 		newpos->x = x;
 	    }
 	}
-    return (bool)(cnt != 0);
+    return (cnt != 0);
 }

@@ -19,7 +19,7 @@ coord nh;
  *	Start the hero running
  */
 void
-do_run(char ch)
+do_run(int ch)
 {
     Running = TRUE;
     After = FALSE;
@@ -34,7 +34,7 @@ do_run(char ch)
 void
 do_move(int dy, int dx)
 {
-    char ch, fl;
+    int ch, fl;
 
     Firstmove = FALSE;
     if (No_move)
@@ -102,14 +102,14 @@ hit_bound:
 	    if (Passgo && Running && (Proom->r_flags & ISGONE)
 		&& !on(Player, ISBLIND))
 	    {
-		bool	b1, b2;
+		int	b1, b2;
 
 		switch (Runch)
 		{
 		    case 'h':
 		    case 'l':
-			b1 = (bool)(Hero.y != 1 && turn_ok(Hero.y - 1, Hero.x));
-			b2 = (bool)(Hero.y != NUMLINES - 2 && turn_ok(Hero.y + 1, Hero.x));
+			b1 = (Hero.y != 1 && turn_ok(Hero.y - 1, Hero.x));
+			b2 = (Hero.y != NUMLINES - 2 && turn_ok(Hero.y + 1, Hero.x));
 			if (!(b1 ^ b2))
 			    break;
 			if (b1)
@@ -127,8 +127,8 @@ hit_bound:
 			goto over;
 		    case 'j':
 		    case 'k':
-			b1 = (bool)(Hero.x != 0 && turn_ok(Hero.y, Hero.x - 1));
-			b2 = (bool)(Hero.x != NUMCOLS - 1 && turn_ok(Hero.y, Hero.x + 1));
+			b1 = (Hero.x != 0 && turn_ok(Hero.y, Hero.x - 1));
+			b2 = (Hero.x != NUMCOLS - 1 && turn_ok(Hero.y, Hero.x + 1));
 			if (!(b1 ^ b2))
 			    break;
 			if (b1)
@@ -196,7 +196,7 @@ move_stuff:
  * turn_ok:
  *	Decide whether it is legal to turn onto the given space
  */
-bool
+int
 turn_ok(int y, int x)
 {
     PLACE *pp;
@@ -250,12 +250,12 @@ door_open(struct room *rp)
  * be_trapped:
  *	The guy stepped on a trap.... Make him pay.
  */
-char
+int
 be_trapped(coord *tc)
 {
     PLACE *pp;
     THING *arrow;
-    char tr;
+    int tr;
 
     if (on(Player, ISLEVIT))
 	return T_RUST;	/* anything that's not a door or teleport */
@@ -353,7 +353,7 @@ rndmove(THING *who)
 {
     THING *obj;
     int x, y;
-    char ch;
+    int ch;
     static coord ret;  /* what we will be returning */
 
     y = ret.y = who->t_pos.y + rnd(3) - 1;

@@ -52,8 +52,8 @@ void
 quaff()
 {
     THING *obj, *tp, *mp;
-    bool discardit = FALSE;
-    bool show, trip;
+    int discardit = FALSE;
+    int show, trip;
 
     obj = get_item("quaff", POTION);
     /*
@@ -76,7 +76,7 @@ quaff()
      * Calculate the effect it has on the poor guy.
      */
     trip = on(Player, ISHALU);
-    discardit = (bool)(obj->o_count == 1);
+    discardit = (obj->o_count == 1);
     leave_pack(obj, FALSE, FALSE);
     switch (obj->o_which)
     {
@@ -221,15 +221,15 @@ quaff()
  * is_magic:
  *	Returns true if an object radiates magic
  */
-bool
+int
 is_magic(THING *obj)
 {
     switch (obj->o_type)
     {
 	case ARMOR:
-	    return (bool)((obj->o_flags&ISPROT) || obj->o_arm != A_class[obj->o_which]);
+	    return ((obj->o_flags&ISPROT) || obj->o_arm != A_class[obj->o_which]);
 	case WEAPON:
-	    return (bool)(obj->o_hplus != 0 || obj->o_dplus != 0);
+	    return (obj->o_hplus != 0 || obj->o_dplus != 0);
 	case POTION:
 	case SCROLL:
 	case STICK:
@@ -259,11 +259,11 @@ invis_on()
  * turn_see:
  *	Put on or off seeing monsters on this level
  */
-bool
-turn_see(bool turn_off)
+int
+turn_see(int turn_off)
 {
     THING *mp;
-    bool can_see, add_new;
+    int can_see, add_new;
 
     add_new = FALSE;
     for (mp = Mlist; mp != NULL; mp = next(mp))
@@ -301,8 +301,8 @@ turn_see(bool turn_off)
  * seen_stairs:
  *	Return TRUE if the player has seen the stairs
  */
-bool
-seen_stairs(void)
+int
+seen_stairs()
 {
     THING	*tp;
 
@@ -344,7 +344,7 @@ raise_level()
  *	turns on a flag
  */
 void
-do_pot(int type, bool knowit)
+do_pot(int type, int knowit)
 {
     PACT *pp;
     int t;

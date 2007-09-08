@@ -20,9 +20,9 @@ do_passages()
     int roomcount;
     static struct rdes
     {
-	bool	conn[MAXROOMS];		/* possible to connect to room i? */
-	bool	isconn[MAXROOMS];	/* connection been made to room i? */
-	bool	ingraph;		/* this room in graph already? */
+	int conn[MAXROOMS];		/* possible to connect to room i? */
+	int	isconn[MAXROOMS];	/* connection been made to room i? */
+	int	ingraph;		/* this room in graph already? */
     } rdes[MAXROOMS] = {
 	{ { 0, 1, 0, 1, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 },
 	{ { 1, 0, 1, 0, 1, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0 },
@@ -128,7 +128,7 @@ conn(int r1, int r2)
     int rmt;
     int distance = 0, turn_spot, turn_distance = 0;
     int rm;
-    char direc;
+    int direc;
     static coord del, curr, turn_delta, spos, epos;
 
     if (r1 < r2)
@@ -313,7 +313,7 @@ add_pass()
 {
     PLACE *pp;
     int y, x;
-    char ch;
+    int ch;
 
     for (y = 1; y < NUMLINES - 1; y++)
 	for (x = 0; x < NUMCOLS; x++)
@@ -347,8 +347,7 @@ add_pass()
  *	Assign a number to each passageway
  */
 static int Pnum;
-static bool Newpnum;
-
+static int Newpnum;
 
 void
 passnum()
@@ -375,9 +374,9 @@ passnum()
 void
 numpass(int y, int x)
 {
-    char *fp;
+    int *fp;
     struct room *rp;
-    char ch;
+    int ch;
 
     if (x >= NUMCOLS || x < 0 || y >= NUMLINES || y <= 0)
 	return;

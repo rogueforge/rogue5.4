@@ -45,6 +45,11 @@ main(int argc, char **argv, char **envp)
      */
     strncpy(Home, md_gethomedir(), MAXSTR);
 
+    strcpy(Home, md_gethomedir());
+
+	if (strlen(Home) > MAXSTR - strlen("rogue.save") - 1)
+		*Home = 0;
+
     strcpy(File_name, Home);
     strcat(File_name, "rogue.save");
 

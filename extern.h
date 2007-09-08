@@ -110,10 +110,10 @@
  * Now all the global variables
  */
 
-extern bool	Got_ltc, In_shell;
+extern int Got_ltc, In_shell;
 extern int	Wizard;
 extern char	Fruit[], Prbuf[], Whoami[];
-extern int 	Orig_dsusp;
+extern int Orig_dsusp;
 extern FILE	*scoreboard;
 
 /*
@@ -133,7 +133,7 @@ void	my_exit();
 void	nohaste();
 void	playit();
 void    playltchars(void);
-void	print_disc(char);
+void	print_disc(int);
 void    quit(int);
 void    resetltchars(void);
 void	rollwand();
@@ -147,10 +147,10 @@ void	unconfuse();
 void	unsee();
 void	visuals();
 
-char	add_line(char *fmt, char *arg);
+int		add_line(char *fmt, char *arg);
 
-char	*killname(char monst, bool doart);
-char	*nothing(char type);
+char	*killname(int monst, int doart);
+char	*nothing(int type);
 char	*type_name(int type);
 
 #ifdef CHECKTIME

@@ -131,7 +131,7 @@ pr_optname(OPTION *op)
 void
 put_bool(void *b)
 {
-    waddstr(Hw, *(bool *) b ? "True" : "False");
+    waddstr(Hw, *(int *) b ? "True" : "False");
 }
 
 /*
@@ -161,9 +161,9 @@ put_inv_t(void *ip)
 int
 get_bool(void *vp, WINDOW *win)
 {
-    bool *bp = (bool *) vp;
+    int *bp = (int *) vp;
     int oy, ox;
-    bool op_bad;
+    int op_bad;
 
     op_bad = TRUE;
     getyx(win, oy, ox);
@@ -211,8 +211,8 @@ get_bool(void *vp, WINDOW *win)
 int
 get_sf(void *vp, WINDOW *win)
 {
-    bool	*bp = (bool *) vp;
-    bool	was_sf;
+    int	*bp = (int *) vp;
+    int	was_sf;
     int		retval;
 
     was_sf = See_floor;
@@ -244,7 +244,7 @@ get_str(void *vopt, WINDOW *win)
     char *sp;
     int oy, ox;
     int i;
-    signed char c;
+    int c;
     static char buf[MAXSTR];
 
     getyx(win, oy, ox);
@@ -289,7 +289,7 @@ get_str(void *vopt, WINDOW *win)
 	    putchar(CTRL('G'));
 	else
 	{
-	    *sp++ = c;
+	    *sp++ = (char) c;
 	    waddstr(win, unctrl(c));
 	}
     }
@@ -317,7 +317,7 @@ get_inv_t(void *vp, WINDOW *win)
 {
     int *ip = (int *) vp;
     int oy, ox;
-    bool op_bad;
+    int op_bad;
 
     op_bad = TRUE;
     getyx(win, oy, ox);
@@ -369,12 +369,12 @@ get_inv_t(void *vp, WINDOW *win)
 int
 get_num(void *vp, WINDOW *win)
 {
-    short *opt = (short *) vp;
+    int *opt = (int *) vp;
     int i;
     static char buf[MAXSTR];
 
     if ((i = get_str(buf, win)) == NORM)
-	*opt = (short) atoi(buf);
+	*opt = atoi(buf);
     return i;
 }
 #endif
@@ -393,7 +393,7 @@ parse_opts(char *str)
     char *sp;
     OPTION *op;
     int len;
-    char **i;
+    const char **i;
     char *start;
 
     while (*str)
@@ -401,7 +401,7 @@ parse_opts(char *str)
 	/*
 	 * Get option name
 	 */
-	for (sp = str; isalpha(*sp); sp++)
+	for (sp = str; isalpha((int)*sp); sp++)
 	    continue;
 	len = (int)(sp - str);
 	/*
@@ -411,7 +411,7 @@ parse_opts(char *str)
 	    if (EQSTR(str, op->o_name, len))
 	    {
 		if (op->o_putfunc == put_bool)	/* if option is a boolean */
-		    *(bool *)op->o_opt = TRUE;	/* NOSTRICT */
+		    *(int *)op->o_opt = TRUE;	/* NOSTRICT */
 		else				/* string option */
 		{
 		    /*
@@ -438,7 +438,7 @@ parse_opts(char *str)
 		     */
 		    if (op->o_putfunc == put_inv_t)
 		    {
-			if (islower(*str))
+			if (islower((int)*str))
 			    *str = (char) toupper(*str);
 			for (i = Inv_t_name; i <= &Inv_t_name[INV_CLEAR]; i++)
 			    if (strncmp(str, *i, sp - str) == 0)
@@ -458,14 +458,14 @@ parse_opts(char *str)
 	    else if (op->o_putfunc == put_bool
 	      && EQSTR(str, "no", 2) && EQSTR(str + 2, op->o_name, len - 2))
 	    {
-		*(bool *)op->o_opt = FALSE;	/* NOSTRICT */
+		*(int *)op->o_opt = FALSE;	/* NOSTRICT */
 		break;
 	    }
 
 	/*
 	 * skip to start of next option name
 	 */
-	while (*sp && !isalpha(*sp))
+	while (*sp && !isalpha((int)*sp))
 	    sp++;
 	str = sp;
     }
@@ -482,7 +482,7 @@ strucpy(char *s1, char *s2, int len)
 	len = MAXINP;
     while (len--)
     {
-	if (isprint(*s2) || *s2 == ' ')
+	if (isprint((int)*s2) || *s2 == ' ')
 	    *s1++ = *s2;
 	s2++;
     }

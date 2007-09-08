@@ -55,21 +55,23 @@ static int Add_dam[] = {
  *	The player attacks the monster.
  */
 int
-fight(coord *mp, THING *weap, bool thrown)
+fight(coord *mp, THING *weap, int thrown)
 {
-    THING *tp;
-    bool did_hit = TRUE;
-    char *mname, ch;
+    register THING *tp;
+    register int did_hit = TRUE;
+    register char *mname;
+	int ch;
 
     /*
      * Find the monster we want to fight
      */
-#ifdef MASTER
     if ((tp = moat(mp->y, mp->x)) == NULL)
-	debug("Fight what @ %d,%d", mp->y, mp->x);
-#else
-    tp = moat(mp->y, mp->x);
+	{
+#ifdef MASTER
+		debug("Fight what @ %d,%d", mp->y, mp->x);
 #endif
+		return FALSE;
+	}
     /*
      * Since we are fighting, things are not quiet so no healing takes
      * place.
@@ -85,7 +87,7 @@ fight(coord *mp, THING *weap, bool thrown)
     {
 	tp->t_disguise = 'X';
 	if (on(Player, ISHALU)) {
-	    ch = (char)(rnd(26) + 'A');
+	    ch = rnd(26) + 'A';
 	    mvaddch(tp->t_pos.y, tp->t_pos.x, ch);
 	}
 	msg(choose_str("heavy!  That's a nasty critter!",
@@ -102,7 +104,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	if (thrown)
 	    thunk(weap, mname, Terse);
 	else
-	    hit((char *) NULL, mname, Terse);
+	    hit(NULL, mname, Terse);
 	if (on(Player, CANHUH))
 	{
 	    did_hit = TRUE;
@@ -122,7 +124,7 @@ fight(coord *mp, THING *weap, bool thrown)
 	if (thrown)
 	    bounce(weap, mname, Terse);
 	else
-	    miss((char *) NULL, mname, Terse);
+	    miss(NULL, mname, Terse);
     return did_hit;
 }
 
@@ -162,7 +164,7 @@ attack(THING *mp)
 	{
 	    if (Has_hit)
 		addmsg(".  ");
-	    hit(mname, (char *) NULL, FALSE);
+	    hit(mname, NULL, FALSE);
 	}
 	else
 	    if (Has_hit)
@@ -323,7 +325,7 @@ attack(THING *mp)
 	    if (Pstats.s_hpt <= 0)
 		death(mp->t_type);	/* Bye bye life ... */
 	}
-	miss(mname, (char *) NULL, FALSE);
+	miss(mname, NULL, FALSE);
     }
     if (Fight_flush && !To_death)
 	flush_type();
@@ -381,13 +383,13 @@ swing(int at_lvl, int op_arm, int wplus)
  * roll_em:
  *	Roll several attacks
  */
-bool
-roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
+int
+roll_em(THING *thatt, THING *thdef, THING *weap, int hurl)
 {
     register struct stats *att, *def;
     register char *cp;
     register int ndice, nsides, def_arm;
-    register bool did_hit = FALSE;
+    register int did_hit = FALSE;
     register int hplus;
     register int dplus;
     register int damage;
@@ -476,7 +478,7 @@ roll_em(THING *thatt, THING *thdef, THING *weap, bool hurl)
  *	The print name of a combatant
  */
 char *
-prname(char *mname, bool upper)
+prname(char *mname, int upper)
 {
     static char tbuf[MAXSTR];
 
@@ -495,7 +497,7 @@ prname(char *mname, bool upper)
  *	A missile hits a monster
  */
 void
-thunk(THING *weap, char *mname, bool noend)
+thunk(THING *weap, char *mname, int noend)
 {
     if (To_death)
 	return;
@@ -513,7 +515,7 @@ thunk(THING *weap, char *mname, bool noend)
  *	Print a message to indicate a succesful hit
  */
 void
-hit(char *er, char *ee, bool noend)
+hit(char *er, char *ee, int noend)
 {
     int i;
     char *s;
@@ -543,7 +545,7 @@ hit(char *er, char *ee, bool noend)
  *	Print a message to indicate a poor swing
  */
 void
-miss(char *er, char *ee, bool noend)
+miss(char *er, char *ee, int noend)
 {
     int i;
     extern char *M_names[];
@@ -569,7 +571,7 @@ miss(char *er, char *ee, bool noend)
  *	A missile misses a monster
  */
 void
-bounce(THING *weap, char *mname, bool noend)
+bounce(THING *weap, char *mname, int noend)
 {
     if (To_death)
 	return;
@@ -587,7 +589,7 @@ bounce(THING *weap, char *mname, bool noend)
  *	Remove a monster from the screen
  */
 void
-remove_mon(coord *mp, THING *tp, bool waskill)
+remove_mon(coord *mp, THING *tp, int waskill)
 {
     THING *obj, *nexti;
 
@@ -619,7 +621,7 @@ remove_mon(coord *mp, THING *tp, bool waskill)
  *	Called to put a monster to death
  */
 void
-killed(THING *tp, bool pr)
+killed(THING *tp, int pr)
 {
     char *mname;
 

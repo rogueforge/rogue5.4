@@ -133,41 +133,19 @@ rs_read_int(FILE *inf, int *i)
 }
 
 int
-rs_write_char(FILE *savef, char c)
+rs_write_chars(FILE *savef, char *c, int cnt)
 {
     if (write_error)
         return(WRITESTAT);
 
-    rs_write(savef, &c, 1);
+    rs_write_int(savef, cnt);
+    rs_write(savef, c, cnt);
 
     return(WRITESTAT);
 }
 
 int
-rs_read_char(FILE *inf, char *c)
-{
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, c, 1);
-
-    return(READSTAT);
-}
-
-int
-rs_write_chars(FILE *savef, char *c, int count)
-{
-    if (write_error)
-        return(WRITESTAT);
-
-    rs_write_int(savef, count);
-    rs_write(savef, c, count);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_chars(FILE *inf, char *i, int count)
+rs_read_chars(FILE *inf, char *i, int cnt)
 {
     int value = 0;
     
@@ -176,25 +154,25 @@ rs_read_chars(FILE *inf, char *i, int count)
 
     rs_read_int(inf, &value);
     
-    if (value != count)
+    if (value != cnt)
         format_error = TRUE;
 
-    rs_read(inf, i, count);
+    rs_read(inf, i, cnt);
     
     return(READSTAT);
 }
 
 int
-rs_write_ints(FILE *savef, int *c, int count)
+rs_write_ints(FILE *savef, int *c, int cnt)
 {
     int n = 0;
 
     if (write_error)
         return(WRITESTAT);
 
-    rs_write_int(savef, count);
+    rs_write_int(savef, cnt);
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         if( rs_write_int(savef,c[n]) != 0)
             break;
 
@@ -202,7 +180,7 @@ rs_write_ints(FILE *savef, int *c, int count)
 }
 
 int
-rs_read_ints(FILE *inf, int *i, int count)
+rs_read_ints(FILE *inf, int *i, int cnt)
 {
     int n, value;
     
@@ -211,207 +189,15 @@ rs_read_ints(FILE *inf, int *i, int count)
 
     rs_read_int(inf,&value);
 
-    if (value != count)
+    if (value != cnt)
         format_error = TRUE;
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         if (rs_read_int(inf, &i[n]) != 0)
             break;
     
     return(READSTAT);
 }
-
-int
-rs_write_boolean(FILE *savef, int c)
-{
-    unsigned char buf = (c == 0) ? 0 : 1;
-    
-    if (write_error)
-        return(WRITESTAT);
-
-    rs_write(savef, &buf, 1);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_boolean(FILE *inf, bool *i)
-{
-    unsigned char buf = 0;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, &buf, 1);
-
-    *i = (buf != 0);
-    
-    return(READSTAT);
-}
-
-int
-rs_write_booleans(FILE *savef, bool *c, int count)
-{
-    int n = 0;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    rs_write_int(savef, count);
-
-    for(n = 0; n < count; n++)
-        if (rs_write_boolean(savef, c[n]) != 0)
-            break;
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_booleans(FILE *inf, bool *i, int count)
-{
-    int n = 0, value = 0;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read_int(inf,&value);
-
-    if (value != count)
-        format_error = TRUE;
-
-    for(n = 0; n < count; n++)
-        if (rs_read_boolean(inf, &i[n]) != 0)
-            break;
-    
-    return(READSTAT);
-}
-
-int
-rs_write_short(FILE *savef, short c)
-{
-    unsigned char bytes[2];
-    unsigned char *buf = (unsigned char *) &c;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    if (big_endian)
-    {
-        bytes[1] = buf[0];
-        bytes[0] = buf[1];
-        buf = bytes;
-    }
-
-    rs_write(savef, buf, 2);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_short(FILE *inf, short *i)
-{
-    unsigned char bytes[2];
-    short  input;
-    unsigned char *buf = (unsigned char *)&input;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, &input, 2);
-
-    if (big_endian)
-    {
-        bytes[1] = buf[0];
-        bytes[0] = buf[1];
-        buf = bytes;
-    }
-    
-    *i = *((short *) buf);
-
-    return(READSTAT);
-} 
-
-int
-rs_write_shorts(FILE *savef, short *c, int count)
-{
-    int n = 0;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    rs_write_int(savef, count);
-
-    for(n = 0; n < count; n++)
-        if (rs_write_short(savef, c[n]) != 0)
-            break; 
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_shorts(FILE *inf, short *i, int count)
-{
-    int n = 0, value = 0;
-
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read_int(inf,&value);
-
-    if (value != count)
-        format_error = TRUE;
-
-    for(n = 0; n < value; n++)
-        if (rs_read_short(inf, &i[n]) != 0)
-            break;
-    
-    return(READSTAT);
-}
-
-int
-rs_write_ushort(FILE *savef, unsigned short c)
-{
-    unsigned char bytes[2];
-    unsigned char *buf = (unsigned char *) &c;
-
-    if (write_error)
-        return(WRITESTAT);
-
-    if (big_endian)
-    {
-        bytes[1] = buf[0];
-        bytes[0] = buf[1];
-        buf = bytes;
-    }
-
-    rs_write(savef, buf, 2);
-
-    return(WRITESTAT);
-}
-
-int
-rs_read_ushort(FILE *inf, unsigned short *i)
-{
-    unsigned char bytes[2];
-    unsigned short  input;
-    unsigned char *buf = (unsigned char *)&input;
-    
-    if (read_error || format_error)
-        return(READSTAT);
-
-    rs_read(inf, &input, 2);
-
-    if (big_endian)
-    {
-        bytes[1] = buf[0];
-        bytes[0] = buf[1];
-        buf = bytes;
-    }
-    
-    *i = *((unsigned short *) buf);
-
-    return(READSTAT);
-} 
 
 int
 rs_write_uint(FILE *savef, unsigned int c)
@@ -555,16 +341,16 @@ rs_read_new_string(FILE *inf, char **s)
 }
 
 int
-rs_write_strings(FILE *savef, char *s[], int count)
+rs_write_strings(FILE *savef, char *s[], int cnt)
 {
     int n = 0;
 
     if (write_error)
         return(WRITESTAT);
 
-    rs_write_int(savef, count);
+    rs_write_int(savef, cnt);
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         if (rs_write_string(savef, s[n]) != 0)
             break;
     
@@ -572,7 +358,7 @@ rs_write_strings(FILE *savef, char *s[], int count)
 }
 
 int
-rs_read_strings(FILE *inf, char **s, int count, int max)
+rs_read_strings(FILE *inf, char **s, int cnt, int max)
 {
     int n     = 0;
     int value = 0;
@@ -582,10 +368,10 @@ rs_read_strings(FILE *inf, char **s, int count, int max)
 
     rs_read_int(inf, &value);
 
-    if (value != count)
+    if (value != cnt)
         format_error = TRUE;
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         if (rs_read_string(inf, s[n], max) != 0)
             break;
     
@@ -593,7 +379,7 @@ rs_read_strings(FILE *inf, char **s, int count, int max)
 }
 
 int
-rs_read_new_strings(FILE *inf, char **s, int count)
+rs_read_new_strings(FILE *inf, char **s, int cnt)
 {
     int n     = 0;
     int value = 0;
@@ -603,10 +389,10 @@ rs_read_new_strings(FILE *inf, char **s, int count)
 
     rs_read_int(inf, &value);
 
-    if (value != count)
+    if (value != cnt)
         format_error = TRUE;
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         if (rs_read_new_string(inf, &s[n]) != 0)
             break;
     
@@ -759,10 +545,10 @@ rs_read_window(FILE *inf, WINDOW *win)
 void *
 get_list_item(THING *l, int i)
 {
-    int count;
+    int cnt;
 
-    for(count = 0; l != NULL; count++, l = l->l_next)
-        if (count == i)
+    for(cnt = 0; l != NULL; cnt++, l = l->l_next)
+        if (cnt == i)
             return(l);
     
     return(NULL);
@@ -771,11 +557,11 @@ get_list_item(THING *l, int i)
 int
 find_list_ptr(THING *l, void *ptr)
 {
-    int count;
+    int cnt;
 
-    for(count = 0; l != NULL; count++, l = l->l_next)
+    for(cnt = 0; l != NULL; cnt++, l = l->l_next)
         if (l == ptr)
-            return(count);
+            return(cnt);
     
     return(-1);
 }
@@ -783,12 +569,12 @@ find_list_ptr(THING *l, void *ptr)
 int
 list_size(THING *l)
 {
-    int count;
+    int cnt;
     
-    for(count = 0; l != NULL; count++, l = l->l_next)
+    for(cnt = 0; l != NULL; cnt++, l = l->l_next)
         ;
     
-    return(count);
+    return(cnt);
 }
 
 /******************************************************************************/
@@ -1006,7 +792,7 @@ rs_read_sticks(FILE *inf)
 }
 
 int
-rs_write_daemons(FILE *savef, struct delayed_action *d_list, int count)
+rs_write_daemons(FILE *savef, struct delayed_action *dlist, int cnt)
 {
     int i = 0;
     int func = 0;
@@ -1015,44 +801,44 @@ rs_write_daemons(FILE *savef, struct delayed_action *d_list, int count)
         return(WRITESTAT);
 
     rs_write_marker(savef, RSID_DAEMONS);
-    rs_write_int(savef, count);
+    rs_write_int(savef, cnt);
         
-    for(i = 0; i < count; i++)
+    for(i = 0; i < cnt; i++)
     {
-        if (d_list[i].d_func == rollwand)
+        if (dlist[i].d_func == rollwand)
             func = 1;
-        else if (d_list[i].d_func == doctor)
+        else if (dlist[i].d_func == doctor)
             func = 2;
-        else if (d_list[i].d_func == stomach)
+        else if (dlist[i].d_func == stomach)
             func = 3;
-        else if (d_list[i].d_func == runners)
+        else if (dlist[i].d_func == runners)
             func = 4;
-        else if (d_list[i].d_func == swander)
+        else if (dlist[i].d_func == swander)
             func = 5;
-        else if (d_list[i].d_func == nohaste)
+        else if (dlist[i].d_func == nohaste)
             func = 6;
-        else if (d_list[i].d_func == unconfuse)
+        else if (dlist[i].d_func == unconfuse)
             func = 7;
-        else if (d_list[i].d_func == unsee)
+        else if (dlist[i].d_func == unsee)
             func = 8;
-        else if (d_list[i].d_func == sight)
+        else if (dlist[i].d_func == sight)
             func = 9;
-        else if (d_list[i].d_func == NULL)
+        else if (dlist[i].d_func == NULL)
             func = 0;
         else
             func = -1;
 
-        rs_write_int(savef, d_list[i].d_type);
+        rs_write_int(savef, dlist[i].d_type);
         rs_write_int(savef, func);
-        rs_write_int(savef, d_list[i].d_arg);
-        rs_write_int(savef, d_list[i].d_time);
+        rs_write_int(savef, dlist[i].d_arg);
+        rs_write_int(savef, dlist[i].d_time);
     }
     
     return(WRITESTAT);
 }       
 
 int
-rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
+rs_read_daemons(FILE *inf, struct delayed_action *dlist, int cnt)
 {
     int i = 0;
     int func = 0;
@@ -1064,54 +850,54 @@ rs_read_daemons(FILE *inf, struct delayed_action *d_list, int count)
     rs_read_marker(inf, RSID_DAEMONS);
     rs_read_int(inf, &value);
 
-    if (value > count)
+    if (value > cnt)
         format_error = TRUE;
 
-    for(i=0; i < count; i++)
+    for(i=0; i < cnt; i++)
     {
         func = 0;
-        rs_read_int(inf, &d_list[i].d_type);
+        rs_read_int(inf, &dlist[i].d_type);
         rs_read_int(inf, &func);
-        rs_read_int(inf, &d_list[i].d_arg);
-        rs_read_int(inf, &d_list[i].d_time);
+        rs_read_int(inf, &dlist[i].d_arg);
+        rs_read_int(inf, &dlist[i].d_time);
                     
         switch(func)
         {
-            case 1: d_list[i].d_func = rollwand;
+            case 1: dlist[i].d_func = rollwand;
                     break;
-            case 2: d_list[i].d_func = doctor;
+            case 2: dlist[i].d_func = doctor;
                     break;
-            case 3: d_list[i].d_func = stomach;
+            case 3: dlist[i].d_func = stomach;
                     break;
-            case 4: d_list[i].d_func = runners;
+            case 4: dlist[i].d_func = runners;
                     break;
-            case 5: d_list[i].d_func = swander;
+            case 5: dlist[i].d_func = swander;
                     break;
-            case 6: d_list[i].d_func = nohaste;
+            case 6: dlist[i].d_func = nohaste;
                     break;
-            case 7: d_list[i].d_func = unconfuse;
+            case 7: dlist[i].d_func = unconfuse;
                     break;
-            case 8: d_list[i].d_func = unsee;
+            case 8: dlist[i].d_func = unsee;
                     break;
-            case 9: d_list[i].d_func = sight;
+            case 9: dlist[i].d_func = sight;
                     break;
-            default:d_list[i].d_func = NULL;
+            default:dlist[i].d_func = NULL;
                     break;
         }
     }
 
-    if (d_list[i].d_func == NULL)
+    if (dlist[i].d_func == NULL)
     {
-        d_list[i].d_type = 0;
-        d_list[i].d_arg = 0;
-        d_list[i].d_time = 0;
+        dlist[i].d_type = 0;
+        dlist[i].d_arg = 0;
+        dlist[i].d_time = 0;
     }
     
     return(READSTAT);
 }       
         
 int
-rs_write_obj_info(FILE *savef, struct obj_info *i, int count)
+rs_write_obj_info(FILE *savef, struct obj_info *i, int cnt)
 {
     int n;
     
@@ -1119,22 +905,22 @@ rs_write_obj_info(FILE *savef, struct obj_info *i, int count)
         return(WRITESTAT);
 
     rs_write_marker(savef, RSID_MAGICITEMS);
-    rs_write_int(savef, count);
+    rs_write_int(savef, cnt);
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
     {
         /* mi_name is constant, defined at compile time in all cases */
         rs_write_int(savef,i[n].oi_prob);
         rs_write_int(savef,i[n].oi_worth);
         rs_write_string(savef,i[n].oi_guess);
-        rs_write_boolean(savef,i[n].oi_know);
+        rs_write_int(savef,i[n].oi_know);
     }
     
     return(WRITESTAT);
 }
 
 int
-rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
+rs_read_obj_info(FILE *inf, struct obj_info *mi, int cnt)
 {
     int n;
     int value;
@@ -1146,7 +932,7 @@ rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
 
     rs_read_int(inf, &value);
 
-    if (value > count)
+    if (value > cnt)
         format_error = TRUE;
 
     for(n = 0; n < value; n++)
@@ -1155,7 +941,7 @@ rs_read_obj_info(FILE *inf, struct obj_info *mi, int count)
         rs_read_int(inf,&mi[n].oi_prob);
         rs_read_int(inf,&mi[n].oi_worth);
         rs_read_new_string(inf,&mi[n].oi_guess);
-        rs_read_boolean(inf,&mi[n].oi_know);
+        rs_read_int(inf,&mi[n].oi_know);
     }
     
     return(READSTAT);
@@ -1171,7 +957,7 @@ rs_write_room(FILE *savef, struct room *r)
     rs_write_coord(savef, r->r_max);
     rs_write_coord(savef, r->r_gold);
     rs_write_int(savef,   r->r_goldval);
-    rs_write_short(savef, r->r_flags);
+    rs_write_int(savef, r->r_flags);
     rs_write_int(savef, r->r_nexits);
     rs_write_coord(savef, r->r_exit[0]);
     rs_write_coord(savef, r->r_exit[1]);
@@ -1199,7 +985,7 @@ rs_read_room(FILE *inf, struct room *r)
     rs_read_coord(inf,&r->r_max);
     rs_read_coord(inf,&r->r_gold);
     rs_read_int(inf,&r->r_goldval);
-    rs_read_short(inf,&r->r_flags);
+    rs_read_int(inf,&r->r_flags);
     rs_read_int(inf,&r->r_nexits);
     rs_read_coord(inf,&r->r_exit[0]);
     rs_read_coord(inf,&r->r_exit[1]);
@@ -1218,23 +1004,23 @@ rs_read_room(FILE *inf, struct room *r)
 }
 
 int
-rs_write_rooms(FILE *savef, struct room r[], int count)
+rs_write_rooms(FILE *savef, struct room r[], int cnt)
 {
     int n = 0;
 
     if (write_error)
         return(WRITESTAT);
 
-    rs_write_int(savef, count);
+    rs_write_int(savef, cnt);
     
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         rs_write_room(savef, &r[n]);
     
     return(WRITESTAT);
 }
 
 int
-rs_read_rooms(FILE *inf, struct room *r, int count)
+rs_read_rooms(FILE *inf, struct room *r, int cnt)
 {
     int value = 0, n = 0;
 
@@ -1243,7 +1029,7 @@ rs_read_rooms(FILE *inf, struct room *r, int count)
 
     rs_read_int(inf,&value);
 
-    if (value > count)
+    if (value > cnt)
         format_error = TRUE;
 
     for(n = 0; n < value; n++)
@@ -1285,7 +1071,7 @@ rs_read_room_reference(FILE *inf, struct room **rp)
 }
 
 int
-rs_write_monsters(FILE *savef, struct monster *m, int count)
+rs_write_monsters(FILE *savef, struct monster *m, int cnt)
 {
     int n;
     
@@ -1293,16 +1079,16 @@ rs_write_monsters(FILE *savef, struct monster *m, int count)
         return(WRITESTAT);
 
     rs_write_marker(savef, RSID_MONSTERS);
-    rs_write_int(savef, count);
+    rs_write_int(savef, cnt);
 
-    for(n=0;n<count;n++)
+    for(n=0;n<cnt;n++)
         rs_write_stats(savef, &m[n].m_stats);
     
     return(WRITESTAT);
 }
 
 int
-rs_read_monsters(FILE *inf, struct monster *m, int count)
+rs_read_monsters(FILE *inf, struct monster *m, int cnt)
 {
     int value = 0, n = 0;
 
@@ -1313,10 +1099,10 @@ rs_read_monsters(FILE *inf, struct monster *m, int count)
 
     rs_read_int(inf, &value);
 
-    if (value != count)
+    if (value != cnt)
         format_error = TRUE;
 
-    for(n = 0; n < count; n++)
+    for(n = 0; n < cnt; n++)
         rs_read_stats(inf, &m[n].m_stats);
     
     return(READSTAT);
@@ -1332,7 +1118,7 @@ rs_write_object(FILE *savef, THING *o)
     rs_write_int(savef, o->_o._o_type); 
     rs_write_coord(savef, o->_o._o_pos); 
     rs_write_int(savef, o->_o._o_launch);
-    rs_write_char(savef, o->_o._o_packch);
+    rs_write_int(savef, o->_o._o_packch);
     rs_write_chars(savef, o->_o._o_damage, sizeof(o->_o._o_damage));
     rs_write_chars(savef, o->_o._o_hurldmg, sizeof(o->_o._o_hurldmg));
     rs_write_int(savef, o->_o._o_count);
@@ -1356,7 +1142,7 @@ rs_read_object(FILE *inf, THING *o)
     rs_read_int(inf, &o->_o._o_type);
     rs_read_coord(inf, &o->_o._o_pos);
     rs_read_int(inf, &o->_o._o_launch);
-    rs_read_char(inf, &o->_o._o_packch);
+    rs_read_int(inf, &o->_o._o_packch);
     rs_read_chars(inf, o->_o._o_damage, sizeof(o->_o._o_damage));
     rs_read_chars(inf, o->_o._o_hurldmg, sizeof(o->_o._o_hurldmg));
     rs_read_int(inf, &o->_o._o_count);
@@ -1523,10 +1309,10 @@ rs_write_thing(FILE *savef, THING *t)
     
     rs_write_int(savef, 1);
     rs_write_coord(savef, t->_t._t_pos);
-    rs_write_boolean(savef, t->_t._t_turn);
-    rs_write_char(savef, t->_t._t_type);
-    rs_write_char(savef, t->_t._t_disguise);
-    rs_write_char(savef, t->_t._t_oldch);
+    rs_write_int(savef, t->_t._t_turn);
+    rs_write_int(savef, t->_t._t_type);
+    rs_write_int(savef, t->_t._t_disguise);
+    rs_write_int(savef, t->_t._t_oldch);
 
     /* 
         t_dest can be:
@@ -1586,7 +1372,7 @@ rs_write_thing(FILE *savef, THING *t)
         rs_write_int(savef,0);
     }
     
-    rs_write_short(savef, t->_t._t_flags);
+    rs_write_int(savef, t->_t._t_flags);
     rs_write_stats(savef, &t->_t._t_stats);
     rs_write_room_reference(savef, t->_t._t_room);
     rs_write_object_list(savef, t->_t._t_pack);
@@ -1611,10 +1397,10 @@ rs_read_thing(FILE *inf, THING *t)
         return(READSTAT);
 
     rs_read_coord(inf,&t->_t._t_pos);
-    rs_read_boolean(inf,&t->_t._t_turn);
-    rs_read_char(inf,&t->_t._t_type);
-    rs_read_char(inf,&t->_t._t_disguise);
-    rs_read_char(inf,&t->_t._t_oldch);
+    rs_read_int(inf,&t->_t._t_turn);
+    rs_read_int(inf,&t->_t._t_type);
+    rs_read_int(inf,&t->_t._t_disguise);
+    rs_read_int(inf,&t->_t._t_oldch);
             
     /* 
         t_dest can be (listid,index):
@@ -1663,7 +1449,7 @@ rs_read_thing(FILE *inf, THING *t)
     else
         t->_t._t_dest = NULL;
             
-    rs_read_short(inf,&t->_t._t_flags);
+    rs_read_int(inf,&t->_t._t_flags);
     rs_read_stats(inf,&t->_t._t_stats);
     rs_read_room_reference(inf, &t->_t._t_room);
     rs_read_object_list(inf,&t->_t._t_pack);
@@ -1800,64 +1586,64 @@ rs_read_thing_reference(FILE *inf, THING *list, THING **item)
 }
 
 int
-rs_write_thing_references(FILE *savef, THING *list, THING *items[], int count)
+rs_write_thing_references(FILE *savef, THING *list, THING *items[], int cnt)
 {
     int i;
 
     if (write_error)
         return(WRITESTAT);
 
-    for(i = 0; i < count; i++)
+    for(i = 0; i < cnt; i++)
         rs_write_thing_reference(savef,list,items[i]);
 
     return(WRITESTAT);
 }
 
 int
-rs_read_thing_references(FILE *inf, THING *list, THING *items[], int count)
+rs_read_thing_references(FILE *inf, THING *list, THING *items[], int cnt)
 {
     int i;
 
     if (read_error || format_error)
         return(READSTAT);
 
-    for(i = 0; i < count; i++)
+    for(i = 0; i < cnt; i++)
         rs_read_thing_reference(inf,list,&items[i]);
 
     return(WRITESTAT);
 }
 
 int 
-rs_write_places(FILE *savef, PLACE *places, int count)
+rs_write_places(FILE *savef, PLACE *p, int cnt)
 {
     int i = 0;
     
     if (write_error)
         return(WRITESTAT);
 
-    for(i = 0; i < count; i++) 
+    for(i = 0; i < cnt; i++) 
     {
-        rs_write_char(savef, Places[i].p_ch);
-        rs_write_char(savef, Places[i].p_flags);
-        rs_write_thing_reference(savef, Mlist, Places[i].p_monst);
+        rs_write_int(savef, p[i].p_ch);
+        rs_write_int(savef, p[i].p_flags);
+        rs_write_thing_reference(savef, Mlist, p[i].p_monst);
     }
 
     return(WRITESTAT);
 }
 
 int 
-rs_read_places(FILE *inf, PLACE *places, int count)
+rs_read_places(FILE *inf, PLACE *p, int cnt)
 {
     int i = 0;
     
     if (read_error || format_error)
         return(READSTAT);
 
-    for(i = 0; i < count; i++) 
+    for(i = 0; i < cnt; i++) 
     {
-        rs_read_char(inf,&Places[i].p_ch);
-        rs_read_char(inf,&Places[i].p_flags);
-        rs_read_thing_reference(inf, Mlist, &Places[i].p_monst);
+        rs_read_int(inf,&p[i].p_ch);
+        rs_read_int(inf,&p[i].p_flags);
+        rs_read_thing_reference(inf, Mlist, &p[i].p_monst);
     }
 
     return(READSTAT);
@@ -1869,61 +1655,61 @@ rs_save_file(FILE *savef)
     if (write_error)
         return(WRITESTAT);
 
-    rs_write_boolean(savef, After);                 /* 1  */    /* extern.c */
-    rs_write_boolean(savef, Again);                 /* 2  */
-    rs_write_int(savef, Noscore);                   /* 3  */
-    rs_write_boolean(savef, Seenstairs);            /* 4  */
-    rs_write_boolean(savef, Amulet);                /* 5  */
-    rs_write_boolean(savef, Door_stop);             /* 6  */
-    rs_write_boolean(savef, Fight_flush);           /* 7  */
-    rs_write_boolean(savef, Firstmove);             /* 8  */
-    rs_write_boolean(savef, Got_ltc);               /* 9  */
-    rs_write_boolean(savef, Has_hit);               /* 10 */
-    rs_write_boolean(savef, In_shell);              /* 11 */
-    rs_write_boolean(savef, Inv_describe);          /* 12 */
-    rs_write_boolean(savef, Jump);                  /* 13 */
-    rs_write_boolean(savef, Kamikaze);              /* 14 */
-    rs_write_boolean(savef, Lower_msg);             /* 15 */
-    rs_write_boolean(savef, Move_on);               /* 16 */
-    rs_write_boolean(savef, Msg_esc);               /* 17 */
-    rs_write_boolean(savef, Passgo);                /* 18 */
-    rs_write_boolean(savef, Playing);               /* 19 */
-    rs_write_boolean(savef, Q_comm);                /* 20 */
-    rs_write_boolean(savef, Running);               /* 21 */
-    rs_write_boolean(savef, Save_msg);              /* 22 */
-    rs_write_boolean(savef, See_floor);             /* 23 */
-    rs_write_boolean(savef, Stat_msg);              /* 24 */
-    rs_write_boolean(savef, Terse);                 /* 25 */
-    rs_write_boolean(savef, To_death);              /* 26 */
-    rs_write_boolean(savef, Tombstone);             /* 27 */
+    rs_write_int(savef, After);                 /* 1  */    /* extern.c */
+    rs_write_int(savef, Again);                 /* 2  */
+    rs_write_int(savef, Noscore);	        /* 3  */
+    rs_write_int(savef, Seenstairs);            /* 4  */
+    rs_write_int(savef, Amulet);                /* 5  */
+    rs_write_int(savef, Door_stop);             /* 6  */
+    rs_write_int(savef, Fight_flush);           /* 7  */
+    rs_write_int(savef, Firstmove);             /* 8  */
+    rs_write_int(savef, Got_ltc);               /* 9  */
+    rs_write_int(savef, Has_hit);               /* 10 */
+    rs_write_int(savef, In_shell);              /* 11 */
+    rs_write_int(savef, Inv_describe);          /* 12 */
+    rs_write_int(savef, Jump);                  /* 13 */
+    rs_write_int(savef, Kamikaze);              /* 14 */
+    rs_write_int(savef, Lower_msg);             /* 15 */
+    rs_write_int(savef, Move_on);               /* 16 */
+    rs_write_int(savef, Msg_esc);               /* 17 */
+    rs_write_int(savef, Passgo);                /* 18 */
+    rs_write_int(savef, Playing);               /* 19 */
+    rs_write_int(savef, Q_comm);                /* 20 */
+    rs_write_int(savef, Running);               /* 21 */
+    rs_write_int(savef, Save_msg);              /* 22 */
+    rs_write_int(savef, See_floor);             /* 23 */
+    rs_write_int(savef, Stat_msg);              /* 24 */
+    rs_write_int(savef, Terse);                 /* 25 */
+    rs_write_int(savef, To_death);              /* 26 */
+    rs_write_int(savef, Tombstone);             /* 27 */
 #ifdef MASTER
     rs_write_int(savef, Wizard);                    /* 28 */
 #else
     rs_write_int(savef, 0);                         /* 28 */
 #endif
-    rs_write_booleans(savef, Pack_used, 26);        /* 29 */
-    rs_write_char(savef, Dir_ch);
+    rs_write_ints(savef, Pack_used, 26);        /* 29 */
+    rs_write_int(savef, Dir_ch);
     rs_write_chars(savef, File_name, MAXSTR);
     rs_write_chars(savef, Huh, MAXSTR);
     rs_write_potions(savef);
     rs_write_chars(savef,Prbuf,2*MAXSTR);
     rs_write_rings(savef);
     rs_write_string(savef,Release);
-    rs_write_char(savef, Runch);
+    rs_write_int(savef, Runch);
     rs_write_scrolls(savef);
-    rs_write_char(savef, Take);
+    rs_write_int(savef, Take);
     rs_write_chars(savef, Whoami, MAXSTR);
     rs_write_sticks(savef);
     rs_write_int(savef,Orig_dsusp);
     rs_write_chars(savef, Fruit, MAXSTR);
     rs_write_chars(savef, Home, MAXSTR);
     rs_write_strings(savef,Inv_t_name,3);
-    rs_write_char(savef,L_last_comm);
-    rs_write_char(savef,L_last_dir);
-    rs_write_char(savef,Last_comm);
-    rs_write_char(savef,Last_dir);
+    rs_write_int(savef,L_last_comm);
+    rs_write_int(savef,L_last_dir);
+    rs_write_int(savef,Last_comm);
+    rs_write_int(savef,Last_dir);
     rs_write_strings(savef,Tr_name,8);
-    rs_write_int(savef, N_objs);
+    rs_write_int(savef,N_objs);
     rs_write_int(savef, Ntraps);
     rs_write_int(savef, Hungry_state);
     rs_write_int(savef, Inpack);
@@ -1966,7 +1752,7 @@ rs_save_file(FILE *savef)
     rs_write_room_reference(savef, Oldrp);              
     rs_write_rooms(savef, Passages, MAXPASS);
 
-    rs_write_monsters(savef, Monsters,26);               
+    rs_write_monsters(savef,Monsters,26);               
     rs_write_obj_info(savef, Things,   NUMTHINGS);   
     rs_write_obj_info(savef, Arm_info,  MAXARMORS);  
     rs_write_obj_info(savef, Pot_info,  MAXPOTIONS);  
@@ -1974,6 +1760,7 @@ rs_save_file(FILE *savef)
     rs_write_obj_info(savef, Scr_info,  MAXSCROLLS);  
     rs_write_obj_info(savef, Weap_info,  MAXWEAPONS+1);  
     rs_write_obj_info(savef, Ws_info, MAXSTICKS);      
+    
     
     rs_write_daemons(savef, &d_list[0], 20);            /* 5.4-daemon.c */
 #ifdef MASTER
@@ -1998,59 +1785,59 @@ rs_restore_file(FILE *inf)
     if (read_error || format_error)
         return(READSTAT);
 
-    rs_read_boolean(inf, &After);               /* 1  */    /* extern.c */
-    rs_read_boolean(inf, &Again);               /* 2  */
+    rs_read_int(inf, &After);               /* 1  */    /* extern.c */
+    rs_read_int(inf, &Again);               /* 2  */
     rs_read_int(inf, &Noscore);                 /* 3  */
-    rs_read_boolean(inf, &Seenstairs);          /* 4  */
-    rs_read_boolean(inf, &Amulet);              /* 5  */
-    rs_read_boolean(inf, &Door_stop);           /* 6  */
-    rs_read_boolean(inf, &Fight_flush);         /* 7  */
-    rs_read_boolean(inf, &Firstmove);           /* 8  */
-    rs_read_boolean(inf, &Got_ltc);             /* 9  */
-    rs_read_boolean(inf, &Has_hit);             /* 10 */
-    rs_read_boolean(inf, &In_shell);            /* 11 */
-    rs_read_boolean(inf, &Inv_describe);        /* 12 */
-    rs_read_boolean(inf, &Jump);                /* 13 */
-    rs_read_boolean(inf, &Kamikaze);            /* 14 */
-    rs_read_boolean(inf, &Lower_msg);           /* 15 */
-    rs_read_boolean(inf, &Move_on);             /* 16 */
-    rs_read_boolean(inf, &Msg_esc);             /* 17 */
-    rs_read_boolean(inf, &Passgo);              /* 18 */
-    rs_read_boolean(inf, &Playing);             /* 19 */
-    rs_read_boolean(inf, &Q_comm);              /* 20 */
-    rs_read_boolean(inf, &Running);             /* 21 */
-    rs_read_boolean(inf, &Save_msg);            /* 22 */
-    rs_read_boolean(inf, &See_floor);           /* 23 */
-    rs_read_boolean(inf, &Stat_msg);            /* 24 */
-    rs_read_boolean(inf, &Terse);               /* 25 */
-    rs_read_boolean(inf, &To_death);            /* 26 */
-    rs_read_boolean(inf, &Tombstone);           /* 27 */
+    rs_read_int(inf, &Seenstairs);          /* 4  */
+    rs_read_int(inf, &Amulet);              /* 5  */
+    rs_read_int(inf, &Door_stop);           /* 6  */
+    rs_read_int(inf, &Fight_flush);         /* 7  */
+    rs_read_int(inf, &Firstmove);           /* 8  */
+    rs_read_int(inf, &Got_ltc);             /* 9  */
+    rs_read_int(inf, &Has_hit);             /* 10 */
+    rs_read_int(inf, &In_shell);            /* 11 */
+    rs_read_int(inf, &Inv_describe);        /* 12 */
+    rs_read_int(inf, &Jump);                /* 13 */
+    rs_read_int(inf, &Kamikaze);            /* 14 */
+    rs_read_int(inf, &Lower_msg);           /* 15 */
+    rs_read_int(inf, &Move_on);             /* 16 */
+    rs_read_int(inf, &Msg_esc);             /* 17 */
+    rs_read_int(inf, &Passgo);              /* 18 */
+    rs_read_int(inf, &Playing);             /* 19 */
+    rs_read_int(inf, &Q_comm);              /* 20 */
+    rs_read_int(inf, &Running);             /* 21 */
+    rs_read_int(inf, &Save_msg);            /* 22 */
+    rs_read_int(inf, &See_floor);           /* 23 */
+    rs_read_int(inf, &Stat_msg);            /* 24 */
+    rs_read_int(inf, &Terse);               /* 25 */
+    rs_read_int(inf, &To_death);            /* 26 */
+    rs_read_int(inf, &Tombstone);           /* 27 */
 #ifdef MASTER
     rs_read_int(inf, &Wizard);              	/* 28 */
 #else
     rs_read_int(inf, &dummyint);              	/* 28 */
 #endif
-    rs_read_booleans(inf, Pack_used, 26);       /* 29 */
-    rs_read_char(inf, &Dir_ch);
+    rs_read_ints(inf, Pack_used, 26);       /* 29 */
+    rs_read_int(inf, &Dir_ch);
     rs_read_chars(inf, File_name, MAXSTR);
     rs_read_chars(inf, Huh, MAXSTR);
     rs_read_potions(inf);
     rs_read_chars(inf, Prbuf, 2*MAXSTR);
     rs_read_rings(inf);
     rs_read_new_string(inf,&Release);
-    rs_read_char(inf, &Runch);
+    rs_read_int(inf, &Runch);
     rs_read_scrolls(inf);
-    rs_read_char(inf, &Take);
+    rs_read_int(inf, &Take);
     rs_read_chars(inf, Whoami, MAXSTR);
     rs_read_sticks(inf);
     rs_read_int(inf,&Orig_dsusp);
     rs_read_chars(inf, Fruit, MAXSTR);
     rs_read_chars(inf, Home, MAXSTR);
     rs_read_new_strings(inf,Inv_t_name,3);
-    rs_read_char(inf, &L_last_comm);
-    rs_read_char(inf, &L_last_dir);
-    rs_read_char(inf, &Last_comm);
-    rs_read_char(inf, &Last_dir);
+    rs_read_int(inf, &L_last_comm);
+    rs_read_int(inf, &L_last_dir);
+    rs_read_int(inf, &Last_comm);
+    rs_read_int(inf, &Last_dir);
     rs_read_new_strings(inf,Tr_name,8);
     rs_read_int(inf, &N_objs);
     rs_read_int(inf, &Ntraps);
@@ -2072,7 +1859,7 @@ rs_restore_file(FILE *inf)
     rs_read_int(inf, &Vf_hit);
     rs_read_int(inf, &Dnum);
     rs_read_int(inf, &Seed);
-    rs_read_ints(inf, E_levels,21);
+    rs_read_ints(inf,E_levels,21);
     rs_read_coord(inf, &Delta);
     rs_read_coord(inf, &Oldpos);
     rs_read_coord(inf, &Stairs);

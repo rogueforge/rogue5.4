@@ -39,7 +39,7 @@ static char *Rip[] = {
  */
 /* VARARGS2 */
 void
-score(int amount, int flags, char monst)
+score(int amount, int flags, int monst)
 {
     SCORE *scp;
     int i;
@@ -81,6 +81,10 @@ score(int amount, int flags, char monst)
     }
 
     top_ten = (SCORE *) malloc(numscores * sizeof (SCORE));
+
+	if (top_ten == NULL)
+		return;
+
     endp = &top_ten[numscores];
     for (scp = top_ten; scp < endp; scp++)
     {
@@ -142,7 +146,7 @@ score(int amount, int flags, char monst)
 		scp->sc_level = Max_level;
 	    else
 		scp->sc_level = Level;
-	    scp->sc_monster = monst;
+	    scp->sc_monster = (unsigned short) monst;
 	    scp->sc_uid = uid;
 	    sc2 = scp;
 	}
@@ -163,7 +167,7 @@ score(int amount, int flags, char monst)
 		scp->sc_score, scp->sc_name, reason[scp->sc_flags],
 		scp->sc_level);
 	    if (scp->sc_flags == 0 || scp->sc_flags == 3)
-		printf(" by %s", killname((char) scp->sc_monster, TRUE));
+		printf(" by %s", killname(scp->sc_monster, TRUE));
 #ifdef MASTER
 	    if (prflags == 1)
 	    {
@@ -217,7 +221,7 @@ score(int amount, int flags, char monst)
  *	Do something really fun when he dies
  */
 void
-death(char monst)
+death(int monst)
 {
     char **dp, *killer;
     struct tm *lt;
@@ -381,11 +385,11 @@ total_winner()
  *	Convert a code to a monster name
  */
 char *
-killname(char monst, bool doart)
+killname(int monst, int doart)
 {
     struct h_list *hp;
     char *sp;
-    bool article;
+    int article;
     static struct h_list nlist[] = {
 	{'a',	"arrow",		TRUE},
 	{'b',	"bolt",			TRUE},
@@ -424,10 +428,10 @@ killname(char monst, bool doart)
  * death_monst:
  *	Return a monster appropriate for a random death.
  */
-char
+int
 death_monst(void)
 {
-    static char poss[] =
+    static int poss[] =
     {
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 	'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -436,5 +440,5 @@ death_monst(void)
 		   message for killer */
     };
 
-    return poss[rnd(sizeof poss / sizeof (char))];
+    return poss[rnd(sizeof poss / sizeof (int))];
 }

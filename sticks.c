@@ -42,7 +42,7 @@ do_zap()
     THING *obj, *tp;
     int y, x;
     char *name;
-    char monster, oldch;
+    int monster, oldch;
     static THING bolt;
 
     if ((obj = get_item("zap with", STICK)) == NULL)
@@ -126,7 +126,7 @@ do_zap()
 			oldch = tp->t_oldch;
 			Delta.y = y;
 			Delta.x = x;
-			new_monster(tp, monster = (char)(rnd(26) + 'A'), &Delta);
+			new_monster(tp, monster = rnd(26) + 'A', &Delta);
 			if (see_monst(tp))
 			    mvaddch(y, x, monster);
 			tp->t_oldch = oldch;
@@ -243,7 +243,7 @@ drain()
     struct room *corp;
     THING **dp;
     int cnt;
-    bool inpass;
+    int inpass;
     static THING *drainee[40];
 
     /*
@@ -254,7 +254,7 @@ drain()
 	corp = &Passages[flat(Hero.y, Hero.x) & F_PNUM];
     else
 	corp = NULL;
-    inpass = (bool)(Proom->r_flags & ISGONE);
+    inpass = (Proom->r_flags & ISGONE);
     dp = drainee;
     for (mp = Mlist; mp != NULL; mp = next(mp))
 	if (mp->t_room == Proom || mp->t_room == corp ||
@@ -291,8 +291,8 @@ fire_bolt(coord *start, coord *dir, char *name)
 {
     coord *c1, *c2;
     THING *tp;
-    char dirch = 0, ch;
-    bool hit_hero, used, changed;
+    int dirch = 0, ch;
+    int hit_hero, used, changed;
     static coord pos;
     static coord spotpos[BOLT_LENGTH];
     THING bolt;
@@ -310,7 +310,7 @@ fire_bolt(coord *start, coord *dir, char *name)
 	when 2: case -2: dirch = '\\';
     }
     pos = *start;
-    hit_hero = (bool)(start != &Hero);
+    hit_hero = (start != &Hero);
     used = FALSE;
     changed = FALSE;
     for (c1 = spotpos; c1 <= &spotpos[BOLT_LENGTH-1] && !used; c1++)

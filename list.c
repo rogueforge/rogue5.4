@@ -89,15 +89,17 @@ new_item(void)
 {
     THING *item;
 
+	if ((item = calloc(1, sizeof *item)) == NULL) {
 #ifdef MASTER
-    if ((item = calloc(1, sizeof *item)) == NULL)
-	msg("ran out of memory after %d items", Total);
-    else
-	Total++;
-#else
-    item = calloc(1, sizeof *item);
+		msg("ran out of memory after %d items", Total);
 #endif
-    item->l_next = NULL;
+		return NULL;
+	}
+
+#ifdef MASTER
+	Total++;
+#endif
+	item->l_next = NULL;
     item->l_prev = NULL;
     return item;
 }

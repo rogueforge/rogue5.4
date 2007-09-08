@@ -21,7 +21,7 @@ runners()
 {
     THING *tp;
     THING *next;
-    bool wastarget;
+    int wastarget;
     static coord orig_pos;
 
     for (tp = Mlist; tp != NULL; tp = next)
@@ -111,8 +111,8 @@ do_chase(THING *th)
     coord *cp;
     struct room *rer, *ree;	/* room of chaser, room of chasee */
     int mindist = 32767, curdist;
-    bool stoprun = FALSE;	/* TRUE means we are there */
-    bool door;
+    int stoprun = FALSE;	/* TRUE means we are there */
+    int door;
     THING *obj;
     static coord this;			/* Temporary destination for chaser */
 
@@ -228,7 +228,7 @@ over:
 void
 set_oldch(THING *tp, coord *cp)
 {
-    char sch;
+    int sch;
 
     if (ce(tp->t_pos, *cp))
         return;
@@ -249,7 +249,7 @@ set_oldch(THING *tp, coord *cp)
  * see_monst:
  *	Return TRUE if the hero can see the monster
  */
-bool
+int
 see_monst(THING *mp)
 {
     int y, x;
@@ -269,7 +269,7 @@ see_monst(THING *mp)
     }
     if (mp->t_room != Proom)
 	return FALSE;
-    return ((bool)!(mp->t_room->r_flags & ISDARK));
+    return (!(mp->t_room->r_flags & ISDARK));
 }
 
 /*
@@ -284,13 +284,15 @@ runto(coord *runner)
     /*
      * If we couldn't find him, something is funny
      */
-#ifdef MASTER
     if ((tp = moat(runner->y, runner->x)) == NULL)
-	msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
-#else
-    tp = moat(runner->y, runner->x);
+	{
+#ifdef MASTER
+		msg("couldn't find monster in runto at (%d,%d)", runner->y, runner->x);
 #endif
-    /*
+		return;
+	}
+
+	/*
      * Start the beastie running
      */
     tp->t_flags |= ISRUN;
@@ -304,14 +306,14 @@ runto(coord *runner)
  *	chasee(ee).  Returns TRUE if we want to keep on chasing later
  *	FALSE if we reach the goal.
  */
-bool
+int
 chase(THING *tp, coord *ee)
 {
     THING *obj;
     int x, y;
     int curdist, thisdist;
     coord *er = &tp->t_pos;
-    char ch;
+    int ch;
     int plcnt = 1;
     static coord tryp;
 
@@ -407,7 +409,7 @@ chase(THING *tp, coord *ee)
 	    }
 	}
     }
-    return (bool)(curdist != 0 && !ce(Ch_ret, Hero));
+    return (curdist != 0 && !ce(Ch_ret, Hero));
 }
 
 /*
@@ -419,8 +421,7 @@ struct room *
 roomin(coord *cp)
 {
     struct room *rp;
-    char *fp;
-
+    int *fp;
 
     fp = &flat(cp->y, cp->x);
     if (*fp & F_PASS)
@@ -444,21 +445,21 @@ roomin(coord *cp)
  * diag_ok:
  *	Check to see if the move is legal if it is diagonal
  */
-bool
+int
 diag_ok(coord *sp, coord *ep)
 {
     if (ep->x < 0 || ep->x >= NUMCOLS || ep->y <= 0 || ep->y >= NUMLINES - 1)
 	return FALSE;
     if (ep->x == sp->x || ep->y == sp->y)
 	return TRUE;
-    return (bool)(step_ok(chat(ep->y, sp->x)) && step_ok(chat(sp->y, ep->x)));
+    return (step_ok(chat(ep->y, sp->x)) && step_ok(chat(sp->y, ep->x)));
 }
 
 /*
  * cansee:
  *	Returns true if the hero can see a certain coordinate.
  */
-bool
+int
 cansee(int y, int x)
 {
     struct room *rer;
@@ -480,7 +481,7 @@ cansee(int y, int x)
      */
     tp.y = y;
     tp.x = x;
-    return (bool)((rer = roomin(&tp)) == Proom && !(rer->r_flags & ISDARK));
+    return ((rer = roomin(&tp)) == Proom && !(rer->r_flags & ISDARK));
 }
 
 /*

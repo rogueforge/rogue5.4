@@ -12,7 +12,6 @@
 # define	TRUE		1
 # define	FALSE		0
 # define	MAXSTR		80
-# define	bool		char
 # define	when		break;case
 # define	otherwise	break;default
 
@@ -42,8 +41,8 @@ MONST	Monsters[] = {
  *	lock the score file.  If it takes too long, ask the user if
  *	they care to wait.  Return TRUE if the lock is successful.
  */
-bool
-s_lock_sc(void)
+int
+s_lock_sc()
 {
     int cnt;
     static struct stat sbuf;
@@ -172,10 +171,10 @@ s_encread(char *start, unsigned int size, int inf)
  *	Convert a code to a monster name
  */
 char *
-s_killname(char monst, bool doart)
+s_killname(char monst, int doart)
 {
     char *sp;
-    bool article;
+    int article;
 
     article = TRUE;
     switch (monst)

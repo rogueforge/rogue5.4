@@ -320,7 +320,7 @@ md_unlink_open_file(char *file, FILE *inf)
 {
 #ifdef _WIN32
     fclose(inf);
-    _chmod(file, 0600);
+    (void) _chmod(file, 0600);
     return( _unlink(file) );
 #else
     return(unlink(file));
@@ -331,7 +331,7 @@ int
 md_unlink(char *file)
 {
 #ifdef _WIN32
-    _chmod(file, 0600);
+    (void) _chmod(file, 0600);
     return( _unlink(file) );
 #else
     return(unlink(file));

@@ -18,7 +18,7 @@
 
 
 void
-look(bool wakeup)
+look(int wakeup)
 {
     int x, y;
     int ch;
@@ -27,10 +27,10 @@ look(bool wakeup)
     struct room *rp;
     int ey, ex;
     int passcount;
-    char pfl, *fp, pch;
+    int pfl, *fp, pch;
     int sy, sx, sumhero = 0, diffhero = 0;
 # ifdef DEBUG
-    static bool done = FALSE;
+    static int done = FALSE;
 
     if (done)
 	return;
@@ -233,8 +233,8 @@ erase_lamp(coord *pos, struct room *rp)
  * show_floor:
  *	Should we show the floor in her room at this time?
  */
-bool
-show_floor(void)
+int
+show_floor()
 {
     if ((Proom->r_flags & (ISGONE|ISDARK)) == ISDARK && !on(Player, ISBLIND))
 	return See_floor;
@@ -371,8 +371,8 @@ add_str(str_t *sp, int amt)
  * add_haste:
  *	Add a haste to the player
  */
-bool
-add_haste(bool potion)
+int
+add_haste(int potion)
 {
     if (on(Player, ISHASTE))
     {
@@ -430,7 +430,7 @@ vowelstr(char *str)
  * is_current:
  *	See if the object is one of the currently used items
  */
-bool
+int
 is_current(THING *obj)
 {
     if (obj == NULL)
@@ -451,11 +451,11 @@ is_current(THING *obj)
  *      Set up the direction co_ordinate for use in varios "prefix"
  *	commands
  */
-bool
-get_dir(void)
+int
+get_dir()
 {
     char *prompt;
-    bool gotit;
+    int gotit;
     static coord last_delt= {0,0};
 
     if (Again && Last_dir != '\0')
@@ -491,7 +491,7 @@ get_dir(void)
 	    }
 	} until (gotit);
 	if (isupper(Dir_ch))
-	    Dir_ch = (char) tolower(Dir_ch);
+	    Dir_ch = tolower(Dir_ch);
 	Last_dir = Dir_ch;
 	last_delt.y = Delta.y;
 	last_delt.x = Delta.x;
@@ -553,7 +553,8 @@ call_it(struct obj_info *info)
 	    if (info->oi_guess != NULL)
 		free(info->oi_guess);
 	    info->oi_guess = malloc((unsigned int) strlen(Prbuf) + 1);
-	    strcpy(info->oi_guess, Prbuf);
+		if (info->oi_guess != NULL)
+			strcpy(info->oi_guess, Prbuf);
 	}
 	msg("");
     }
@@ -563,18 +564,18 @@ call_it(struct obj_info *info)
  * rnd_thing:
  *	Pick a random thing appropriate for this level
  */
-char
-rnd_thing()
+int
+rnd_thing(void)
 {
     int i;
-    static char thing_list[] = {
+    static int thing_list[] = {
 	POTION, SCROLL, RING, STICK, FOOD, WEAPON, ARMOR, STAIRS, GOLD, AMULET
     };
 
     if (Level >= AMULETLEVEL)
-        i = rnd(sizeof thing_list / sizeof (char));
+        i = rnd(sizeof thing_list / sizeof (int));
     else
-        i = rnd(sizeof thing_list / sizeof (char) - 1);
+        i = rnd(sizeof thing_list / sizeof (int) - 1);
     return thing_list[i];
 }
 

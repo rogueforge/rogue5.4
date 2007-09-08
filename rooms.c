@@ -317,15 +317,15 @@ rnd_pos(struct room *rp, coord *cp)
  *	Find a valid floor spot in this room.  If rp is NULL, then
  *	pick a new room each time around the loop.
  */
-bool
-find_floor(struct room *rp, coord *cp, int limit, bool monst)
+int
+find_floor(struct room *rp, coord *cp, int limit, int monst)
 {
     PLACE *pp;
     int cnt;
-    char compchar = 0;
-    bool pickroom;
+    int compchar = 0;
+    int pickroom;
 
-    pickroom = (bool)(rp == NULL);
+    pickroom = (rp == NULL);
 
     if (!pickroom)
 	compchar = ((rp->r_flags & ISMAZE) ? PASSAGE : FLOOR);
@@ -361,7 +361,7 @@ enter_room(coord *cp)
     struct room *rp;
     THING *tp;
     int y, x;
-    char ch;
+    int ch;
 
     rp = Proom = roomin(cp);
     door_open(rp);
@@ -407,8 +407,8 @@ leave_room(coord *cp)
     PLACE *pp;
     struct room *rp;
     int y, x;
-    char floor;
-    char ch;
+    int floor;
+    int ch;
 
     rp = Proom;
 

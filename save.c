@@ -16,7 +16,7 @@
 
 typedef struct stat STAT;
 
-extern char version[], encstr[];
+extern const char version[], encstr[];
 
 static STAT Sbuf;
 
@@ -150,7 +150,7 @@ save_file(FILE *savef)
  *	Restore a saved game from a file with elaborate checks for file
  *	integrity from cheaters
  */
-bool
+int
 restore(char *file, char **envp)
 {
     FILE *inf;
@@ -181,7 +181,7 @@ restore(char *file, char **envp)
 	return FALSE;
     }
     encread(buf,80,inf);
-    sscanf(buf,"%d x %d\n", &lines, &cols);
+    (void) sscanf(buf,"%d x %d\n", &lines, &cols);
 
     initscr();                          /* Start up cursor package */
     keypad(stdscr, 1);
@@ -264,9 +264,10 @@ restore(char *file, char **envp)
 size_t
 encwrite(char *start, size_t size, FILE *outf)
 {
-    char *e1, *e2, fb;
+    char fb;
+    const char *e1, *e2;
     int temp;
-    extern char statlist[];
+    extern const char statlist[];
     size_t o_size = size;
     e1 = encstr;
     e2 = statlist;
@@ -296,10 +297,11 @@ encwrite(char *start, size_t size, FILE *outf)
 size_t
 encread(char *start, size_t size, FILE *inf)
 {
-    char *e1, *e2, fb;
+    char fb;
+    const char *e1, *e2;
     int temp;
     size_t read_size;
-    extern char statlist[];
+    extern const char statlist[];
 
     fb = 0;
 
@@ -342,7 +344,7 @@ rd_score(SCORE *top_ten)
     {
         encread(top_ten[i].sc_name, MAXSTR, scoreboard);
         encread(scoreline, 100, scoreboard);
-        sscanf(scoreline, " %u %d %u %hu %d %x \n",
+        (void) sscanf(scoreline, " %u %d %u %hu %d %x \n",
             &top_ten[i].sc_uid, &top_ten[i].sc_score,
             &top_ten[i].sc_flags, &top_ten[i].sc_monster,
             &top_ten[i].sc_level, &top_ten[i].sc_time);

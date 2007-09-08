@@ -187,8 +187,8 @@ stomach()
 void
 come_down()
 {
-    THING *tp;
-    bool seemonst;
+    register THING *tp;
+    register int seemonst;
 
     if (!on(Player, ISHALU))
 	return;
@@ -235,8 +235,8 @@ come_down()
 void
 visuals()
 {
-    THING *tp;
-    bool seemonst;
+    register THING *tp;
+    register int seemonst;
 
     if (!After || (Running && Jump))
 	return;

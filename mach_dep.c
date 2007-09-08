@@ -54,9 +54,9 @@ unsigned int numscores = NUMSCORES;
 char *Numname = NUMNAME;
 
 # ifdef ALLSCORES
-bool Allscore = TRUE;
+int Allscore = TRUE;
 # else  /* ALLSCORES */
-bool Allscore = FALSE;
+int Allscore = FALSE;
 # endif /* ALLSCORES */
 
 #ifdef CHECKTIME
@@ -205,7 +205,7 @@ start_score()
  * is_symlink: 	 	 
  *      See if the file has a symbolic link 	 	 
   */ 	 	 
-bool 	 	 
+int	 	 
 is_symlink(char *sp) 	 	 
 { 	 	 
 #ifdef S_IFLNK 	 	 
@@ -226,8 +226,8 @@ is_symlink(char *sp)
  * too_much:
  *	See if the system is being used too much for this game
  */
-bool
-too_much(void)
+int
+too_much()
 {
 #ifdef MAXLOAD
     double avec[3];
@@ -251,8 +251,8 @@ too_much(void)
  * author:
  *	See if a user is an author of the program
  */
-bool
-author(void)
+int
+author()
 {
 #ifdef MASTER
     if (Wizard)
@@ -364,8 +364,8 @@ ucount(void)
  *	they care to wait.  Return TRUE if the lock is successful.
  */
 static FILE *lfd = NULL;
-bool
-lock_sc(void)
+int
+lock_sc()
 {
 #if defined(SCOREFILE) && defined(LOCKFILE)
     int cnt;

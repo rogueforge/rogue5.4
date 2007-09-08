@@ -17,7 +17,7 @@
  *	inventory.
  */
 char *
-inv_name(THING *obj, bool drop)
+inv_name(THING *obj, int drop)
 {
     char *pb;
     struct obj_info *op;
@@ -120,9 +120,9 @@ inv_name(THING *obj, bool drop)
 	else if (obj == Cur_ring[RIGHT])
 	    strcat(pb, " (on right hand)");
     }
-    if (drop && isupper(Prbuf[0]))
+    if (drop && isupper((int)Prbuf[0]))
 	Prbuf[0] = (char) tolower(Prbuf[0]);
-    else if (!drop && islower(*Prbuf))
+    else if (!drop && islower((int)*Prbuf))
 	*Prbuf = (char) toupper(*Prbuf);
     Prbuf[MAXSTR-1] = '\0';
     return Prbuf;
@@ -135,7 +135,7 @@ inv_name(THING *obj, bool drop)
 void
 drop()
 {
-    char ch;
+    int ch;
     THING *obj;
 
     ch = chat(Hero.y, Hero.x);
@@ -149,12 +149,12 @@ drop()
 	return;
     if (!dropcheck(obj))
 	return;
-    obj = leave_pack(obj, TRUE, (bool)!ISMULT(obj->o_type));
+    obj = leave_pack(obj, TRUE, !ISMULT(obj->o_type));
     /*
      * Link it into the level object list
      */
     attach(Lvl_obj, obj);
-    chat(Hero.y, Hero.x) = (char) obj->o_type;
+    chat(Hero.y, Hero.x) = obj->o_type;
     flat(Hero.y, Hero.x) |= F_DROPPED;
     obj->o_pos = Hero;
     if (obj->o_type == AMULET)
@@ -166,7 +166,7 @@ drop()
  * dropcheck:
  *	Do special checks for dropping or unweilding|unwearing|unringing
  */
-bool
+int
 dropcheck(THING *obj)
 {
     if (obj == NULL)
@@ -328,15 +328,15 @@ pick_one(struct obj_info *info, int nitems)
  */
 static int Line_cnt = 0;
 
-static bool Newpage = FALSE;
+static int Newpage = FALSE;
 
 static char *Lastfmt, *Lastarg;
 
 void
 discovered()
 {
-    char ch;
-    bool disc_list;
+    int ch;
+    int disc_list;
 
     do {
 	disc_list = FALSE;
@@ -393,7 +393,7 @@ discovered()
 #define MAX4(a,b,c,d)	(a > b ? (a > c ? (a > d ? a : d) : (c > d ? c : d)) : (b > c ? (b > d ? b : d) : (c > d ? c : d)))
 
 void
-print_disc(char type)
+print_disc(int type)
 {
     struct obj_info *info = NULL;
     int i, maxnum = 0, num_found;
@@ -461,7 +461,7 @@ set_order(int *order, int numthings)
  *	Add a line to the list of discoveries
  */
 /* VARARGS1 */
-char
+int
 add_line(char *fmt, char *arg)
 {
     WINDOW *tw, *sw;
@@ -566,7 +566,7 @@ end_line()
 	    msg(Lastfmt, Lastarg);
 	}
 	else
-	    add_line((char *) NULL, NULL);
+	    add_line(NULL, NULL);
     }
     Line_cnt = 0;
     Newpage = FALSE;
@@ -577,7 +577,7 @@ end_line()
  *	Set up Prbuf so that message for "nothing found" is there
  */
 char *
-nothing(char type)
+nothing(int type)
 {
     char *sp, *tystr = NULL;
 

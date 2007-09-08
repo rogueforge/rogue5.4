@@ -72,7 +72,7 @@ init_player()
  * potions and scrolls
  */
 
-char *Rainbow[] = {
+const char *Rainbow[] = {
     "amber",
     "aquamarine",
     "black",
@@ -156,7 +156,7 @@ STONE Stones[] = {
 #define NSTONES (sizeof Stones / sizeof (STONE))
 int cNSTONES = NSTONES;
 
-char *Wood[] = {
+const char *Wood[] = {
     "avocado wood",
     "balsa",
     "bamboo",
@@ -195,7 +195,7 @@ char *Wood[] = {
 #define NWOOD (sizeof Wood / sizeof (char *))
 int cNWOOD = NWOOD;
 
-char *Metal[] = {
+const char *Metal[] = {
     "aluminum",
     "beryllium",
     "bone",
@@ -225,7 +225,7 @@ int cNMETAL = NMETAL;
 
 #define MAX3(a,b,c)	(a > b ? (a > c ? a : c) : (b > c ? b : c))
 
-static bool Used[MAX3(NCOLORS, NSTONES, NWOOD)];
+static int Used[MAX3(NCOLORS, NSTONES, NWOOD)];
 
 /*
  * init_colors:
@@ -280,7 +280,8 @@ init_names()
 	}
 	*--cp = '\0';
 	S_names[i] = (char *) malloc((unsigned) strlen(Prbuf)+1);
-	strcpy(S_names[i], Prbuf);
+	if (S_names[i] != NULL)
+		strcpy(S_names[i], Prbuf);
     }
 }
 
@@ -313,9 +314,9 @@ init_stones()
 void
 init_materials()
 {
-    int i, j;
-    char *str;
-    static bool metused[NMETAL];
+    register int i, j;
+    register const char *str;
+    static int metused[NMETAL];
 
     for (i = 0; i < NWOOD; i++)
 	Used[i] = FALSE;
@@ -435,7 +436,7 @@ badcheck(char *name, struct obj_info *info, int bound)
  *	If he is halucinating, pick a random color name and return it,
  *	otherwise return the given color.
  */
-char *
+const char *
 pick_color(char *col)
 {
     return (on(Player, ISHALU) ? Rainbow[rnd(NCOLORS)] : col);

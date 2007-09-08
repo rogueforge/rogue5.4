@@ -12,12 +12,12 @@
 /*
  * List of monsters in rough order of vorpalness
  */
-static char Lvl_mons[] =  {
+static int Lvl_mons[] =  {
     'K', 'E', 'B', 'S', 'H', 'I', 'R', 'O', 'Z', 'L', 'C', 'Q', 'A',
     'N', 'Y', 'F', 'T', 'W', 'P', 'X', 'U', 'M', 'V', 'G', 'J', 'D'
 };
 
-static char Wand_mons[] = {
+static int Wand_mons[] = {
     'K', 'E', 'B', 'S', 'H',   0, 'R', 'O', 'Z',   0, 'C', 'Q', 'A',
       0, 'Y',   0, 'T', 'W', 'P',   0, 'U', 'M', 'V', 'G', 'J',   0
 };
@@ -27,11 +27,11 @@ static char Wand_mons[] = {
  *	Pick a monster to show up.  The lower the level,
  *	the meaner the monster.
  */
-char
-randmonster(bool wander)
+int
+randmonster(int wander)
 {
     int d;
-    char *mons;
+    int *mons;
 
     mons = (wander ? Wand_mons : Lvl_mons);
     do
@@ -50,7 +50,7 @@ randmonster(bool wander)
  *	Pick a new monster and add it to the list
  */
 void
-new_monster(THING *tp, char type, coord *cp)
+new_monster(THING *tp, int type, coord *cp)
 {
     struct monster *mp;
     int lev_add;
@@ -144,16 +144,16 @@ wake_monster(int y, int x)
 {
     THING *tp;
     struct room *rp;
-    char ch, *mname;
+	int ch;
+    char *mname;
 
+	if ((tp = moat(y, x)) == NULL) {
 #ifdef MASTER
-    if ((tp = moat(y, x)) == NULL)
-	msg("can't find monster in wake_monster");
-#else
-    tp = moat(y, x);
-    if (tp == NULL) 	 	 
-	endwin(), abort(); 
+		msg("can't find monster in wake_monster");
 #endif
+		return NULL;
+	}
+
     ch = tp->t_type;
     /*
      * Every time he sees mean monster, it might start chasing him

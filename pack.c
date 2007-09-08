@@ -16,10 +16,10 @@
  *	it off the ground.
  */
 void
-add_pack(THING *obj, bool silent)
+add_pack(THING *obj, int silent)
 {
     THING *op, *lp;
-    bool from_floor;
+    int from_floor;
 
     from_floor = FALSE;
     if (obj == NULL)
@@ -155,8 +155,8 @@ out:
  *	See if there's room in the pack.  If not, print out an
  *	appropriate message
  */
-bool
-pack_room(bool from_floor, THING *obj)
+int
+pack_room(int from_floor, THING *obj)
 {
     if (++Inpack > MAXPACK)
     {
@@ -187,7 +187,7 @@ pack_room(bool from_floor, THING *obj)
  *	Take an item out of the pack
  */
 THING *
-leave_pack(THING *obj, bool newobj, bool all)
+leave_pack(THING *obj, int newobj, int all)
 {
     THING *nobj;
 
@@ -221,15 +221,15 @@ leave_pack(THING *obj, bool newobj, bool all)
  * pack_char:
  *	Return the next unused pack character.
  */
-char
+int
 pack_char(void)
 {
-    bool *bp;
+    int *bp;
 
     for (bp = Pack_used; *bp; bp++)
 	continue;
     *bp = TRUE;
-    return (char)((int)(bp - Pack_used) + 'a');
+    return ((int)(bp - Pack_used) + 'a');
 }
 
 /*
@@ -237,7 +237,7 @@ pack_char(void)
  *	List what is in the pack.  Return TRUE if there is something of
  *	the given type.
  */
-bool
+int
 inventory(THING *list, int type)
 {
     static char inv_temp[MAXSTR];
@@ -284,7 +284,7 @@ inventory(THING *list, int type)
  *	Add something to characters pack.
  */
 void
-pick_up(char ch)
+pick_up(int ch)
 {
     THING *obj;
 
@@ -342,7 +342,7 @@ void
 picky_inven()
 {
     THING *obj;
-    char mch;
+    int mch;
 
     if (Pack == NULL)
 	msg("you aren't carrying anything");
@@ -375,7 +375,7 @@ THING *
 get_item(char *purpose, int type)
 {
     THING *obj;
-    char ch;
+    int ch;
 
     if (Pack == NULL)
 	msg("you aren't carrying anything");
@@ -456,7 +456,7 @@ money(int value)
  * floor_ch:
  *	Return the appropriate floor character for her room
  */
-char
+int
 floor_ch(void)
 {
     if (Proom->r_flags & ISGONE)
@@ -469,10 +469,10 @@ floor_ch(void)
  *	Return the character at hero's position, taking See_floor
  *	into account
  */
-char
+int
 floor_at(void)
 {
-    char ch;
+    int ch;
 
     ch = chat(Hero.y, Hero.x);
     if (ch == FLOOR)

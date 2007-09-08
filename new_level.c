@@ -17,7 +17,7 @@ new_level()
 {
     THING *tp;
     PLACE *pp;
-    char *sp;
+    int *sp;
     int i;
 
     Player.t_flags &= ~ISHELD;	/* unhold when you go down just in case */
@@ -145,7 +145,7 @@ put_things()
 	     * Put it somewhere
 	     */
 	    find_floor((struct room *) NULL, &obj->o_pos, FALSE, FALSE);
-	    chat(obj->o_pos.y, obj->o_pos.x) = (char) obj->o_type;
+	    chat(obj->o_pos.y, obj->o_pos.x) = obj->o_type;
 	}
     /*
      * If he is really deep in the dungeon and he hasn't found the
@@ -195,7 +195,7 @@ treas_room()
 	tp = new_thing();
 	tp->o_pos = mp;
 	attach(Lvl_obj, tp);
-	chat(mp.y, mp.x) = (char) tp->o_type;
+	chat(mp.y, mp.x) = tp->o_type;
     }
 
     /*

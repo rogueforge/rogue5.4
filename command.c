@@ -17,11 +17,11 @@
 void
 command()
 {
-    char ch;
-    int ntimes = 1;			/* Number of player moves */
-    char *fp;
+    register int ch;
+    register int ntimes = 1;			/* Number of player moves */
+    int *fp;
     THING *mp;
-    static char countch, direction, newcount = FALSE;
+    static int countch, direction, newcount = FALSE;
 
     if (on(Player, ISHASTE))
 	ntimes++;
@@ -160,7 +160,7 @@ over:
 			if (levit_check())
 			    ;
 			else
-			    pick_up((char)obj->o_type);
+			    pick_up(obj->o_type);
 		    }
 		    else {
 			if (!Terse)
@@ -467,11 +467,11 @@ illcom(int ch)
 void
 search()
 {
-    int y, x;
-    char *fp;
-    int ey, ex;
+    register int y, x;
+    register int *fp;
+    register int ey, ex;
     int probinc;
-    bool found;
+    int found;
 
     ey = Hero.y + 1;
     ex = Hero.x + 1;
@@ -532,7 +532,7 @@ void
 help()
 {
     register struct h_list *strp;
-    register char helpch;
+    register int helpch;
     register int numprint, cnt;
     msg("character you want help for (* for all): ");
     helpch = readchar();
@@ -697,8 +697,8 @@ u_level()
  *	Check to see if she's levitating, and if she is, print an
  *	appropriate message.
  */
-bool
-levit_check(void)
+int
+levit_check()
 {
     if (!on(Player, ISLEVIT))
 	return FALSE;
@@ -716,7 +716,7 @@ call()
     register THING *obj;
     register struct obj_info *op = NULL;
     register char **guess, *elsewise = NULL;
-    register bool *know;
+    register int *know;
 
     obj = get_item("call", CALLABLE);
     /*
@@ -779,7 +779,8 @@ norm:
 	if (*guess != NULL)
 	    free(*guess);
 	*guess = malloc((unsigned int) strlen(Prbuf) + 1);
-	strcpy(*guess, Prbuf);
+	if (*guess != NULL)
+		strcpy(*guess, Prbuf);
     }
 
     msg("");

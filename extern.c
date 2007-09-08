@@ -7,68 +7,68 @@
 #include <curses.h>
 #include "rogue.h"
 
-bool After;				/* True if we want after daemons */
-bool Again;				/* Repeating the last command */
+int  After;				/* True if we want after daemons */
+int  Again;				/* Repeating the last command */
 int  Noscore;				/* Was a wizard sometime */
-bool Seenstairs;			/* Have seen the stairs (for lsd) */
-bool Amulet = FALSE;			/* He found the amulet */
-bool Door_stop = FALSE;			/* Stop running when we pass a door */
-bool Fight_flush = FALSE;		/* True if toilet input */
-bool Firstmove = FALSE;			/* First move after setting Door_stop */
-bool Got_ltc = FALSE;			/* We have gotten the local tty chars */
-bool Has_hit = FALSE;			/* Has a "hit" message pending in msg */
-bool In_shell = FALSE;			/* True if executing a shell */
-bool Inv_describe = TRUE;		/* Say which way items are being used */
-bool Jump = FALSE;			/* Show running as series of jumps */
-bool Kamikaze = FALSE;			/* To_death really to DEATH */
-bool Lower_msg = FALSE;			/* Messages should start w/lower case */
-bool Move_on = FALSE;			/* Next move shouldn't pick up items */
-bool Msg_esc = FALSE;			/* Check for ESC from msg's --More-- */
-bool Passgo = FALSE;			/* Follow passages */
-bool Playing = TRUE;			/* True until he quits */
-bool Q_comm = FALSE;			/* Are we executing a 'Q' command? */
-bool Running = FALSE;			/* True if player is running */
-bool Save_msg = TRUE;			/* Remember last msg */
-bool See_floor = TRUE;			/* Show the lamp illuminated floor */
-bool Stat_msg = FALSE;			/* Should status() print as a msg() */
-bool Terse = FALSE;			/* True if we should be short */
-bool To_death = FALSE;			/* Fighting is to the death! */
-bool Tombstone = TRUE;			/* Print out tombstone at end */
+int  Seenstairs;			/* Have seen the stairs (for lsd) */
+int  Amulet = FALSE;			/* He found the amulet */
+int  Door_stop = FALSE;			/* Stop running when we pass a door */
+int  Fight_flush = FALSE;		/* True if toilet input */
+int  Firstmove = FALSE;			/* First move after setting Door_stop */
+int  Got_ltc = FALSE;			/* We have gotten the local tty chars */
+int  Has_hit = FALSE;			/* Has a "hit" message pending in msg */
+int  In_shell = FALSE;			/* True if executing a shell */
+int  Inv_describe = TRUE;		/* Say which way items are being used */
+int  Jump = FALSE;			/* Show running as series of jumps */
+int  Kamikaze = FALSE;			/* To_death really to DEATH */
+int  Lower_msg = FALSE;			/* Messages should start w/lower case */
+int  Move_on = FALSE;			/* Next move shouldn't pick up items */
+int  Msg_esc = FALSE;			/* Check for ESC from msg's --More-- */
+int  Passgo = FALSE;			/* Follow passages */
+int  Playing = TRUE;			/* True until he quits */
+int  Q_comm = FALSE;			/* Are we executing a 'Q' command? */
+int  Running = FALSE;			/* True if player is running */
+int  Save_msg = TRUE;			/* Remember last msg */
+int  See_floor = TRUE;			/* Show the lamp illuminated floor */
+int  Stat_msg = FALSE;			/* Should status() print as a msg() */
+int  Terse = FALSE;			/* True if we should be short */
+int  To_death = FALSE;			/* Fighting is to the death! */
+int  Tombstone = TRUE;			/* Print out tombstone at end */
 #ifdef MASTER
 int  Wizard = FALSE;			/* True if allows wizard commands */
 #endif
-bool Pack_used[26] = {			/* Is the character used in the pack? */
+int  Pack_used[26] = {			/* Is the character used in the pack? */
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE
 };
 
-char Dir_ch;				/* Direction from last get_dir() call */
+int  Dir_ch;				/* Direction from last get_dir() call */
 char File_name[MAXSTR];			/* Save file name */
 char Huh[MAXSTR];			/* The last message printed */
-char *P_colors[MAXPOTIONS];		/* Colors of the potions */
+const char *P_colors[MAXPOTIONS];	/* Colors of the potions */
 char Prbuf[2*MAXSTR];			/* Buffer for sprintfs */
-char *R_stones[MAXRINGS];		/* Stone settings of the rings */
-char Runch;				/* Direction player is Running */
+const char *R_stones[MAXRINGS];		/* Stone settings of the rings */
+int  Runch;				/* Direction player is Running */
 char *S_names[MAXSCROLLS];		/* Names of the scrolls */
-char Take;				/* Thing she is taking */
+int  Take;				/* Thing she is taking */
 char Whoami[MAXSTR];			/* Name of player */
-char *Ws_made[MAXSTICKS];		/* What sticks are made of */
+const char *Ws_made[MAXSTICKS];		/* What sticks are made of */
 char *Ws_type[MAXSTICKS];		/* Is it a wand or a staff */
 int  Orig_dsusp;			/* Original dsusp char */
 char Fruit[MAXSTR] =			/* Favorite fruit */
 		{ 's', 'l', 'i', 'm', 'e', '-', 'm', 'o', 'l', 'd', '\0' };
 char Home[MAXSTR] = { '\0' };		/* User's home directory */
-char *Inv_t_name[] = {
+const char *Inv_t_name[] = {
 	"Overwrite",
 	"Slow",
 	"Clear"
 };
-char L_last_comm = '\0';		/* Last Last_comm */
-char L_last_dir = '\0';			/* Last Last_dir */
-char Last_comm = '\0';			/* Last command typed */
-char Last_dir = '\0';			/* Last direction given */
-char *Tr_name[] = {			/* Names of the traps */
+int L_last_comm = '\0';		/* Last Last_comm */
+int L_last_dir = '\0';			/* Last Last_dir */
+int Last_comm = '\0';			/* Last command typed */
+int Last_dir = '\0';			/* Last direction given */
+const char *Tr_name[] = {		/* Names of the traps */
 	"a trapdoor",
 	"an arrow trap",
 	"a sleeping gas trap",
@@ -90,7 +90,7 @@ int Max_hit;				/* Max damage done to her in To_death */
 int Max_level;				/* Deepest player has gone */
 int Mpos = 0;				/* Where cursor is on top line */
 int No_food = 0;			/* Number of levels without food */
-int A_class[MAXARMORS] = {		/* Armor class for each armor type */
+const int A_class[MAXARMORS] = {	/* Armor class for each armor type */
 	8,	/* LEATHER */
 	7,	/* RING_MAIL */
 	7,	/* STUDDED_LEATHER */
@@ -111,9 +111,9 @@ int Purse = 0;				/* How much gold he has */
 int Quiet = 0;				/* Number of quiet turns */
 int Vf_hit = 0;				/* Number of time flytrap has hit */
 
-int Dnum;				/* Dungeon number */
-int Seed;				/* Random number seed */
-int E_levels[] = {
+unsigned int Dnum;				/* Dungeon number */
+unsigned int Seed;				/* Random number seed */
+const int E_levels[] = {
         10L,
 	20L,
 	40L,

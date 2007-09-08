@@ -67,7 +67,7 @@ addmsg(char *fmt, ...)
 int
 endmsg()
 {
-    char ch;
+    int ch;
 
     if (Save_msg)
 	strcpy(Huh, Msgbuf);
@@ -95,7 +95,7 @@ endmsg()
      * All messages should start with uppercase, except ones that
      * start with a pack addressing character
      */
-    if (islower(Msgbuf[0]) && !Lower_msg && Msgbuf[1] != ')')
+    if (islower((int)Msgbuf[0]) && !Lower_msg && Msgbuf[1] != ')')
 	Msgbuf[0] = (char) toupper(Msgbuf[0]);
     mvaddstr(0, 0, Msgbuf);
     clrtoeol();
@@ -148,32 +148,32 @@ step_ok(int ch)
  *	Reads and returns a character, checking for gross input errors
  */
 
-char
+int
 readchar()
 {
-    char ch;
+    int ch;
 
-    ch = (char) md_readchar(stdscr);
+    ch = md_readchar(stdscr);
 
     if (ch == 3)
     {
-	quit(0);
+		quit(0);
         return(27);
     }
 
     return(ch);
 }
 
-char
+int
 wreadchar(WINDOW *win)
 {
-    char ch;
+    int ch;
 
-    ch = (char) md_readchar(win);
+    ch = md_readchar(win);
 
     if (ch == 3)
     {
-	quit(0);
+		quit(0);
         return(27);
     }
 
@@ -264,7 +264,7 @@ status()
 void
 wait_for(WINDOW *win, int ch)
 {
-    char c;
+    register int c;
 
     if (ch == '\n')
         while ((c = wreadchar(win)) != '\n' && c != '\r')

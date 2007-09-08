@@ -18,9 +18,9 @@ read_scroll()
     THING *obj;
     PLACE *pp;
     int y, x;
-    char ch;
+    int ch;
     int i;
-    bool discardit = FALSE;
+    int discardit = FALSE;
     struct room *cur_room;
     THING *orig_obj;
     static coord mp;
@@ -44,7 +44,7 @@ read_scroll()
     /*
      * Get rid of the thing
      */
-    discardit = (bool)(obj->o_count == 1);
+    discardit = (obj->o_count == 1);
     leave_pack(obj, FALSE, FALSE);
     orig_obj = obj;
 
@@ -142,7 +142,7 @@ read_scroll()
 	case S_ID_ARMOR:
 	case S_ID_R_OR_S:
 	{
-	    static char id_type[S_ID_R_OR_S + 1] =
+	    static int id_type[S_ID_R_OR_S + 1] =
 		{ 0, 0, 0, 0, 0, POTION, SCROLL, WEAPON, ARMOR, R_OR_S };
 	    /*
 	     * Identify, let him figure something out
