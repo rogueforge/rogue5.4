@@ -425,8 +425,10 @@ get_item(char *purpose, int type)
 		msg("'%s' is not a valid item",unctrl(ch));
 		continue;
 	    }
-	    else 
+	    else {
+		msg("");
 		return obj;
+	    }
 	}
     }
     return NULL;

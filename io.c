@@ -287,7 +287,6 @@ show_win(char *message)
     wmove(win, 0, 0);
     waddstr(win, message);
     touchwin(win);
-    wmove(win, Hero.y, Hero.x);
     wrefresh(win);
     wait_for(win, ' ');
     clearok(curscr, TRUE);

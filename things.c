@@ -5,6 +5,7 @@
  * @(#)things.c	4.53 (Berkeley) 02/05/99
  */
 
+#include <stdlib.h>
 #include <curses.h>
 #include <string.h>
 #include <ctype.h>
@@ -381,6 +382,7 @@ discovered()
 	print_disc(ch);
 	end_line();
     }
+    msg("");
 }
 
 /*

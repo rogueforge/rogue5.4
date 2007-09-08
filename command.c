@@ -781,6 +781,8 @@ norm:
 	*guess = malloc((unsigned int) strlen(Prbuf) + 1);
 	strcpy(*guess, Prbuf);
     }
+
+    msg("");
 }
 
 /*

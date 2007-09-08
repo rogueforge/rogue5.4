@@ -364,14 +364,11 @@ shell()
      */
     md_shellescape();
 
-    printf("\n[Press return to continue]");
-    fflush(stdout);
     noecho();
     raw();
     keypad(stdscr,1);
     playltchars();
     In_shell = FALSE;
-    wait_for(stdscr, '\n');
     clearok(stdscr, TRUE);
 }
 

@@ -483,7 +483,7 @@ get_dir(void)
 		when 'u': case'U': Delta.y = -1; Delta.x =  1;
 		when 'b': case'B': Delta.y =  1; Delta.x = -1;
 		when 'n': case'N': Delta.y =  1; Delta.x =  1;
-		when ESCAPE: Last_dir = '\0'; reset_last(); return FALSE;
+		when ESCAPE: Last_dir = '\0'; reset_last(); msg(""); return FALSE;
 		otherwise:
 		    Mpos = 0;
 		    msg(prompt);
@@ -503,6 +503,7 @@ get_dir(void)
 	    Delta.x = rnd(3) - 1;
 	} while (Delta.y == 0 && Delta.x == 0);
     Mpos = 0;
+    msg("");
     return TRUE;
 }
 
@@ -554,6 +555,7 @@ call_it(struct obj_info *info)
 	    info->oi_guess = malloc((unsigned int) strlen(Prbuf) + 1);
 	    strcpy(info->oi_guess, Prbuf);
 	}
+	msg("");
     }
 }
 
