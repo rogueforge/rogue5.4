@@ -406,7 +406,7 @@ def:
  * charge_str:
  *	Return an appropriate string for a wand charge
  */
-char *
+const char *
 charge_str(const THING *obj)
 {
     static char buf[20];

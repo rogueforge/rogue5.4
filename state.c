@@ -313,7 +313,7 @@ rs_read_string(FILE *inf, char *s, int max)
 }
 
 int
-rs_read_new_string(FILE *inf, const char **s)
+rs_read_new_string(FILE *inf, char **s)
 {
     int len=0;
     char *buf=0;

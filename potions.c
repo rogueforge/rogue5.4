@@ -11,7 +11,7 @@
 typedef struct PACT
 {
     const int pa_flags;
-    const void (*pa_daemon)();
+    void (*pa_daemon)();
     const int pa_time;
     const char *pa_high, *pa_straight;
 } PACT;

@@ -139,7 +139,7 @@ put_bool(void *b)
  *	Put out a string
  */
 void
-put_str(const void *str)
+put_str(void *str)
 {
     waddstr(Hw, (char *) str);
 }
@@ -159,7 +159,7 @@ put_inv_t(void *ip)
  *	Allow changing a boolean option and print it out
  */
 int
-get_bool(const void *vp, WINDOW *win)
+get_bool(void *vp, WINDOW *win)
 {
     int *bp = (int *) vp;
     int oy, ox;
@@ -209,7 +209,7 @@ get_bool(const void *vp, WINDOW *win)
  *	!See_floor.
  */
 int
-get_sf(const void *vp, WINDOW *win)
+get_sf(void *vp, WINDOW *win)
 {
     int	*bp = (int *) vp;
     int	was_sf;
@@ -238,7 +238,7 @@ get_sf(const void *vp, WINDOW *win)
 #define MAXINP	50	/* max string to read from terminal or environment */
 
 int
-get_str(const void *vopt, WINDOW *win)
+get_str(void *vopt, WINDOW *win)
 {
     char *opt = (char *) vopt;
     char *sp;
@@ -313,7 +313,7 @@ get_str(const void *vopt, WINDOW *win)
  *	Get an inventory type name
  */
 int
-get_inv_t(const void *vp, WINDOW *win)
+get_inv_t(void *vp, WINDOW *win)
 {
     int *ip = (int *) vp;
     int oy, ox;
@@ -367,7 +367,7 @@ get_inv_t(const void *vp, WINDOW *win)
  *	Get a numeric option
  */
 int
-get_num(const void *vp, WINDOW *win)
+get_num(void *vp, WINDOW *win)
 {
     int *opt = (int *) vp;
     int i;
