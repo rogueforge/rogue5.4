@@ -103,7 +103,7 @@ main(int argc, char **argv, char **envp)
 
     init_check();			/* check for legal startup */
     if (argc == 2)
-	if (!restore(argv[1], envp))	/* Note: restore will never return */
+	if (!restore(argv[1]))	/* Note: restore will never return */
 	    my_exit(1);
 #ifdef MASTER
     if (Wizard)

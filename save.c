@@ -145,7 +145,7 @@ save_file(FILE *savef)
  *	integrity from cheaters
  */
 int
-restore(const char *file, char **envp)
+restore(const char *file)
 {
     FILE *inf;
     int syml;
