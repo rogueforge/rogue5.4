@@ -249,6 +249,30 @@ restore(const char *file)
     return(0);
 }
 
+static int encerrno = 0;
+
+int
+encerror()
+{
+    return encerrno;
+}
+
+void
+encseterr(int err)
+{
+    encerrno = err;
+}
+
+int
+encclearerr()
+{
+    int n = encerrno;
+
+    encerrno = 0;
+
+    return(n);
+}
+
 /*
  * encwrite:
  *	Perform an encrypted write
@@ -264,10 +288,18 @@ encwrite(const char *start, size_t size, FILE *outf)
     e2 = statlist;
     fb = 0;
 
+    if (encerrno) {
+	errno = encerrno;
+	return 0;
+    }
+
     while(size)
     {
 	if (putc(*start++ ^ *e1 ^ *e2 ^ fb, outf) == EOF)
+	{
+	    encerrno = errno;
             break;
+	}
 
 	temp = *e1++;
 	fb = fb + ((char) (temp * *e2++));
@@ -292,16 +324,20 @@ encread(char *start, size_t size, FILE *inf)
     char fb;
     int temp;
     size_t read_size;
-
+    size_t items;
     fb = 0;
 
-    if ((read_size = fread(start,1,size,inf)) == 0 || read_size == -1)
-	return(read_size);
+    if (encerrno) {
+	errno = encerrno;
+	return 0;
+    }
+
+    items = read_size = fread(start,1,size,inf);
 
     e1 = encstr;
     e2 = statlist;
 
-    while (size--)
+    while (read_size--)
     {
 	*start++ ^= *e1 ^ *e2 ^ fb;
 	temp = *e1++;
@@ -312,7 +348,10 @@ encread(char *start, size_t size, FILE *inf)
 	    e2 = statlist;
     }
 
-    return(read_size);
+    if (items != size)
+	encerrno = errno;
+
+    return(items);
 }
 
 /*

@@ -582,6 +582,9 @@ void	draw_room(const struct room *rp);
 void	drop(void);
 int 	dropcheck(const THING *obj);
 void	eat(void);
+int     encclearerr();
+int     encerror();
+void    encseterr();
 size_t  encread(char *start, size_t size, FILE *inf);
 size_t	encwrite(const char *start, size_t size, FILE *outf);
 void    end_line(void);
@@ -766,3 +769,4 @@ void	wear(void);
 void	whatis(int insist, int type);
 void	wield(void);
 int	wreadchar(WINDOW *win);
+
