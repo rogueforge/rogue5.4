@@ -18,7 +18,7 @@
  *	The main program, of course
  */
 int
-main(int argc, char **argv, char **envp)
+main(int argc, char **argv)
 {
     char *env;
     time_t lowtime;
