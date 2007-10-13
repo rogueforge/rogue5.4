@@ -73,7 +73,10 @@ command(void)
 		ch = readchar();
 		Move_on = FALSE;
 		if (Mpos != 0)		/* Erase message if its there */
-		    msg("");
+		{
+		    if (ch != '.' && ch != 's')
+			msg("");
+		}
 	    }
 	}
 	else
