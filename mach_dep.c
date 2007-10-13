@@ -86,6 +86,16 @@ open_score(void)
 {
 #ifdef SCOREFILE
     char *Scorefile = SCOREFILE;
+
+    numscores = NUMSCORES;
+    Numname = NUMNAME;
+
+#ifdef ALLSCORES
+    Allscore = TRUE;
+#else  /* ALLSCORES */
+    Allscore = FALSE;
+#endif /* ALLSCORES */
+
      /* 
       * We drop setgid privileges after opening the score file, so subsequent 
       * open()'s will fail.  Just reuse the earlier filehandle. 
@@ -134,15 +144,6 @@ getltchars(void)
 void
 setup(void)
 {
-    numscores = NUMSCORES;
-    Numname = NUMNAME;
-
-#ifdef ALLSCORES
-    Allscore = TRUE;
-#else  /* ALLSCORES */
-    Allscore = FALSE;
-#endif /* ALLSCORES */
-
 #ifdef DUMP
     md_onsignal_autosave();
 #else
