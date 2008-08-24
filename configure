@@ -6101,7 +6101,7 @@ _ACEOF
 if test "x$enable_wizardmode" != "xyes" ; then
 
 cat >>confdefs.h <<_ACEOF
-#define PASSWD $enable_wizardmode
+#define PASSWD "$enable_wizardmode"
 _ACEOF
 
 fi
