@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [5.4.5] - 2008-09-04
+### Added
+- Some support needed for rog-o-matic
+### Changed
+- Refactored save state code
+### Fixed
+- Do not create wanderer on top of mimic
+- Potential endless loop in wanderer when no room for monsters
+- Monster chases player if player picks up something that is automatically discarded
+- Prevent placing a trap on a trap 
+- Show_map wizard function showing excess characters in standout mode 
+- Quote PASSWD in configure script for --enable-wizardmode
+- Long standing nymph/inventory bug fixed
+- Other fixes by Peter Shauer, Ed Sirett and Wart
+
 ## [5.4.4] - 2007-09-05
 ### Added
 - Port to Mac OS/X

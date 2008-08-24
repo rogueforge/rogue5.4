@@ -9,7 +9,7 @@
 # See the file LICENSE.TXT for full copyright and licensing information.
 #
 
-DISTNAME = rogue5.4.4
+DISTNAME = rogue5.4.5
 PROGRAM  = rogue54
 O        = o
 HDRS     = rogue.h extern.h score.h

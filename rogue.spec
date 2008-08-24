@@ -1,12 +1,12 @@
 Name:           rogue
-Version:        5.4.4
+Version:        5.4.5
 Release:        1%{?dist}
 Summary:        The original graphical adventure game
 
 Group:          Amusements/Games
 License:        BSD
 URL:            http://rogue.rogueforge.net/
-Source0:        http://rogue.rogueforge.net/files/rogue5.4/rogue5.4.4-src.tar.gz
+Source0:        http://rogue.rogueforge.net/files/rogue5.4/rogue5.4.5-src.tar.gz
 Source1:        rogue.desktop
 Source2:        rogue.png
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -67,8 +67,11 @@ fi
 
 
 %changelog
+* Sun Aug 24 2008 yendor <yendor at roguefogre.net> 5.4.5-1
+- Update to 5.4.5
+
 * Sun Sep 2 2007 Wart <wart at kobold.org> 5.4.4-1
-- Update to 5.4.4 
+- Update to 5.4.4
 
 * Mon Aug 20 2007 Wart <wart at kobold.org> 5.4.3-1
 - Update to 5.4.3
