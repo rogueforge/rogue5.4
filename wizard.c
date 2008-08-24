@@ -264,12 +264,12 @@ show_map(void)
     for (y = 1; y < NUMLINES - 1; y++)
 	for (x = 0; x < NUMCOLS; x++)
 	{
-	    real = flat(y, x);
-	    if (!(real & F_REAL))
+	    real = flat(y, x) & F_REAL;
+	    if (!real)
 		wstandout(Hw);
 	    wmove(Hw, y, x);
 	    waddch(Hw, chat(y, x));
-	    if (!real & F_REAL)
+	    if (!(real & F_REAL))
 		wstandend(Hw);
 	}
     show_win("---More (level map)---");
