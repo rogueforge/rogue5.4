@@ -372,6 +372,7 @@ rd_score(SCORE *top_ten)
     for(i = 0; i < numscores; i++)
     {
         encread(top_ten[i].sc_name, MAXSTR, scoreboard);
+	scoreline[0] = '\0';
         encread(scoreline, 100, scoreboard);
         (void) sscanf(scoreline, " %u %d %u %u %d %x \n",
             &top_ten[i].sc_uid, &top_ten[i].sc_score,
