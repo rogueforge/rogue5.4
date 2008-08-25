@@ -117,7 +117,7 @@ wanderer(void)
     tp = new_item();
     do
     {
-        /* Avoid endless loop when all rooms are filled with monsters 
+        /* Avoid endless loop when all rooms are filled with monsters
 	 * and the player room is not accessible to the monsters.
 	 */
 	if (cnt++ >= 500)
@@ -126,7 +126,7 @@ wanderer(void)
 	    return;
 	}
 	find_floor(NULL, &cp, FALSE, TRUE);
-    } while (roomin(&cp) == Proom);
+    } while (roomin(&cp) == Proom && moat(cp.y, cp.x) == NULL);
     new_monster(tp, randmonster(TRUE), &cp);
     if (on(Player, SEEMONST))
     {
