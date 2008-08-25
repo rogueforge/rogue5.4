@@ -111,11 +111,20 @@ void
 wanderer(void)
 {
     THING *tp;
-    static coord cp;
+    coord cp;
+    int cnt = 0;
 
     tp = new_item();
     do
     {
+        /* Avoid endless loop when all rooms are filled with monsters 
+	 * and the player room is not accessible to the monsters.
+	 */
+	if (cnt++ >= 500)
+	{
+	    discard(tp);
+	    return;
+	}
 	find_floor(NULL, &cp, FALSE, TRUE);
     } while (roomin(&cp) == Proom);
     new_monster(tp, randmonster(TRUE), &cp);

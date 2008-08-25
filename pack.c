@@ -20,7 +20,7 @@ register THING *obj;
 {
     register THING *mp;
 
-    for (mp = mlist; mp != NULL; mp = next(mp))
+    for (mp = Mlist; mp != NULL; mp = next(mp))
         if (mp->t_dest == &obj->o_pos)
      mp->t_dest = &Hero;
 }
