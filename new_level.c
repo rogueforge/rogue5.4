@@ -67,9 +67,10 @@ new_level(void)
 	    do
 	    {
 		find_floor(NULL, &Stairs, FALSE, FALSE);
-	    } while (chat(Stairs.y, Stairs.x) != FLOOR);
+	    } while ( (chat(Stairs.y, Stairs.x) != FLOOR) &&
+	              (flat(Stairs.y, Stairs.x) & F_REAL) );
 	    sp = &flat(Stairs.y, Stairs.x);
-	    *sp &= ~F_REAL;
+	    *sp &= ~(F_REAL | F_TMASK);
 	    *sp |= rnd(NTRAPS);
 	}
     }
