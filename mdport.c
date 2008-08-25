@@ -413,6 +413,15 @@ md_getusername(void)
 {
     static char login[80];
     char *l = NULL;
+
+    /* POSIX Shell has priority, then O/S specific methods */
+    if ( (l = getenv("LOGNAME")) != NULL )
+    {
+        strncpy(login,l,80);
+        login[79] = 0;
+        return(login);
+    }
+
 #ifdef _WIN32
     LPSTR mybuffer;
     DWORD size = UNLEN + 1;

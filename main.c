@@ -57,11 +57,12 @@ main(int argc, char **argv)
     if (env == NULL || Whoami[0] == '\0')
         strucpy(Whoami, md_getusername(), strlen(md_getusername()));
     lowtime = time(NULL);
-#ifdef MASTER
-    if (Wizard && getenv("SEED") != NULL)
+    if (getenv("SEED") != NULL)
+    {
 	Dnum = atoi(getenv("SEED"));
+	Noscore = 1;
+    }
     else
-#endif
 	Dnum = (unsigned int) lowtime + md_getpid();
     Seed = Dnum;
 
