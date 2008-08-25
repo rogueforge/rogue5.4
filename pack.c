@@ -10,6 +10,22 @@
  */
 
 /*
+ * update_mdest:
+ *      Called after picking up an object, before discarding it.
+ *      If this was the object of something's desire, that monster will
+ *      get mad and run at the hero
+ */
+update_mdest(obj)
+register THING *obj;
+{
+    register THING *mp;
+
+    for (mp = mlist; mp != NULL; mp = next(mp))
+        if (mp->t_dest == &obj->o_pos)
+     mp->t_dest = &Hero;
+}
+
+/*
  * add_pack:
  *	Pick up an object and add it to the pack.  If the argument is
  *	non-null use it as the linked_list pointer instead of gettting
@@ -20,6 +36,7 @@ add_pack(THING *obj, int silent)
 {
     THING *op, *lp;
     int from_floor;
+    int discarded = 0;
 
     from_floor = FALSE;
     if (obj == NULL)
@@ -38,6 +55,8 @@ add_pack(THING *obj, int silent)
 	    detach(Lvl_obj, obj);
 	    mvaddch(Hero.y, Hero.x, floor_ch());
 	    chat(Hero.y, Hero.x) = (Proom->r_flags & ISGONE) ? PASSAGE : FLOOR;
+            update_mdest(obj);
+            discarded = 1;
 	    discard(obj);
 	    msg("the scroll turns to dust as you pick it up");
 	    return;
@@ -74,8 +93,10 @@ add_pack(THING *obj, int silent)
 			    return;
 			op->o_count++;
 dump_it:
+			update_mdest(obj);
 			discard(obj);
 			obj = op;
+                        discarded = 1;
 			lp = NULL;
 			goto out;
 		    }
@@ -133,9 +154,8 @@ out:
      * If this was the object of something's desire, that monster will
      * get mad and run at the hero.
      */
-    for (op = Mlist; op != NULL; op = next(op))
-	if (op->t_dest == &obj->o_pos)
-	    op->t_dest = &Hero;
+    if (!discarded)
+        update_mdest(obj);
 
     if (obj->o_type == AMULET)
 	Amulet = TRUE;
@@ -302,6 +322,7 @@ pick_up(int ch)
 		    return;
 		money(obj->o_goldval);
 		detach(Lvl_obj, obj);
+		update_mdest(obj);
 		discard(obj);
 		Proom->r_goldval = 0;
 		break;
