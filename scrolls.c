@@ -117,8 +117,9 @@ read_scroll(void)
 			continue;
 		    /*
 		     * Or anything else nasty
+		     * Also avoid a xeroc which is disguised as scroll
 		     */
-		    else if (step_ok(ch = winat(y, x)))
+		    else if (moat(y, x) == NULL && step_ok(ch = winat(y, x)))
 		    {
 			if (ch == SCROLL
 			    && find_obj(y, x)->o_which == S_SCARE)
