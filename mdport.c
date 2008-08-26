@@ -1,7 +1,7 @@
 /*
-    mdport.c - Machine Dependent Code for Porting Unix/Curses games
+    mdport.c - Machine Dependent Code
 
-    Copyright (C) 2005 Nicholas J. Kisseberth
+    Copyright (C) 2005-2008 Nicholas J. Kisseberth
     All rights reserved.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -1111,6 +1111,7 @@ md_readchar(WINDOW *win)
     int lastch = 0;
     int mode = M_NORMAL;
     int mode2 = M_NORMAL;
+    int nodelayf = 0;
 
     for(;;)
     {
@@ -1140,6 +1141,8 @@ md_readchar(WINDOW *win)
 		unread(ch);
 		continue;
 	    }
+
+	    break;
 	}
 
 	if (mode == M_ESC) 
@@ -1237,6 +1240,7 @@ md_readchar(WINDOW *win)
 	{
 	    nodelay(win,1);
 	    mode = M_ESC;
+	    nodelayf = 1;
 	    unread(ch);
 	    continue;
 	}
@@ -1349,11 +1353,8 @@ md_readchar(WINDOW *win)
 	break;
     }
 
-    if (mode != M_NORMAL)
-    {
-        nodelay(win,0);
-        raw();
-    }
+    if (nodelayf)
+	nodelay(win,0);
 
     uindex = -1;
 
