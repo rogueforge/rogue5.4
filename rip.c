@@ -264,9 +264,6 @@ death(int monst)
     move(LINES - 1, 0);
     refresh();
     score(Purse, Amulet ? 3 : 0, monst);
-    printf("[Press return to continue]");
-    fflush(stdout);
-    (void) fgets(Prbuf,10,stdin);
     my_exit(0);
 }
 
