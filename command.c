@@ -74,7 +74,7 @@ command(void)
 		Move_on = FALSE;
 		if (Mpos != 0)		/* Erase message if its there */
 		{
-		    if (ch != '.' && ch != 's')
+		    if (ch != '.')
 			msg("");
 		}
 	    }
