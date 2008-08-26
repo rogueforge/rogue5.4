@@ -1075,6 +1075,35 @@ md_setsuspchar(int c)
 #define M_KEYPAD 2
 #define M_TRAIL  3
 
+int undo[5];
+int uindex = -1;
+
+int
+reread()
+{
+    int redo;
+
+    if (uindex < 0)
+        return 0;
+
+    redo = undo[0];
+    undo[0] = undo[1];
+    undo[1] = undo[2];
+    undo[2] = undo[3];
+    undo[3] = undo[4];
+    uindex--;
+    return redo;
+}
+
+void
+unread(int c)
+{
+    if (uindex >= 4)
+        abort();
+
+    undo[++uindex] = c;
+}
+
 int
 md_readchar(WINDOW *win)
 {
@@ -1085,30 +1114,32 @@ md_readchar(WINDOW *win)
 
     for(;;)
     {
+        if (mode == M_NORMAL && uindex >= 0) 
+	    return reread();
+
 	ch = wgetch(win);
 
 	if (ch == ERR)	    /* timed out waiting for valid sequence */
-	{		    /* flush input so far and start over    */
+        {
 	    mode = M_NORMAL;
-    	    nocbreak();
-	    raw();
-	    ch = 27;
-	    break;
+	    continue;
 	}
 
 	if (mode == M_TRAIL)
 	{
 	    if (ch == '^')		/* msys console  : 7,5,6,8: modified*/
 		ch = CTRL( toupper(lastch) );
-
-	    if (ch == '~')		/* cygwin console: 1,5,6,4: normal  */
+            else if (ch == '~')		/* cygwin console: 1,5,6,4: normal  */
 		ch = tolower(lastch);   /* windows telnet: 1,5,6,4: normal  */
 					/* msys console  : 7,5,6,8: normal  */
-
-	    if (mode2 == M_ESC)		/* cygwin console: 1,5,6,4: modified*/
+	    else if (mode2 == M_ESC)		/* cygwin console: 1,5,6,4: modified*/
 		ch = CTRL( toupper(ch) );
-
-	    break;
+	    else
+	    {
+	    	mode = M_NORMAL;
+		unread(ch);
+		continue;
+	    }
 	}
 
 	if (mode == M_ESC) 
@@ -1116,12 +1147,14 @@ md_readchar(WINDOW *win)
 	    if (ch == 27)
 	    {
 		mode2 = M_ESC;
+		unread(ch);
 		continue;
 	    }
 
 	    if ((ch == 'F') || (ch == 'O') || (ch == '['))
 	    {
 		mode = M_KEYPAD;
+		unread(ch);
 		continue;
 	    }
 
@@ -1139,7 +1172,10 @@ md_readchar(WINDOW *win)
 		case KEY_NPAGE: ch = CTRL('N'); break;
 		case KEY_END  : ch = CTRL('B'); break;
 
-		default: break;
+		default: mode = M_NORMAL;
+		         mode2 = M_NORMAL;
+			 unread(ch);
+		         continue;
 	    }
 
 	    break;
@@ -1191,13 +1227,17 @@ md_readchar(WINDOW *win)
 	    }
 
 	    if (mode != M_KEYPAD)
+	    {
+	        unread(ch);
 		continue;
+	    }
 	}
 
 	if (ch == 27)
 	{
-	    halfdelay(1);
+	    nodelay(win,1);
 	    mode = M_ESC;
+	    unread(ch);
 	    continue;
 	}
 
@@ -1309,8 +1349,13 @@ md_readchar(WINDOW *win)
 	break;
     }
 
-    nocbreak();	    /* disable halfdelay mode if on */
-    raw();
+    if (mode != M_NORMAL)
+    {
+        nodelay(win,0);
+        raw();
+    }
+
+    uindex = -1;
 
     return(ch & 0x7F);
 }
