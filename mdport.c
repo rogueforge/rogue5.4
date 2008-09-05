@@ -1112,19 +1112,35 @@ md_readchar(WINDOW *win)
     int mode = M_NORMAL;
     int mode2 = M_NORMAL;
     int nodelayf = 0;
+    int count = 0;
 
     for(;;)
     {
         if (mode == M_NORMAL && uindex >= 0) 
-	    return reread();
+	{
+	    ch = reread();
+	    break;
+	}
 
 	ch = wgetch(win);
 
-	if (ch == ERR)	    /* timed out waiting for valid sequence */
+        if (ch == ERR) /* timed out  or error */
         {
-	    mode = M_NORMAL;
-	    continue;
-	}
+            if (nodelayf)               /* likely timed out, switch to */
+            {                           /* normal mode and block on    */
+                mode = M_NORMAL;        /* next read                   */
+                nodelayf = 0;
+                nodelay(win,0);
+            }
+            else if (count > 10)        /* after 10 errors assume      */
+                auto_save(0);           /* input stream is broken and  */
+            else                        /* auto save and exit          */
+                count++;
+
+            continue;
+        }
+
+        count = 0;                      /* reset input error count     */
 
 	if (mode == M_TRAIL)
 	{
