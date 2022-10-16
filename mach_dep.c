@@ -394,7 +394,8 @@ over:
 	printf("The score file is very busy.  Do you want to wait longer\n");
 	printf("for it to become free so your score can get posted?\n");
 	printf("If so, type \"y\"\n");
-	(void) fgets(Prbuf, MAXSTR, stdin);
+	if (fgets(Prbuf, MAXSTR, stdin) == NULL)
+	    return FALSE;
 	if (Prbuf[0] == 'y')
 	    for (;;)
 	    {
