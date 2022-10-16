@@ -15,6 +15,7 @@
  *      If this was the object of something's desire, that monster will
  *      get mad and run at the hero
  */
+void
 update_mdest(obj)
 register THING *obj;
 {
