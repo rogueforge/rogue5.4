@@ -137,8 +137,6 @@ clean:
 	$(RM) $(OBJS2)
 	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe
 	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
-	$(RM) $(DISTNAME)/*
-	-rmdir $(DISTNAME)
     
 maintainer-clean:
 	$(RM) config.h
