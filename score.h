@@ -8,7 +8,7 @@ struct sc_ent {
     uid_t sc_uid;
     int sc_score;
     unsigned int sc_flags;
-    int sc_monster;
+    unsigned int sc_monster;
     char sc_name[MAXSTR];
     int sc_level;
     unsigned int sc_time;
