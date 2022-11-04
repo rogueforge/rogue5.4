@@ -194,7 +194,10 @@ teleport(void)
     static coord c;
 
     mvaddch(Hero.y, Hero.x, floor_at());
-    find_floor(NULL, &c, FALSE, TRUE);
+    do {
+        find_floor(NULL, &c, FALSE, TRUE);
+    }
+    while (chat(c.y, c.x) != FLOOR);
     if (roomin(&c) != Proom)
     {
 	leave_room(&Hero);
