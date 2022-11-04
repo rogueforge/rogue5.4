@@ -194,7 +194,7 @@ quaff(void)
 		add_str(&Pstats.s_str, Cur_ring[LEFT]->o_arm);
 	    if (ISRING(RIGHT, R_ADDSTR))
 		add_str(&Pstats.s_str, Cur_ring[RIGHT]->o_arm);
-	    msg("hey, this tastes great.  It make you feel warm all over");
+	    msg("hey, this tastes great.  It makes you feel warm all over");
 	when P_BLIND:
 	    do_pot(P_BLIND, TRUE);
 	when P_LEVIT:

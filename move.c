@@ -287,7 +287,7 @@ be_trapped(const coord *tc)
                 when 7: msg("you suddenly feel very thirsty");
                 when 8: msg("you feel time speed up suddenly");
                 when 9: msg("time now seems to be going slower");
-                when 10: msg("you pack turns %s!", Rainbow[rnd(cNCOLORS)]);
+                when 10: msg("your pack turns %s!", Rainbow[rnd(cNCOLORS)]);
             }
 	when T_SLEEP:
 	    No_command += SLEEPTIME;

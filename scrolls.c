@@ -276,7 +276,7 @@ def:
 	    uncurse(Cur_weapon);
 	    uncurse(Cur_ring[LEFT]);
 	    uncurse(Cur_ring[RIGHT]);
-	    msg(choose_str("you feel in touch with the Universal Onenes",
+	    msg(choose_str("you feel in touch with the Universal Oneness",
 			   "you feel as if somebody is watching over you"));
 	when S_AGGR:
 	    /*
