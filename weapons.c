@@ -53,6 +53,8 @@ missile(int ydelta, int xdelta)
     if (moat(obj->o_pos.y, obj->o_pos.x) == NULL ||
 	!hit_monster(unc(obj->o_pos), obj))
 	    fall(obj, TRUE);
+    else
+        discard(obj);
 }
 
 /*
