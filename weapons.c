@@ -138,7 +138,7 @@ fall(THING *obj, int pr)
 	    Has_hit = FALSE;
 	}
 	msg("the %s vanishes as it hits the ground",
-	    Weap_info[obj->o_which].oi_name);
+	    inv_name(obj,TRUE));
     }
     discard(obj);
 }
