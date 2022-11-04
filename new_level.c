@@ -84,7 +84,9 @@ new_level(void)
     for (tp = Mlist; tp != NULL; tp = next(tp))
 	tp->t_room = roomin(&tp->t_pos);
 
-    find_floor(NULL, &Hero, FALSE, TRUE);
+    do {
+	find_floor(NULL, &Hero, FALSE, TRUE);
+    } while ((chat(Hero.y, Hero.x) != PASSAGE) && (chat(Hero.y, Hero.x) != FLOOR));
     enter_room(&Hero);
     mvaddch(Hero.y, Hero.x, PLAYER);
     if (on(Player, SEEMONST))
