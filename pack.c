@@ -307,7 +307,7 @@ inventory(const THING *list, int type)
 void
 pick_up(int ch)
 {
-    THING *obj;
+    THING *obj, *tmpl;
 
     if (on(Player, ISLEVIT))
 	return;
@@ -322,6 +322,12 @@ pick_up(int ch)
 		if (obj == NULL)
 		    return;
 		money(obj->o_goldval);
+		Proom->r_goldval = 0;
+		for (tmpl = Mlist; tmpl != NULL; tmpl = next(tmpl)) {
+		    if (tmpl->t_dest == &obj->o_pos) {
+			tmpl->t_dest = &Hero;
+		    }
+		}
 		detach(Lvl_obj, obj);
 		update_mdest(obj);
 		discard(obj);
