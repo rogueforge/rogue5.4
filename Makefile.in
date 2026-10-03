@@ -138,7 +138,7 @@ clean:
 	$(RM) core a.exe a.out a.exe.stackdump $(PROGRAM) $(PROGRAM).exe
 	$(RM) $(PROGRAM).tar $(PROGRAM).tar.gz $(PROGRAM).zip 
 	$(RM) $(DISTNAME)-src.tar $(DISTNAME)-src.tar.gz $(DISTNAME)-src.zip
- 	$(RM) $(DOCS)
+	$(RM) $(DOCS)
    
 maintainer-clean:
 	$(RM) config.h
